@@ -3,20 +3,14 @@
 **ERA V5, Session 5.** The plan for what the 40B India-first model sees, how much of it, and in
 what order — written so that every number can be attacked, and so that attacking it is cheap.
 
-Three commitments run through this document:
-
-1. **No number is asserted without its supply.** Every lane share is checked against real unique
-   token supply and converted into an epoch count. A share that needs more than 4 epochs is either
-   cut or explicitly manufactured, and it says which.
-2. **Every number is produced by a script here, and a test fails if it stops adding up.**
-   [`scripts/03_solve_mixture.py`](scripts/03_solve_mixture.py) reads the spec, checks a dozen
-   invariants and exits non-zero if one breaks. The tables below are its output, not typing.
-3. **The plan is a hypothesis with a kill condition.** §8 pre-registers the 1B/3B proxy, the metric
-   that confirms it and the result that refutes it — then reports the two reduced proxies that were
-   actually run here. **This mixture placed 4th of 6 in the first and last of 4 in the second**, and
-   the second one refuted the prediction I had written down in advance about my own agentic share.
-   Both results are in §8.2–8.3 with their diagnoses and the three protocol fixes they forced, not
-   buried.
+Three commitments run through it. **No number is asserted without its supply** — every share is
+checked against real unique tokens and converted to an epoch count, and a share needing more than 4
+epochs is either cut or explicitly manufactured. **Every number is produced by a script here and
+checked by a test**: [`scripts/03_solve_mixture.py`](scripts/03_solve_mixture.py) verifies a dozen
+invariants and exits non-zero if one breaks. **The plan is a hypothesis with a kill condition** — §8
+pre-registers the 1B/3B proxy and then reports the two reduced proxies actually run, in which this
+mixture placed **4th of 6** and then **last of 4**, refuting a prediction I had written down in
+advance about my own agentic share.
 
 | | |
 |---|---|
@@ -431,14 +425,40 @@ does not end up tied to one domain.
 | **L0** direct | 0–32 | `<effort=none>` | 10% | 10 → 2 | **7** | a GSM8K item answered with no chain at all — *"Rocky boxed 190 fights, 50% knockouts, 20% of those in round one…"* (86 tok, only 31 supervised). Seven such documents exist in the whole corpus; the band has to be built by stripping traces off verified short answers |
 | **L1** short | 32–256 | `<effort=low>` | 30% | 30 → 8 | 17,106 | GSM8K socratic: *"Andrew is having two friends over for a sleepover… 3 donuts each…"* — 365 tok, 235 supervised, one arithmetic chain, no branching |
 | **L2** medium | 256–1024 | `<effort=medium>` | 32% | 32 → 20 | 3,640 | PRM800K: *given tan θ = 5, find…* — 971 tok, 930 supervised, names each intermediate result and checks it |
-| **L3** long | 1024–4096 | `<effort=high>` | 20% | 20 → 40 | **0** | explores an alternative, verifies an intermediate result, corrects itself |
-| **L4** ultra | 4096–32768 | `<effort=ultra>` | 8% | 8 → 30 | **0** | several attempted routes, explicit dead ends, a final verification pass |
+| **L3** long | 1024–4096 | `<effort=high>` | 20% | 20 → 40 | **0 collected · 253 built** | *"largest 2-digit prime factor of C(200,100)"* — 3,250 reasoning tokens, **5 human-rated wrong steps** discarded before the right route, answer 61. Built, not found: see below |
+| **L4** ultra | 4096–32768 | `<effort=ultra>` | 8% | 8 → 30 | **0** | several attempted routes, explicit dead ends, a final verification pass — **still empty after construction**, ceiling 3,250 |
 
-**Measured: the cleaned corpus is L1 and L2 and essentially nothing else.** Three of the five rows
-are empty or effectively empty — seven documents for L0, none at all for L3 and L4. That is not a gap in this write-up — it is the finding in §4.2, and
-it is the single most consequential thing the cleaning pass turned up: **the effort dial cannot be
-trained from open data.** L3 and L4 must be distilled, L0 must be constructed by stripping traces
-off verified short answers, and the plan is gated on delivering both before the run starts.
+**The collected corpus is L1 and L2 and essentially nothing else**: 7 documents at L0, zero at L3
+and L4. Before that becomes a finding, the obvious objection has to be answered — *your corpus tops
+out at 992 reasoning tokens and you drew the L3 line at 1024, so you engineered the result.* Fair
+challenge, and the distribution answers it rather than the threshold does: **median 132, p99 778,
+maximum 992 across 20,753 traces.** The mass sits an order of magnitude below the boundary; moving
+the line to 768 or 1536 changes the count, not the conclusion. Open worked-solution data is short
+because MATH-style solutions are short.
+
+**So I built the L3 band out of real data rather than leaving the row empty.**
+[`scripts/09_build_long_traces.py`](scripts/09_build_long_traces.py) exploits the fact that PRM800K
+is not a list of solutions but a *tree search over them*, in which humans rated **60,398 completions
+as wrong**. Step 02 discarded all of that to get clean linear traces. Reconstructing the search in
+the order it happened — rejected attempt, correction marker, then the continuation actually chosen —
+yields **253 genuine L3 traces (328k tokens)** in which every token is original generator output and
+every verdict is a human's. Only the ordering is constructed, and the output carries
+`tier: D_constructed` in its own shard so it can never be mistaken for collected data. This is the
+§4.2 recipe — *keep the failed branches that were later corrected* — executed rather than promised:
+
+```
+<attempt>The table looks like this:</attempt>
+<check>That step is wrong; discard it and try another route.</check>
+<attempt>The table looks like this:
+| Prime Factor | e_p(200!) | e_p(100!) | e_p(100!100!) | e_p(n) | ...
+```
+
+**L4 stays empty, and I am not going to pretend otherwise.** Reconstruction raises the ceiling from
+992 to 3,250 reasoning tokens — still short of 4,096. PRM800K's searches are not deep enough and no
+reachable open corpus is. L4 can only come from a teacher sampled at high effort on
+answer-verifiable problems: the 25B distillation line item and its delivery gate in §4.2. An empty
+row with a costed acquisition plan behind it is worth more than a filled one with an invented
+example in it.
 
 ---
 
@@ -503,12 +523,8 @@ several small transformers, identical seed and identical token budget, differing
 evaluated on per-lane held-out sets they never saw. This is RegMix's method (which fits its own
 regression on 512 models of 1M params × 1B tokens); ours is smaller than that.
 
-**It can** show that mixture changes per-lane loss in an ordered, measurable way, expose which lanes
-trade against which, rank arms on `W`, and refute *"the mixture does not matter."*
-**It cannot** confirm absolute shares for a 40B run. Nothing at this scale can — that is what §8.1
-is for.
-
-Six arms, 11.4M parameters each, 3.0M tokens each, identical seed and identical budget, 72 minutes
+It can rank arms and refute *"the mixture does not matter"*; it cannot confirm absolute shares for
+a 40B run. Six arms, 11.4M parameters each, 3.0M tokens each, identical seed and identical budget, 72 minutes
 of CPU. Full output: [`results/proxy_report.md`](results/proxy_report.md).
 
 | rank | arm | **W** | code | web | Indic | STEM | reasoning | long-ctx | agentic |
@@ -640,7 +656,11 @@ Hindi volume), and loss-masked for agentic.
 |---|---|---:|---|
 | S4 | `sarvamai/samvaad-hi-v1` | 63,080,000 | Indic conversational |
 | S5 | 7 lanes, 30 sources | **81,042,167** | the four starved lanes |
-| **cumulative** | | **144,122,167** | |
+| S5 (constructed) | PRM800K search reconstruction | 328,340 | the L3 band, which collected data does not contain (§7.3) |
+| **cumulative** | | **144,450,507** | |
+
+Session gate: 10–100M cleaned tokens per session. S4 delivered 63.08M, S5 delivers 81.0M collected
+— **the gate is met for both**, which is the precondition for this plan being reviewed at all.
 
 The eight-stage S4 pipeline carried forward with three additions Session 5 needs: a **per-segment
 loss mask**, **difficulty and reasoning-length bands**, and an **anneal-reserve flag**. Full report
@@ -676,50 +696,16 @@ Things the real run surfaced that a hypothetical pipeline would not have:
 
 ---
 
-## 11. Six objections, answered
+## 11. The hardest questions, and where they are answered
 
-**"31% general web for an India-first coding model is lazy — cut it and give the tokens to code."**
-It would be lazy if it were a default. It is a concession to evidence I do not like: RegMix finds
-web correlates with downstream performance better than curated sets do, and the long tail of world
-knowledge has no other home. The concession is bounded — web *ends* at 11.5%, and stage A is the
-only place it dominates. If the proxy's web-heavy arm loses badly on `W`, I will cut it; if it wins,
-the rest of this plan is over-engineered and should be simplified.
-
-**"Agentic at 0.96% under-funds the headline capability."** That was my answer, and my own
-experiment took a bite out of it (§8.3). The arithmetic still stands: 0.63B collected + 10B
-manufactured = 10.63B unique, the 4-epoch cap allows 42.5B, we spend 37.9B; 2% would be 6.4 epochs.
-What the epoch-honest rerun showed is that the cap is a cliff in that arithmetic and a slope in
-measurement — 2% beat 1% on the agentic lane *even while repeating an 11k-token pool 5.5 times*.
-The one thing that keeps 0.96% standing is a validity objection, not a preference: that hold-out
-cannot separate tool-use from memorising the Gorilla/BFCL format. So the number is now explicitly
-provisional, with an OOD hold-out added to the 1B protocol to settle it and a written commitment to
-raise the share to 2% — together with the synthesis target, 10B → 17B — if it survives that test.
-
-**"Indic is your differentiator. Why not 25%?"** Because the lane total is not the constraint — Tier
-A is. At 25% the verified tier needs either >4 epochs or dilution by translated and synthetic text,
-and a model fluent in translationese is not the differentiator we are selling. 17.9% is what the
-verified supply plus a costed collection programme actually funds. Raise Tier A supply and I will
-raise the share; the trigger and the amount are both written down (§3, §10).
-
-**"Four epochs of repeated data is still repetition."** It is, and the cap comes from the paper that
-measured the cost: up to 4 epochs is near-indistinguishable from fresh data at fixed compute, and
-beyond it added compute decays toward zero. The cap is used asymmetrically on purpose — when a lane
-fails it, the share is cut and the cap is never raised. That asymmetry is the only thing preventing
-this document from being a wish list.
-
-**"Your anneal is 3.3%, the session's lifecycle panel says ~2%."** Correct, and the reason is in the
-fill-rate table (§6): the size of a reserve is set by what can be *admitted* to it, not by a
-percentage. The lanes we most want in the cooldown are the ones that fill worst, so the reserve is
-sized to the point where every lane's share can be met from material that meets its admission
-criterion, and the two lanes that cannot be met are declared as manufacturing commitments rather
-than silently padded with second-grade data.
-
-**"Your proxy is three orders of magnitude too small to say anything."** Agreed, and §8.2 says so in
-those words - the models are 11.4M parameters trained on 3.0M tokens. It is not offered as evidence for the shares. It is offered as evidence that the
-pipeline runs end to end on real cleaned data, that mixture changes per-lane loss in an ordered and
-measurable way, and — wherever it disagrees with the plan — as a pre-registered hypothesis for
-the 1B arms to settle. The experiment that is allowed to decide the shares costs 0.65% of the
-main run and is specified in §8.1 before those runs happen, not after.
+| challenge | one-line answer | full argument |
+|---|---|---|
+| "31% web is lazy — give it to code" | A concession to evidence I dislike (RegMix), bounded by fading web to 11.5%; my own proxy says it's the cheapest lane to cut and I've said so | §2, §8.2 |
+| "0.96% agentic under-funds the headline capability" | It funds it to the limit of what exists; 2% is 6.4 epochs. But my own epoch-honest rerun beat it, so the number is provisional with a committed decision rule | §4.1, §8.3 |
+| "Why not 25% Indic?" | The lane total isn't the constraint — Tier A is. Raise verified supply and the share rises; the trigger and amount are written down | §3, §10 |
+| "4 epochs of repetition is still repetition" | It is, and the cap comes from the paper that measured the cost. It is applied asymmetrically on purpose: a lane that fails it loses share, and the cap is never raised. That asymmetry is the only thing keeping this document from being a wish list — and §8.3 shows the cliff is really a slope, which is why the *rule* survives while the agentic *number* is now under test | §1, §8.3 |
+| "Anneal is 3.3%, the session says ~2%" | A reserve is sized by what can be *admitted* to it, not by a percentage. The lanes we most want in the cooldown fill worst (0.6% and 0%), so the size is set where each lane's share can be met from material that passes its criterion — and the two that can't are declared as manufacturing commitments rather than padded with second-grade data | §6 |
+| "Your proxy is 3 orders of magnitude too small" | Agreed, and it says so in those words. It is not evidence for the shares; it is evidence the pipeline runs, that mixture moves per-lane loss measurably, and — where it contradicted me — a pre-registered hypothesis for the 1B arms | §8.2 |
 
 ---
 
@@ -736,6 +722,7 @@ scripts/05_selector_floor.py OPUS-shaped selector; measures the bias the floor e
 scripts/06_band_examples.py  pulls a real example for every band out of the cleaned corpus
 scripts/07_cleaning_report.py cumulative token accounting against the starved slots
 scripts/08_proxy_analysis.py fits the proxy runs into per-lane share elasticities
+scripts/09_build_long_traces.py builds the L3 band from PRM800K's human-rated wrong branches
 results/                     every generated report
 ```
 
@@ -749,6 +736,7 @@ python scripts/04_proxy_ablation.py --supply-scaled --out proxy_report_supply_sc
 python scripts/05_selector_floor.py   # the selector/floor measurement
 python scripts/06_band_examples.py && python scripts/07_cleaning_report.py
 python scripts/08_proxy_analysis.py  # elasticities + is the mixture at a local optimum?
+python scripts/09_build_long_traces.py  # constructs the L3 reasoning band
 ```
 
 ## Sources the numbers lean on

@@ -361,5 +361,28 @@
     },
     "content_sha256": "4528c714b6f07da016a8f5ca656be15f6cc3234026f4a3e45f1e1fd46f6913fa",
     "written_utc": "2026-07-31T16:09:59+00:00"
+  },
+  {
+    "shard": "reasoning_L3L4_constructed.jsonl",
+    "lane": "reasoning",
+    "reserve": true,
+    "docs": 253,
+    "tokens": 328340,
+    "supervised_tokens": 328340,
+    "licenses": [
+      "MIT"
+    ],
+    "sources": [
+      "prm800k-phase2-search-reconstruction"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D4": 253
+    },
+    "tier": "D_constructed",
+    "note": "reconstructed from human-rated rejected branches; ordering constructed, all text and all verdicts original",
+    "content_sha256": "928374cbe71f81aa887212d0411d07de613a8c83e8bd36e541a67810d7f2587c"
   }
 ]
