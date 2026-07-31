@@ -18,14 +18,13 @@ advance about my own agentic share.
 | Budget | **3.0T tokens** = 2.9T main run + **100B anneal reserve** |
 | Hard rule | **≤ 4 epochs on any lane** ([arXiv:2305.16264](https://arxiv.org/abs/2305.16264)) |
 | Protected floor | **90% of the scheduled share** of Indic + agentic + reasoning — **23.3%** of every batch, set from measured selector retention (§5) |
-| Spec | [`mixture/v5_mixture.json`](mixture/v5_mixture.json) · [`mixture/inventory.json`](mixture/inventory.json) |
-| Generated reports | [mixture](results/mixture_report.md) · [proxy](results/proxy_report.md) · [selector](results/selector_report.md) · [bands](results/band_examples.md) · [cleaning](results/cleaning_report.md) |
+| Cleaned this session | **81.0M tokens**, 13 shards, 30 licensed sources — **144.5M cumulative** with S4 |
 
-**The three numbers a reviewer should attack first**, and where they are answered:
-the agentic lane is 0.96% and 94% synthetic (§2, §4.1); the Indic verified tier is 28% and not the
-composer's 40% (§3); the anneal reserve is 100B, and when its admission criteria were applied to
-real cleaned documents the two lanes this model exists for came back at **0.6%** and **0%** fill
-(§6, §9) — the reserve's hardest problem is manufacturing, not selection.
+**The three numbers a reviewer should attack first:** the agentic lane is 0.96% and 94% synthetic
+(§2, §4.1); the Indic verified tier is 28%, not the composer's 40% (§3); the anneal reserve is 100B,
+and applying its admission criteria to real cleaned documents returned **0.6%** and **0%** fill for
+the two lanes this model exists for (§6) — the reserve's hard problem is manufacturing, not
+selection.
 
 ```mermaid
 flowchart LR
@@ -40,6 +39,30 @@ flowchart LR
   A4 --> AN[anneal<br/>low LR, 100B]
   V --> AN
 ```
+
+---
+
+## 0. What was actually built and run
+
+This is a plan, but none of it is only a plan. Every row below was executed on this machine against
+real licensed data; the "what it found" column is the output, not an intention.
+
+| # | what was done | how | what it produced / found |
+|---|---|---|---|
+| 1 | **Acquired 30 sources** for the four starved lanes | [`01_fetch_lanes.py`](scripts/01_fetch_lanes.py) — Wikimedia cirrus dumps (12 Indic + en), Gorilla/BFCL, PRM800K, GSM8K, Gutenberg, 16 permissive GitHub repos, arXiv | ~370 MB raw, every file logged in `data/raw/provenance.jsonl` with url, licence, sha256, byte count, timestamp |
+| 2 | **Cleaned them through 8 stages** + 3 additions Session 5 needs | [`02_clean_lanes.py`](scripts/02_clean_lanes.py) — S4's pipeline plus **per-segment loss masks**, **D0–D4 / L0–L4 banding**, **reserve flags** | **81,042,167 tokens**, 12 shards, manifest with per-shard hashes. Found: agentic is **38.4% supervised**; 10 docs leaked GSM8K test verbatim; 165 failed a runtime script check |
+| 3 | **Solved the mixture against real supply** | [`03_solve_mixture.py`](scripts/03_solve_mixture.py) — a *test*: a dozen invariants, non-zero exit on failure | [`mixture_report.md`](results/mixture_report.md) — every lane's epochs vs the 4-epoch cap; agentic at 3.57 only because 94% is manufactured |
+| 4 | **Ran a 6-arm mixture ablation** | [`04_proxy_ablation.py`](scripts/04_proxy_ablation.py) — 11.4M-param models, identical seed and budget, 72 min CPU | [`proxy_report.md`](results/proxy_report.md) — web-heavy last by 16%; **my mixture 4th of 6** |
+| 5 | **Measured the OPUS selector's bias** | [`05_selector_floor.py`](scripts/05_selector_floor.py) — proxy gradient direction, first-order utility, top-40% retention, scored twice | [`selector_report.md`](results/selector_report.md) — **Indic retention 0.0%**; long-context **0.0% → 77.8%** on prefix vs full document. Rewrote the floor: 14.5% → **23.3%** |
+| 6 | **Re-ran the ablation epoch-honestly** | `04` with `--supply-scaled` — lane streams capped at real supply scaled to budget | [`proxy_report_supply_scaled.md`](results/proxy_report_supply_scaled.md) — confirmed one artifact, **refuted my own agentic prediction** |
+| 7 | **Fitted share→loss elasticities** | [`08_proxy_analysis.py`](scripts/08_proxy_analysis.py) — `nll = a + b·ln(share)` per lane | web is the flattest large lane (−0.214) — evidence against my own 31% |
+| 8 | **Built the L3 band that doesn't exist** | [`09_build_long_traces.py`](scripts/09_build_long_traces.py) — reconstructs PRM800K's search from 60,398 human-rated *wrong* branches | **253 real L3 traces, 328k tokens**, ceiling 3,250 reasoning tokens. L4 still empty |
+| 9 | **Pulled a real example for every band** | [`06_band_examples.py`](scripts/06_band_examples.py) | [`band_examples.md`](results/band_examples.md) — D0–D4 and L0–L3 with measured token counts |
+| 10 | **Accounted the cumulative target** | [`07_cleaning_report.py`](scripts/07_cleaning_report.py) | [`cleaning_report.md`](results/cleaning_report.md) — **144,450,507 cumulative** with S4; gate met |
+
+**The three results that changed the plan** — the floor (§5), the agentic share now under test (§8.3),
+and three corrections to the 1B protocol (§8.1). Where an experiment contradicted me it is reported
+as a contradiction, not smoothed over.
 
 ---
 
@@ -709,34 +732,24 @@ Things the real run surfaced that a hypothetical pipeline would not have:
 
 ---
 
-## Repo map
+## Repo map and how to reproduce
 
-```
-mixture/v5_mixture.json     the spec: shares, tiers, floor, reserve, curriculum, bands, protocol
-mixture/inventory.json      supply: per-dataset tokens with an evidence tag on every line
-scripts/01_fetch_lanes.py   acquire real data for the starved lanes (provenance-logged)
-scripts/02_clean_lanes.py   8-stage clean + loss masks + bands + reserve flags
-scripts/03_solve_mixture.py THE TEST: a dozen invariants; non-zero exit if a number stops adding up
-scripts/04_proxy_ablation.py the mixture ablation that actually ran
-scripts/05_selector_floor.py OPUS-shaped selector; measures the bias the floor exists to fix
-scripts/06_band_examples.py  pulls a real example for every band out of the cleaned corpus
-scripts/07_cleaning_report.py cumulative token accounting against the starved slots
-scripts/08_proxy_analysis.py fits the proxy runs into per-lane share elasticities
-scripts/09_build_long_traces.py builds the L3 band from PRM800K's human-rated wrong branches
-results/                     every generated report
-```
+`mixture/` holds the two inputs — [`v5_mixture.json`](mixture/v5_mixture.json) (shares, tiers, floor,
+reserve, curriculum, bands, proxy protocol) and [`inventory.json`](mixture/inventory.json) (supply,
+with an evidence tag on every line). `scripts/` holds the ten steps in §0, `results/` their reports,
+`manifests/` + `stats/` the shard provenance. `data/` is gitignored — it is rebuilt by step 1.
 
 ```bash
 pip install -r requirements.txt
-python scripts/01_fetch_lanes.py      # ~370MB raw, 30 sources, provenance logged
-python scripts/02_clean_lanes.py      # -> data/clean/, manifests/, stats/
-python scripts/03_solve_mixture.py    # exits non-zero if an invariant breaks
-python scripts/04_proxy_ablation.py   # the proxy run
-python scripts/04_proxy_ablation.py --supply-scaled --out proxy_report_supply_scaled.md --arms v5_proposed,v5_agentic_2pct,s5_composer_default
-python scripts/05_selector_floor.py   # the selector/floor measurement
+python scripts/01_fetch_lanes.py       # ~370MB raw, 30 sources, provenance logged
+python scripts/02_clean_lanes.py       # -> data/clean/, manifests/, stats/
+python scripts/03_solve_mixture.py     # THE TEST: exits non-zero if an invariant breaks
+python scripts/04_proxy_ablation.py    # 6-arm ablation (~72 min CPU)
+python scripts/04_proxy_ablation.py --supply-scaled --out proxy_report_supply_scaled.md --arms v5_proposed,indic_heavy,code_heavy,v5_agentic_2pct
+python scripts/05_selector_floor.py    # selector bias + the floor it implies
 python scripts/06_band_examples.py && python scripts/07_cleaning_report.py
-python scripts/08_proxy_analysis.py  # elasticities + is the mixture at a local optimum?
-python scripts/09_build_long_traces.py  # constructs the L3 reasoning band
+python scripts/08_proxy_analysis.py    # elasticities + local-optimum test
+python scripts/09_build_long_traces.py # constructs the L3 reasoning band
 ```
 
 ## Sources the numbers lean on
