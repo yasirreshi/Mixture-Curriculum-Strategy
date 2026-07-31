@@ -1,0 +1,950 @@
+[
+  {
+    "arm": "indic_heavy",
+    "weights": {
+      "code": 19.980019980019982,
+      "general_web": 22.97702297702298,
+      "indic": 29.970029970029973,
+      "stem_math": 11.48851148851149,
+      "reasoning": 6.993006993006993,
+      "long_context": 7.592407592407593,
+      "agentic": 0.999000999000999
+    },
+    "params": 11417088,
+    "steps": 732,
+    "tokens": 2998272,
+    "wall_s": 741.8,
+    "final_train_loss": 5.4217,
+    "heldout_nll": {
+      "code": 5.5129,
+      "general_web": 6.2841,
+      "indic": 4.0795,
+      "stem_math": 6.2057,
+      "reasoning": 4.6184,
+      "long_context": 6.244,
+      "agentic": 5.2978
+    },
+    "curve": [
+      {
+        "step": 0,
+        "loss": 10.4376
+      },
+      {
+        "step": 25,
+        "loss": 8.6399
+      },
+      {
+        "step": 50,
+        "loss": 7.0364
+      },
+      {
+        "step": 75,
+        "loss": 7.1228
+      },
+      {
+        "step": 100,
+        "loss": 6.6925
+      },
+      {
+        "step": 125,
+        "loss": 6.1168
+      },
+      {
+        "step": 150,
+        "loss": 6.14
+      },
+      {
+        "step": 175,
+        "loss": 5.9636
+      },
+      {
+        "step": 200,
+        "loss": 6.4265
+      },
+      {
+        "step": 225,
+        "loss": 5.9973
+      },
+      {
+        "step": 250,
+        "loss": 5.4913
+      },
+      {
+        "step": 275,
+        "loss": 5.8467
+      },
+      {
+        "step": 300,
+        "loss": 5.8814
+      },
+      {
+        "step": 325,
+        "loss": 5.3269
+      },
+      {
+        "step": 350,
+        "loss": 5.6286
+      },
+      {
+        "step": 375,
+        "loss": 5.7684
+      },
+      {
+        "step": 400,
+        "loss": 5.9903
+      },
+      {
+        "step": 425,
+        "loss": 5.683
+      },
+      {
+        "step": 450,
+        "loss": 5.34
+      },
+      {
+        "step": 475,
+        "loss": 5.4498
+      },
+      {
+        "step": 500,
+        "loss": 5.3976
+      },
+      {
+        "step": 525,
+        "loss": 5.2025
+      },
+      {
+        "step": 550,
+        "loss": 5.3763
+      },
+      {
+        "step": 575,
+        "loss": 5.4257
+      },
+      {
+        "step": 600,
+        "loss": 5.0447
+      },
+      {
+        "step": 625,
+        "loss": 5.2386
+      },
+      {
+        "step": 650,
+        "loss": 5.1164
+      },
+      {
+        "step": 675,
+        "loss": 5.3614
+      },
+      {
+        "step": 700,
+        "loss": 5.3244
+      },
+      {
+        "step": 725,
+        "loss": 5.4217
+      }
+    ],
+    "relative_nll": {
+      "code": 1.0413,
+      "general_web": 1.0422,
+      "indic": 1.0,
+      "stem_math": 1.0,
+      "reasoning": 1.0,
+      "long_context": 1.0062,
+      "agentic": 1.0473
+    },
+    "W": 1.02455
+  },
+  {
+    "arm": "code_heavy",
+    "weights": {
+      "code": 32.0,
+      "general_web": 23.0,
+      "indic": 17.9,
+      "stem_math": 11.5,
+      "reasoning": 7.0,
+      "long_context": 7.6,
+      "agentic": 1.0
+    },
+    "params": 11417088,
+    "steps": 732,
+    "tokens": 2998272,
+    "wall_s": 745.3,
+    "final_train_loss": 5.5469,
+    "heldout_nll": {
+      "code": 5.2945,
+      "general_web": 6.3045,
+      "indic": 4.2943,
+      "stem_math": 6.2181,
+      "reasoning": 4.6475,
+      "long_context": 6.2296,
+      "agentic": 5.332
+    },
+    "curve": [
+      {
+        "step": 0,
+        "loss": 10.4397
+      },
+      {
+        "step": 25,
+        "loss": 8.5815
+      },
+      {
+        "step": 50,
+        "loss": 7.5663
+      },
+      {
+        "step": 75,
+        "loss": 7.1067
+      },
+      {
+        "step": 100,
+        "loss": 6.837
+      },
+      {
+        "step": 125,
+        "loss": 6.8318
+      },
+      {
+        "step": 150,
+        "loss": 6.4029
+      },
+      {
+        "step": 175,
+        "loss": 6.2512
+      },
+      {
+        "step": 200,
+        "loss": 6.4359
+      },
+      {
+        "step": 225,
+        "loss": 5.971
+      },
+      {
+        "step": 250,
+        "loss": 5.7063
+      },
+      {
+        "step": 275,
+        "loss": 5.7339
+      },
+      {
+        "step": 300,
+        "loss": 5.894
+      },
+      {
+        "step": 325,
+        "loss": 5.3566
+      },
+      {
+        "step": 350,
+        "loss": 5.5406
+      },
+      {
+        "step": 375,
+        "loss": 5.9012
+      },
+      {
+        "step": 400,
+        "loss": 5.7573
+      },
+      {
+        "step": 425,
+        "loss": 5.6008
+      },
+      {
+        "step": 450,
+        "loss": 6.0576
+      },
+      {
+        "step": 475,
+        "loss": 5.4857
+      },
+      {
+        "step": 500,
+        "loss": 5.7705
+      },
+      {
+        "step": 525,
+        "loss": 5.1262
+      },
+      {
+        "step": 550,
+        "loss": 5.5657
+      },
+      {
+        "step": 575,
+        "loss": 5.3198
+      },
+      {
+        "step": 600,
+        "loss": 5.4068
+      },
+      {
+        "step": 625,
+        "loss": 5.4839
+      },
+      {
+        "step": 650,
+        "loss": 5.0132
+      },
+      {
+        "step": 675,
+        "loss": 5.8343
+      },
+      {
+        "step": 700,
+        "loss": 5.588
+      },
+      {
+        "step": 725,
+        "loss": 5.5469
+      }
+    ],
+    "relative_nll": {
+      "code": 1.0,
+      "general_web": 1.0455,
+      "indic": 1.0527,
+      "stem_math": 1.002,
+      "reasoning": 1.0063,
+      "long_context": 1.0039,
+      "agentic": 1.054
+    },
+    "W": 1.02494
+  },
+  {
+    "arm": "s5_composer_default",
+    "weights": {
+      "code": 24.0,
+      "general_web": 34.0,
+      "indic": 16.0,
+      "stem_math": 12.0,
+      "reasoning": 6.0,
+      "long_context": 6.0,
+      "agentic": 2.0
+    },
+    "params": 11417088,
+    "steps": 732,
+    "tokens": 2998272,
+    "wall_s": 712.5,
+    "final_train_loss": 5.8634,
+    "heldout_nll": {
+      "code": 5.4739,
+      "general_web": 6.2409,
+      "indic": 4.3486,
+      "stem_math": 6.2247,
+      "reasoning": 4.7597,
+      "long_context": 6.2269,
+      "agentic": 5.0587
+    },
+    "curve": [
+      {
+        "step": 0,
+        "loss": 10.4397
+      },
+      {
+        "step": 25,
+        "loss": 8.4629
+      },
+      {
+        "step": 50,
+        "loss": 7.6222
+      },
+      {
+        "step": 75,
+        "loss": 7.2135
+      },
+      {
+        "step": 100,
+        "loss": 6.9525
+      },
+      {
+        "step": 125,
+        "loss": 6.7427
+      },
+      {
+        "step": 150,
+        "loss": 6.4424
+      },
+      {
+        "step": 175,
+        "loss": 6.2853
+      },
+      {
+        "step": 200,
+        "loss": 6.7225
+      },
+      {
+        "step": 225,
+        "loss": 6.2325
+      },
+      {
+        "step": 250,
+        "loss": 6.0296
+      },
+      {
+        "step": 275,
+        "loss": 6.216
+      },
+      {
+        "step": 300,
+        "loss": 6.0773
+      },
+      {
+        "step": 325,
+        "loss": 5.6769
+      },
+      {
+        "step": 350,
+        "loss": 5.615
+      },
+      {
+        "step": 375,
+        "loss": 5.8363
+      },
+      {
+        "step": 400,
+        "loss": 5.883
+      },
+      {
+        "step": 425,
+        "loss": 5.8173
+      },
+      {
+        "step": 450,
+        "loss": 6.1073
+      },
+      {
+        "step": 475,
+        "loss": 5.9296
+      },
+      {
+        "step": 500,
+        "loss": 5.6768
+      },
+      {
+        "step": 525,
+        "loss": 5.1661
+      },
+      {
+        "step": 550,
+        "loss": 5.7262
+      },
+      {
+        "step": 575,
+        "loss": 5.347
+      },
+      {
+        "step": 600,
+        "loss": 5.3767
+      },
+      {
+        "step": 625,
+        "loss": 5.5887
+      },
+      {
+        "step": 650,
+        "loss": 5.6787
+      },
+      {
+        "step": 675,
+        "loss": 5.7949
+      },
+      {
+        "step": 700,
+        "loss": 5.5274
+      },
+      {
+        "step": 725,
+        "loss": 5.8634
+      }
+    ],
+    "relative_nll": {
+      "code": 1.0339,
+      "general_web": 1.035,
+      "indic": 1.066,
+      "stem_math": 1.0031,
+      "reasoning": 1.0306,
+      "long_context": 1.0034,
+      "agentic": 1.0
+    },
+    "W": 1.03004
+  },
+  {
+    "arm": "v5_proposed",
+    "weights": {
+      "code": 24.0,
+      "general_web": 31.0,
+      "indic": 17.9,
+      "stem_math": 11.5,
+      "reasoning": 7.0,
+      "long_context": 7.6,
+      "agentic": 1.0
+    },
+    "params": 11417088,
+    "steps": 732,
+    "tokens": 2998272,
+    "wall_s": 707.1,
+    "final_train_loss": 5.6751,
+    "heldout_nll": {
+      "code": 5.4764,
+      "general_web": 6.2501,
+      "indic": 4.2958,
+      "stem_math": 6.2324,
+      "reasoning": 4.6715,
+      "long_context": 6.2056,
+      "agentic": 5.3991
+    },
+    "curve": [
+      {
+        "step": 0,
+        "loss": 10.4397
+      },
+      {
+        "step": 25,
+        "loss": 8.5975
+      },
+      {
+        "step": 50,
+        "loss": 7.6352
+      },
+      {
+        "step": 75,
+        "loss": 7.2548
+      },
+      {
+        "step": 100,
+        "loss": 6.9435
+      },
+      {
+        "step": 125,
+        "loss": 6.7518
+      },
+      {
+        "step": 150,
+        "loss": 6.5334
+      },
+      {
+        "step": 175,
+        "loss": 6.3512
+      },
+      {
+        "step": 200,
+        "loss": 6.6486
+      },
+      {
+        "step": 225,
+        "loss": 6.1374
+      },
+      {
+        "step": 250,
+        "loss": 5.7413
+      },
+      {
+        "step": 275,
+        "loss": 5.9939
+      },
+      {
+        "step": 300,
+        "loss": 5.9403
+      },
+      {
+        "step": 325,
+        "loss": 5.4265
+      },
+      {
+        "step": 350,
+        "loss": 5.5184
+      },
+      {
+        "step": 375,
+        "loss": 5.9364
+      },
+      {
+        "step": 400,
+        "loss": 6.0582
+      },
+      {
+        "step": 425,
+        "loss": 5.8078
+      },
+      {
+        "step": 450,
+        "loss": 6.0923
+      },
+      {
+        "step": 475,
+        "loss": 5.6492
+      },
+      {
+        "step": 500,
+        "loss": 5.7871
+      },
+      {
+        "step": 525,
+        "loss": 5.2021
+      },
+      {
+        "step": 550,
+        "loss": 5.7814
+      },
+      {
+        "step": 575,
+        "loss": 5.345
+      },
+      {
+        "step": 600,
+        "loss": 5.5781
+      },
+      {
+        "step": 625,
+        "loss": 5.678
+      },
+      {
+        "step": 650,
+        "loss": 5.0616
+      },
+      {
+        "step": 675,
+        "loss": 5.9672
+      },
+      {
+        "step": 700,
+        "loss": 5.7592
+      },
+      {
+        "step": 725,
+        "loss": 5.6751
+      }
+    ],
+    "relative_nll": {
+      "code": 1.0344,
+      "general_web": 1.0365,
+      "indic": 1.053,
+      "stem_math": 1.0043,
+      "reasoning": 1.0115,
+      "long_context": 1.0,
+      "agentic": 1.0673
+    },
+    "W": 1.03792
+  },
+  {
+    "arm": "indic_lite",
+    "weights": {
+      "code": 23.976023976023978,
+      "general_web": 40.95904095904096,
+      "indic": 7.992007992007992,
+      "stem_math": 11.48851148851149,
+      "reasoning": 6.993006993006993,
+      "long_context": 7.592407592407593,
+      "agentic": 0.999000999000999
+    },
+    "params": 11417088,
+    "steps": 732,
+    "tokens": 2998272,
+    "wall_s": 713.1,
+    "final_train_loss": 5.8513,
+    "heldout_nll": {
+      "code": 5.5129,
+      "general_web": 6.2037,
+      "indic": 4.6358,
+      "stem_math": 6.2549,
+      "reasoning": 4.7618,
+      "long_context": 6.2133,
+      "agentic": 5.5006
+    },
+    "curve": [
+      {
+        "step": 0,
+        "loss": 10.4397
+      },
+      {
+        "step": 25,
+        "loss": 8.4232
+      },
+      {
+        "step": 50,
+        "loss": 7.4742
+      },
+      {
+        "step": 75,
+        "loss": 7.1939
+      },
+      {
+        "step": 100,
+        "loss": 7.1925
+      },
+      {
+        "step": 125,
+        "loss": 6.8532
+      },
+      {
+        "step": 150,
+        "loss": 6.5189
+      },
+      {
+        "step": 175,
+        "loss": 6.3877
+      },
+      {
+        "step": 200,
+        "loss": 6.6302
+      },
+      {
+        "step": 225,
+        "loss": 6.3067
+      },
+      {
+        "step": 250,
+        "loss": 6.3375
+      },
+      {
+        "step": 275,
+        "loss": 6.4219
+      },
+      {
+        "step": 300,
+        "loss": 6.2523
+      },
+      {
+        "step": 325,
+        "loss": 5.9427
+      },
+      {
+        "step": 350,
+        "loss": 5.7463
+      },
+      {
+        "step": 375,
+        "loss": 6.0391
+      },
+      {
+        "step": 400,
+        "loss": 6.0532
+      },
+      {
+        "step": 425,
+        "loss": 5.9246
+      },
+      {
+        "step": 450,
+        "loss": 6.1274
+      },
+      {
+        "step": 475,
+        "loss": 5.8013
+      },
+      {
+        "step": 500,
+        "loss": 5.8454
+      },
+      {
+        "step": 525,
+        "loss": 5.4787
+      },
+      {
+        "step": 550,
+        "loss": 5.8085
+      },
+      {
+        "step": 575,
+        "loss": 5.423
+      },
+      {
+        "step": 600,
+        "loss": 5.6102
+      },
+      {
+        "step": 625,
+        "loss": 5.9741
+      },
+      {
+        "step": 650,
+        "loss": 5.4559
+      },
+      {
+        "step": 675,
+        "loss": 5.9394
+      },
+      {
+        "step": 700,
+        "loss": 5.8784
+      },
+      {
+        "step": 725,
+        "loss": 5.8513
+      }
+    ],
+    "relative_nll": {
+      "code": 1.0413,
+      "general_web": 1.0288,
+      "indic": 1.1364,
+      "stem_math": 1.0079,
+      "reasoning": 1.031,
+      "long_context": 1.0012,
+      "agentic": 1.0874
+    },
+    "W": 1.06334
+  },
+  {
+    "arm": "naive_web_heavy",
+    "weights": {
+      "code": 8.0,
+      "general_web": 78.0,
+      "indic": 6.0,
+      "stem_math": 4.0,
+      "reasoning": 2.0,
+      "long_context": 2.0,
+      "agentic": 0.0
+    },
+    "params": 11417088,
+    "steps": 732,
+    "tokens": 2998272,
+    "wall_s": 732.1,
+    "final_train_loss": 5.8424,
+    "heldout_nll": {
+      "code": 6.0675,
+      "general_web": 6.0299,
+      "indic": 4.7724,
+      "stem_math": 6.5909,
+      "reasoning": 5.431,
+      "long_context": 6.2978,
+      "agentic": 7.3971
+    },
+    "curve": [
+      {
+        "step": 0,
+        "loss": 10.4411
+      },
+      {
+        "step": 25,
+        "loss": 8.5645
+      },
+      {
+        "step": 50,
+        "loss": 7.553
+      },
+      {
+        "step": 75,
+        "loss": 7.4582
+      },
+      {
+        "step": 100,
+        "loss": 7.2164
+      },
+      {
+        "step": 125,
+        "loss": 6.6732
+      },
+      {
+        "step": 150,
+        "loss": 6.5887
+      },
+      {
+        "step": 175,
+        "loss": 6.5815
+      },
+      {
+        "step": 200,
+        "loss": 6.5292
+      },
+      {
+        "step": 225,
+        "loss": 6.5167
+      },
+      {
+        "step": 250,
+        "loss": 6.4399
+      },
+      {
+        "step": 275,
+        "loss": 6.7126
+      },
+      {
+        "step": 300,
+        "loss": 6.3107
+      },
+      {
+        "step": 325,
+        "loss": 5.9843
+      },
+      {
+        "step": 350,
+        "loss": 5.9909
+      },
+      {
+        "step": 375,
+        "loss": 5.8676
+      },
+      {
+        "step": 400,
+        "loss": 5.8897
+      },
+      {
+        "step": 425,
+        "loss": 5.7397
+      },
+      {
+        "step": 450,
+        "loss": 6.1139
+      },
+      {
+        "step": 475,
+        "loss": 5.9009
+      },
+      {
+        "step": 500,
+        "loss": 6.0601
+      },
+      {
+        "step": 525,
+        "loss": 5.8092
+      },
+      {
+        "step": 550,
+        "loss": 5.7287
+      },
+      {
+        "step": 575,
+        "loss": 5.3773
+      },
+      {
+        "step": 600,
+        "loss": 5.7782
+      },
+      {
+        "step": 625,
+        "loss": 5.7648
+      },
+      {
+        "step": 650,
+        "loss": 5.6189
+      },
+      {
+        "step": 675,
+        "loss": 5.8122
+      },
+      {
+        "step": 700,
+        "loss": 5.1484
+      },
+      {
+        "step": 725,
+        "loss": 5.8424
+      }
+    ],
+    "relative_nll": {
+      "code": 1.146,
+      "general_web": 1.0,
+      "indic": 1.1698,
+      "stem_math": 1.0621,
+      "reasoning": 1.1759,
+      "long_context": 1.0149,
+      "agentic": 1.4623
+    },
+    "W": 1.1981
+  }
+]

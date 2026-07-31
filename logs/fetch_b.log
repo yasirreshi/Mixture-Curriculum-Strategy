@@ -1,0 +1,134 @@
+
+=== fetching lane: indic
+Exception in thread Thread-1 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-3 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-2 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-4 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-5 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-8 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-6 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-7 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-9 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-11 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-12 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+Exception in thread Thread-10 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 142, in fetch_wikipedia_dump
+    dec = gzip.decompressobj(16 + gzip.MAX_WBITS)
+          ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'gzip' has no attribute 'decompressobj'. Did you mean: 'decompress'?
+  (6s)
+
+=== fetching lane: web
+  !! lane web failed: AttributeError: module 'gzip' has no attribute 'decompressobj'
+  (2s)
+
+=== fetching lane: stem
+    math.NT: 80 abstracts    math.NT: 160 abstracts    math.NT: 235 abstracts    math.NT: 313 abstracts    math.NT: 395 abstracts    math.NT: 466 abstracts    math.NT: 531 abstracts    math.AG: 604 abstracts    math.AG: 679 abstracts    math.AG: 755 abstracts    math.AG: 836 abstracts    math.AG: 910 abstracts    math.AG: 978 abstracts    math.AG: 1050 abstracts    math.PR: 1143 abstracts    math.PR: 1230 abstracts    math.PR: 1324 abstracts    math.PR: 1416 abstracts    math.PR: 1507 abstracts    math.PR: 1603 abstracts    math.PR: 1696 abstracts    cs.LG: 1796 abstracts    cs.LG: 1896 abstracts    cs.LG: 1996 abstracts    cs.LG: 2096 abstracts    cs.LG: 2196 abstracts    cs.LG: 2296 abstracts    cs.LG: 2396 abstracts    cs.CL: 2496 abstracts    cs.CL: 2596 abstracts    cs.CL: 2696 abstracts    cs.CL: 2795 abstracts    cs.CL: 2895 abstracts    cs.CL: 2994 abstracts    cs.CL: 3094 abstracts    physics.optics: 3194 abstracts    physics.optics: 3293 abstracts    physics.optics: 3393 abstracts    physics.optics: 3492 abstracts    physics.optics: 3592 abstracts    physics.optics: 3690 abstracts    physics.optics: 3789 abstracts    stat.ML: 3889 abstracts    stat.ML: 3989 abstracts    stat.ML: 4089 abstracts    stat.ML: 4189 abstracts    stat.ML: 4289 abstracts    stat.ML: 4389 abstracts    stat.ML: 4489 abstracts    math.CO: 4575 abstracts    math.CO: 4663 abstracts    math.CO: 4748 abstracts    math.CO: 4834 abstracts    math.CO: 4918 abstracts    math.CO: 4997 abstracts    cs.DS: 5096 abstracts    cs.DS: 5193 abstracts    cs.DS: 5290 abstracts    cs.DS: 5390 abstracts    cs.DS: 5488 abstracts    cs.DS: 5586 abstracts    cs.DS: 5685 abstracts
+  [prov] stem           arxiv-api-abstracts                    6.20 MB    5,685 docs
+  (716s)
+
+provenance -> D:\Educational\ERA_v5\S5\data\raw\provenance.jsonl

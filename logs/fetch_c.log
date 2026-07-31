@@ -1,0 +1,61 @@
+
+=== fetching lane: indic
+Exception in thread Thread-2 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 146, in fetch_wikipedia_dump
+    r.raise_for_status()
+  File "C:\Users\yasir\anaconda3\Lib\site-packages\requests\models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://dumps.wikimedia.org/other/cirrussearch/20251229/bnwiki-20251229-cirrussearch-content.json.gz
+    hi:  1.28/6.0 MB  40 docs    te:  1.48/5.0 MB  71 docs    ta:  1.31/5.0 MB  48 docs    hi:  2.81/6.0 MB  62 docs    hi:  4.10/6.0 MB  98 docs    te:  2.93/5.0 MB  158 docs    ta:  2.69/5.0 MB  159 docs    ta:  4.08/5.0 MB  210 docs    hi:  5.46/6.0 MB  145 docs    te:  4.31/5.0 MB  203 docs    ta:  5.37/5.0 MB  266 docs
+  [prov] indic_verified wikipedia-cirrus:ta                    5.41 MB      266 docs
+    te:  5.74/5.0 MB  223 docs
+    hi:  6.75/6.0 MB  198 docs
+  [prov] indic_verified wikipedia-cirrus:te                    5.77 MB      223 docs
+  [prov] indic_verified wikipedia-cirrus:hi                    6.78 MB      198 docs
+Exception in thread Thread-5 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 146, in fetch_wikipedia_dump
+    r.raise_for_status()
+  File "C:\Users\yasir\anaconda3\Lib\site-packages\requests\models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://dumps.wikimedia.org/other/cirrussearch/20251229/mrwiki-20251229-cirrussearch-content.json.gz
+    gu:  1.29/3.0 MB  66 docs    kn:  1.36/3.0 MB  64 docs    ml:  1.46/3.0 MB  63 docs    gu:  2.66/3.0 MB  138 docs    kn:  3.02/3.0 MB  122 docs
+  [prov] indic_verified wikipedia-cirrus:kn                    3.03 MB      122 docs
+    gu:  4.02/3.0 MB  218 docs
+  [prov] indic_verified wikipedia-cirrus:gu                    4.05 MB      218 docs
+    ml:  3.12/3.0 MB  119 docs
+  [prov] indic_verified wikipedia-cirrus:ml                    3.14 MB      119 docs
+Exception in thread Thread-11 (fetch_wikipedia_dump):
+Traceback (most recent call last):
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\yasir\anaconda3\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "D:\Educational\ERA_v5\S5\scripts\01_fetch_lanes.py", line 146, in fetch_wikipedia_dump
+    r.raise_for_status()
+  File "C:\Users\yasir\anaconda3\Lib\site-packages\requests\models.py", line 1024, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://dumps.wikimedia.org/other/cirrussearch/20251229/orwiki-20251229-cirrussearch-content.json.gz
+    ur:  0.74/3.0 MB  17 docs    as:  1.20/2.0 MB  55 docs    pa:  1.35/2.5 MB  100 docs    as:  2.61/2.0 MB  111 docs
+  [prov] indic_verified wikipedia-cirrus:as                    2.62 MB      111 docs
+    ur:  2.00/3.0 MB  68 docs    pa:  2.82/2.5 MB  195 docs
+  [prov] indic_verified wikipedia-cirrus:pa                    2.84 MB      195 docs
+    ur:  2.90/3.0 MB  99 docs    ur:  3.81/3.0 MB  142 docs
+  [prov] indic_verified wikipedia-cirrus:ur                    3.83 MB      142 docs
+  (15s)
+
+=== fetching lane: web
+    en:  0.84/12.0 MB  16 docs    en:  1.67/12.0 MB  31 docs    en:  2.75/12.0 MB  55 docs    en:  3.67/12.0 MB  76 docs    en:  4.43/12.0 MB  91 docs    en:  5.52/12.0 MB  108 docs    en:  6.45/12.0 MB  128 docs    en:  7.27/12.0 MB  143 docs    en:  8.31/12.0 MB  163 docs    en:  9.22/12.0 MB  190 docs    en: 10.14/12.0 MB  217 docs    en: 11.07/12.0 MB  245 docs    en: 11.93/12.0 MB  268 docs    en: 12.85/12.0 MB  289 docs
+  [prov] web            wikipedia-cirrus:en                   12.93 MB      289 docs
+  (7s)
+
+provenance -> D:\Educational\ERA_v5\S5\data\raw\provenance.jsonl

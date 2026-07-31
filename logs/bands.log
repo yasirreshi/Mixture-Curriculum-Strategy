@@ -1,0 +1,128 @@
+-> D:\Educational\ERA_v5\S5\results\band_examples.md
+# Difficulty and reasoning-length bands, with real examples
+
+_Every example below is a document from `data/clean/` in this repo, with the token count measured by the 32k BPE trained in `scripts/02_clean_lanes.py`. Band assignment is done by the documented heuristics in that script, not by hand._
+
+## Difficulty ladder
+
+| band | name | docs in corpus | lanes present | median tokens |
+|---|---|---:|---|---:|
+| **D0** | Nursery | 351 | general_web, indic | 3,522 |
+| **D1** | School | 16,410 | code, general_web, indic, reasoning | 177 |
+| **D2** | High school / undergrad | 29,352 | agentic, code, general_web, indic, long_context, reasoning | 345 |
+| **D3** | Graduate | 11,904 | agentic, code, general_web, indic, long_context, reasoning, stem_math | 290 |
+| **D4** | Frontier / PhD | 1,935 | agentic, reasoning | 579 |
+
+### D0 - Nursery
+
+- **lane** `indic` · **source** `wikipedia:mr` · **1,492 tokens** (1,492 supervised / 0 context) · lang `mr`
+  > माघ पौर्णिमा ही माघ महिन्याच्या शुद्ध पक्षातील पंधरावी तिथी आहे. माघ पौर्णिमा हा एक बौद्ध सण आहे. या दिवशी तथागत बुद्धांनी वैशाली नगरीमध्ये इ.स.पू. ४८३ला ४५ वा वर्षावास केला होता. तथागतांनी माघ पौर्णिमेलाच आपल्या महापरिनिर्वाणाची घोषणा केली होती. या पौर्णिमेला बुद्ध पौर्णिमा व माघ पौर्णिमा एवढेच महत्त्व प्राप्त झाले आहे. या दिवशी बौद्ध राष्ट्रात आणि जम्बुद्विप भारतातील बौद्ध धम्मीय लोक हा माघ पौर्णिमेचा सोहळा साजरा क ...
+
+- **lane** `general_web` · **source** `wikipedia:en` · **5,462 tokens** (5,462 supervised / 0 context) · lang `en`
+  > "America the Beautiful" is an American patriotic song. Its lyrics were written by Katharine Lee Bates and its music was composed by church organist and choirmaster Samuel A. Ward at Grace Episcopal Church in Newark, New Jersey, though the two never met. Bates wrote the words as a poem, originally titled "Pikes Peak". It was first published in the Fourth of July 1895 edition of the church periodical, The Congregationa ...
+
+### D1 - School
+
+- **lane** `reasoning` · **source** `gsm8k-plain` · **91 tokens** (51 supervised / 40 context) · lang `en`
+  > Problem: Steph needs to cook fried chicken for the kid's party. She bought 24 pieces of drumstick and 4 fewer breast parts. How many fried chickens can Steph make?
+<reasoning>
+Steph bought 24 - 4 = <<24-4=20>>20 breast parts.
+Thus, she can make 24 + 20 = <<24+20=44>>44 fried chickens.
+</reasoning>
+Answer: 44
+
+- **lane** `code` · **source** `pallets/flask` · **289 tokens** (289 supervised / 0 context) · lang `code`
+  > from celery import Celery
+from celery import Task
+from flask import Flask
+from flask import render_template
+def create_app() -> Flask:
+ app = Flask(__name__)
+ app.config.from_mapping(
+ CELERY={
+ "broker_url": "redis://localhost",
+ "result_backend": "redis://localhost",
+ "task_ignore_result": True,
+ },
+ )
+ app.config.from_prefixed_env()
+ celery_init_app(app)
+ @app.route("/")
+ def index() -> str:
+ return render_templat ...
+
+### D2 - High school / undergrad
+
+- **lane** `agentic` · **source** `gorilla-openfunctions-v1` · **558 tokens** (47 supervised / 511 context) · lang `en`
+  > <tools>
+{'name': 'aws', 'api_name': 'aws.iotsitewise.list_asset_properties', 'description': 'Retrieves a paginated list of properties associated with an asset. If you update properties associated with the model before you finish listing all the properties, you need to start all over again.list-asset-properties is a paginated operation. Multiple API calls may be issued in order to retrieve the entire data set of resul ...
+
+- **lane** `code` · **source** `tiangolo/fastapi` · **1,208 tokens** (1,208 supervised / 0 context) · lang `code`
+  > import importlib
+import pytest
+from fastapi.testclient import TestClient
+from inline_snapshot import snapshot
+from tests.utils import needs_py310
+@pytest.fixture(
+ name="client",
+ params=[
+ pytest.param("tutorial002_py310", marks=[needs_py310]),
+ pytest.param("tutorial002_an_py310", marks=[needs_py310]),
+ ],
+)
+def get_client(request: pytest.FixtureRequest):
+ mod = importlib.import_module(f"docs_src.cookie_param_model ...
+
+### D3 - Graduate
+
+- **lane** `stem_math` · **source** `arxiv` · **83 tokens** (83 supervised / 0 context) · lang `en`
+  > Robustness and efficiency of leaderless probabilistic consensus protocols within Byzantine infrastructures This paper investigates leaderless binary majority consensus protocols with low computational complexity in noisy Byzantine infrastructures. Using computer simulations, we show that explicit randomization of the consensus protocol can significantly increase the robustness towards faulty and malicious nodes. We i ...
+
+- **lane** `code` · **source** `lodash/lodash` · **9,081 tokens** (9,081 supervised / 0 context) · lang `code`
+  > (function(QUnit) {
+ var router = null;
+ var location = null;
+ var lastRoute = null;
+ var lastArgs = [];
+ var onRoute = function(routerParam, route, args) {
+ lastRoute = route;
+ lastArgs = args;
+ };
+ var Location = function(href) {
+ this.replace(href);
+ };
+ _.extend(Location.prototype, {
+ parser: document.createElement('a'),
+ replace: function(href) {
+ this.parser.href = href;
+ _.extend(this, _.pick(this.parser,
+ 'hre ...
+
+### D4 - Frontier / PhD
+
+- **lane** `reasoning` · **source** `prm800k-phase2` · **586 tokens** (560 supervised / 26 context) · lang `en`
+  > Problem: How many ways are there to put 4 balls in 3 boxes if the balls are distinguishable but the boxes are not?
+<reasoning>
+This problem is about counting arrangements of distinguishable objects in indistinguishable containers.
+One way to approach this problem is to use the idea of partitions, which are ways of expressing a positive integer as a sum of smaller positive integers.
+For example, 4 can be partitioned a ...
+
+- **lane** `agentic` · **source** `bfcl-v4-multi-turn` · **474 tokens** (210 supervised / 264 context) · lang `en`
+  > <user>
+It's getting late here, and I'm wrapping up my notes for the day. Please initiate a file creation in our communal folder, labeling it as 'Annual_Report_2023.docx'.
+</user>
+<tool_call>
+cd(folder='communal')
+touch(file_name='Annual_Report_2023.docx')
+</tool_call>
+<observation>
+(environment result)
+</observation>
+<user>
+Hi, I want to put some statistics in the annual report. Here are the things I want to put 'Com ...
+
+## Reasoning-length bands
+
+| band | reasoning tokens | control token | docs in corpus | median total tokens |
+|---|---|---|---:|---:|
+| **L0_direct** | 0-32 | `<effort=none>` | 0 | 0 |

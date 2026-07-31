@@ -1,0 +1,399 @@
+{
+  "_about": "The V5 mixture-and-curriculum specification, machine-readable. scripts/03_solve_mixture.py reads this together with inventory.json, checks every invariant and writes results/mixture_report.md. If you want to argue with a number, change it here and re-run the solver - it will tell you which invariant you broke.",
+  "version": "1.0",
+  "model": {
+    "params": 40000000000.0,
+    "basis": "Session 3 strategy report (40B dense, 200k vocab, tied embeddings)"
+  },
+  "budget": {
+    "total_tokens": 3000000000000.0,
+    "main_pretraining_tokens": 2900000000000.0,
+    "anneal_tokens": 100000000000.0,
+    "basis": "Session 5 sets the run at 2.4-4T tokens. We take 3.0T. The anneal is 3.33% of the budget - the session's lifecycle panel puts the mid-training/anneal stage at ~2%, OLMo-2-class recipes at ~5%; we sit between and justify the exact size by what the reserve can actually be filled with at Tier-A quality (see anneal_reserve)."
+  },
+  "invariants": {
+    "max_epochs_per_lane": 4.0,
+    "max_epochs_basis": "Muennighoff et al., 'Scaling Data-Constrained Language Models' (arXiv:2305.16264): up to 4 epochs of repeated data gives negligible loss change vs unique data; past that the value of added compute decays to zero. This is the single rule that stops a share from being wishful: any lane whose demand exceeds 4x its unique supply is either cut or explicitly manufactured.",
+    "shares_sum_to_100": true,
+    "stage_share_never_below_floor": true,
+    "anneal_reserve_quarantined_from_main_run": true
+  },
+  "lanes": {
+    "code": {
+      "share_pct": 24.0,
+      "benchmarks": [
+        "LiveCodeBench",
+        "Aider Polyglot",
+        "Codeforces ELO",
+        "HumanEval+/MBPP+",
+        "MultiPL-E"
+      ],
+      "why_this_number": "Coding is target capability #1 and the only large lane where supply is not the constraint (1.1T unique). 24% at 2.9T = 696B = 0.65 epochs, so every code token is fresh. V4's stage schedule ended at 35% code; we run 18%->30%->24%->24% across stages, which integrates to 24%. Going higher costs world knowledge (the session's own 'model that can program anything but has no common sense' failure), and the marginal code token is worth less than the marginal STEM or reasoning token once past ~25% - which is what the proxy is asked to confirm.",
+      "shape": "file-level and repo-level source, PR/issue threads, commit diffs (the training shape that matches Aider's diff-edit metric), tests alongside the code they test."
+    },
+    "general_web": {
+      "share_pct": 31.0,
+      "benchmarks": [
+        "MMLU",
+        "ARC-Challenge",
+        "TriviaQA / NaturalQuestions",
+        "HellaSwag"
+      ],
+      "why_this_number": "Web is the largest lane because it is the only place the long tail of world knowledge lives - the session's 'famous people born to mothers over 40' example is precisely a fact that exists on the web and nowhere curated. RegMix (arXiv:2407.01492) reports the uncomfortable empirical result that web corpora, not curated 'high-quality' sets, have the strongest positive correlation with downstream performance, so cutting web aggressively is a real risk, not a free win. We still fade it 56%->11.5% across the run, mirroring V4's 72->18 fade.",
+      "shape": "DCLM-baseline + FineWeb-Edu, model-filtered; curated reference (Wikipedia, public-domain books) upweighted in later stages."
+    },
+    "indic": {
+      "share_pct": 17.9,
+      "benchmarks": [
+        "MILU",
+        "IndicGenBench",
+        "FLORES-200 en<->Indic (chrF++/COMET)",
+        "Belebele Indic",
+        "IndicXTREME",
+        "TyDiQA Indic"
+      ],
+      "why_this_number": "This is the differentiator, so it gets the third-largest share and the largest protected floor. 17.9% at 2.9T = 519B against 276B of unique supply across all four tiers - so the lane as a whole runs under 2 epochs, but the *verified* tier is the real constraint and is priced separately below. We deliberately do not chase 25%: at 25% the verified tier would need >4 epochs or would have to be diluted with translated/synthetic text to a point where the model learns translationese rather than Indian language.",
+      "tier_split_pct": {
+        "A_verified_native": 28.0,
+        "B_unverified_crawl": 30.0,
+        "C_translated_transliterated": 24.0,
+        "D_synthetic": 18.0
+      },
+      "tier_split_basis": "The Session-5 composer's default is 40/25/20/15. We cannot fund 40% verified: 40% of 519B is 208B against ~85B of verified supply even after our collection programme = 2.4 epochs in the main run alone, and the anneal needs verified tokens too. So the main run takes 28% verified and the *anneal* runs 70% verified - the highest-quality Indic tokens are spent when the model can use them, which is the whole point of the reserve. Tier C and D are elastic (they can be manufactured) but are capped: C+D <= 42% of the lane, because translated and synthetic Indic inherit English syntax and a single teacher's register."
+    },
+    "stem_math": {
+      "share_pct": 11.5,
+      "benchmarks": [
+        "GPQA Diamond",
+        "MMLU-Pro STEM",
+        "MATH-500",
+        "AIME (via reasoning lane)"
+      ],
+      "why_this_number": "11.5% at 2.9T = 334B against 250B unique = 1.34 epochs. STEM is the highest-density lane per token but it is also the lane whose supply we would exhaust fastest if we pushed to V4's end-stage 39%. We ramp 6%->14% and hold, and put the scarce top of the distribution (proofs, olympiad, PhD-level) in the anneal instead of burning it early."
+    },
+    "reasoning": {
+      "share_pct": 7.0,
+      "benchmarks": [
+        "AIME",
+        "GPQA Diamond",
+        "HLE",
+        "MATH-500",
+        "and the effort-dial behaviour itself"
+      ],
+      "why_this_number": "7% at 2.9T = 203B against 85B unique = 2.4 epochs - inside the 4-epoch cap but with no slack, which is why the lane is protected. The session is explicit that reasoning is *taught later* (SFT + RLVR, sessions 17-18); pretraining's job is to install the structure of a worked multi-step argument so the later stage has something to sharpen. 7% buys that structure across all four length bands; going higher would burn traces we would rather spend at low LR in the anneal and in RLVR. MEASURED CAVEAT: cleaning the open reasoning data we could reach (PRM800K + GSM8K, 20,753 usable traces after dropping every trace containing a human-negatively-rated step) produced zero band-L3/L4 traces. The long half of this lane does not exist in open data and has to be distilled - see inventory.synthesis_capacity.reasoning_long_traces_L3_L4.",
+      "length_band_split_pct": {
+        "L0_direct": 10,
+        "L1_short": 30,
+        "L2_medium": 32,
+        "L3_long": 20,
+        "L4_ultra": 8
+      }
+    },
+    "long_context": {
+      "share_pct": 7.6,
+      "benchmarks": [
+        "RULER",
+        "long-eval",
+        "SWE-bench Verified (repo context)",
+        "BrowseComp (accumulated history)"
+      ],
+      "why_this_number": "7.6% at 2.9T = 219B against 100B unique = 2.2 epochs. Long context is not a lane you can sprinkle: the session's point is that each *sample* is longer, batches are length-homogeneous, and short samples in a long-context batch are wasted compute. So this share is concentrated - 2.5%/3%/16.8%/13% across stages - and is spent almost entirely after the model can already read and reason. Repo-level packs are the majority of it because that is the context shape SWE-bench actually presents."
+    },
+    "agentic": {
+      "share_pct": 1.0,
+      "benchmarks": [
+        "SWE-bench Verified / Live / Pro",
+        "Terminal-Bench",
+        "tau2-bench",
+        "BFCL v3/v4",
+        "WebArena / WorkArena",
+        "GAIA",
+        "BrowseComp",
+        "OSWorld"
+      ],
+      "why_this_number": "This is the number a reviewer should push hardest on, so here is the arithmetic. Unique agentic supply is 0.63B tokens - the smallest lane by two orders of magnitude. Our synthesis programme is costed per environment family (see inventory.synthesis_capacity.agentic_verified_trajectories) at 10B verified tokens. Total unique = 10.63B, so the 4-epoch cap permits at most 42.5B agentic tokens in the entire run. We spend 27.9B in the main run (0.96%) and 10B in the anneal = 37.9B = 3.57 epochs. The composer's default of 2% would need 58B in the main run alone; with the anneal that is 6.4 epochs on every agentic token that exists or can be manufactured, which is exactly the wishful accounting this session exists to prevent, so we decline it. The capability is not bought here in any case: pretraining installs the FORMAT - action/observation alternation, tool-call syntax, failure-and-recovery structure, and the masking convention that observations carry no loss - while SWE-bench and tau-bench performance is bought in SFT and RLVR, where 10-20B tokens is a large budget rather than a rounding error.",
+      "loss_convention": "Supervised on the model's own planning, tool calls and final answer. Tool observations, repo files and test output are context and carry no token loss; the verifier's pass/fail is reward-only. Training on observations would teach the model to invent tool results instead of calling the tool.",
+      "measured_supervised_fraction": "MEASURED: of 11.8M cleaned agentic tokens only 38.5% carry loss - the rest are tool schemas, user turns and observation slots. Lane shares in this spec are in CONSUMED tokens (what the run pays for in compute); the agentic lane's effective learning signal is 2.6x smaller than its compute cost. Sizing this lane from raw dataset bytes would over-state it by that factor."
+    }
+  },
+  "curriculum": {
+    "_about": "The headline lane shares above are not chosen round numbers - they are the token-weighted integral of this stage schedule. Every transition is blended over a warm-up band because V4 saw a ~150x gradient-norm spike when a Hindi-share step change met frozen embeddings.",
+    "transition_warmup_tokens": 8000000000.0,
+    "stages": [
+      {
+        "id": "A",
+        "name": "Foundation",
+        "tokens": 900000000000.0,
+        "seq_len": 4096,
+        "difficulty_mix": {
+          "D0": 35,
+          "D1": 40,
+          "D2": 20,
+          "D3": 5,
+          "D4": 0
+        },
+        "weights_pct": {
+          "general_web": 56.0,
+          "code": 18.0,
+          "indic": 15.0,
+          "stem_math": 6.0,
+          "reasoning": 2.0,
+          "long_context": 2.5,
+          "agentic": 0.5
+        },
+        "objective": "Language, script, world model, basic structure. Indic starts at 15% - above its floor - because script and morphology have to be learned while the embedding table is still plastic; V4's lesson is that raising the Indic share *late* against settled embeddings is what destabilises a run."
+      },
+      {
+        "id": "B",
+        "name": "Technical ramp",
+        "tokens": 900000000000.0,
+        "seq_len": 8192,
+        "difficulty_mix": {
+          "D0": 10,
+          "D1": 30,
+          "D2": 40,
+          "D3": 18,
+          "D4": 2
+        },
+        "weights_pct": {
+          "general_web": 28.0,
+          "code": 30.0,
+          "indic": 18.0,
+          "stem_math": 14.0,
+          "reasoning": 6.0,
+          "long_context": 3.0,
+          "agentic": 1.0
+        },
+        "objective": "Code and STEM take over from web. This is where the model becomes technical; web drops by half over an 8B-token blend, not in one step."
+      },
+      {
+        "id": "C",
+        "name": "Long-context and reasoning",
+        "tokens": 700000000000.0,
+        "seq_len": 32768,
+        "difficulty_mix": {
+          "D0": 3,
+          "D1": 15,
+          "D2": 35,
+          "D3": 37,
+          "D4": 10
+        },
+        "weights_pct": {
+          "general_web": 14.0,
+          "code": 24.0,
+          "indic": 18.0,
+          "stem_math": 14.0,
+          "reasoning": 12.0,
+          "long_context": 16.8,
+          "agentic": 1.2
+        },
+        "objective": "Sequence length steps 8K->16K->32K inside the stage, with length-homogeneous batches (a batch cannot mix 4K and 32K samples). Long context is introduced only now, after the model can already read and reason, so it learns to hold information rather than to learn everything at once."
+      },
+      {
+        "id": "D",
+        "name": "Consolidation",
+        "tokens": 400000000000.0,
+        "seq_len": 32768,
+        "difficulty_mix": {
+          "D0": 0,
+          "D1": 8,
+          "D2": 27,
+          "D3": 45,
+          "D4": 20
+        },
+        "weights_pct": {
+          "general_web": 11.5,
+          "code": 24.0,
+          "indic": 24.0,
+          "stem_math": 14.0,
+          "reasoning": 12.0,
+          "long_context": 13.0,
+          "agentic": 1.5
+        },
+        "objective": "Web at its floor, Indic at its peak (24%) because cross-lingual transfer from a strong technical model is at its most efficient here, and a 128K RoPE-theta extension runs at the end of this stage on long-context data only."
+      }
+    ]
+  },
+  "protected_floor": {
+    "_about": "The fraction of EVERY batch that the OPUS selector may not touch. This was 'Indic 12% + agentic 0.5% + long reasoning 2%' until scripts/05_selector_floor.py measured what an English-and-code-weighted proxy actually does to those lanes. It does not under-value them; it erases them. The floor below is the level the measurement demands, not the level that felt proportionate.",
+    "rule": "fraction_of_scheduled_share",
+    "protected_fraction": 0.9,
+    "protected_lanes": [
+      "indic",
+      "agentic",
+      "reasoning"
+    ],
+    "run_average_pct": 23.3,
+    "v4_comparison": "V4 protected 8% of every batch, Indic only.",
+    "measured_basis": "Measured retention at top-40% selection against a proxy direction built from general_web 45% / code 40% / stem 15%: Indic 0.0% (prefix-500 scoring) and 1.1% (full-document scoring); agentic 14.4% / 3.3%; reasoning 22.2% / 15.6%; against general_web 93.3% / 70.0% and code 68.9% / 64.4%. With Indic retention at ~0, a 12% absolute floor would have delivered a realized Indic share of 12% against a 17.9% schedule - a 5.9pt shortfall every batch, compounding over 2.9T tokens. Holding realized share within 10% of scheduled requires protecting ~90% of the scheduled share, which is what this rule does.",
+    "prefix_effect": "The single cleanest number in the repo: long-context candidates retain 0.0% when the selector scores the first 500 tokens of a document and 77.8% when it scores a window from anywhere in the same documents. The session's claim that the scorer only sees the head is not a detail - for long documents it is the whole outcome.",
+    "cost_acknowledged": "Protecting ~23% of every batch leaves the selector's efficiency gain applying to ~77% of it, against ~92% under V4's 8% floor. That is the price of not starving the three lanes this model exists for, and it is a real price.",
+    "revisit_trigger": "If the production proxy direction is measured to retain Indic above 30% - e.g. because it includes MILU/IndicGenBench gradients - re-derive the protected fraction from that measurement and lower it. The rule is 'protect what the selector demonstrably rejects', not 'protect 90%'."
+  },
+  "anneal_reserve": {
+    "_about": "Declared now, quarantined from the main run at shard-manifest level, spent in the final 100B tokens at decayed LR. If the selector eats the best Indic, agentic and reasoning data during the main run there is nothing special left for the cooldown, so the reserve is a Session-5 allocation decision, not an end-of-run discovery.",
+    "tokens": 100000000000.0,
+    "quarantine_rule": "A shard admitted to the reserve carries reserve=true in its manifest and is excluded from the main-run dataloader entirely - not down-weighted, excluded. Re-admission requires a manifest change and a signed-off reason.",
+    "mixture_pct": {
+      "indic": 22.0,
+      "code": 18.0,
+      "reasoning": 18.0,
+      "stem_math": 14.0,
+      "long_context": 12.0,
+      "agentic": 10.0,
+      "general_web": 6.0
+    },
+    "indic_tier_split_pct": {
+      "A_verified_native": 70.0,
+      "B_unverified_crawl": 5.0,
+      "C_translated_transliterated": 10.0,
+      "D_synthetic": 15.0
+    },
+    "reasoning_band_split_pct": {
+      "L0_direct": 2,
+      "L1_short": 8,
+      "L2_medium": 20,
+      "L3_long": 40,
+      "L4_ultra": 30
+    },
+    "admission_criteria": {
+      "indic": "native-speaker verified, published/attributable source, no translationese, passes the S4 script/joiner and PII gates, and is NOT in any Indic benchmark's source pool",
+      "agentic": "multi-step trajectory with >=3 tool calls, at least one failure-and-recovery turn, verified against real environment ground truth (the call actually succeeded/failed as logged), observations correctly masked",
+      "reasoning": "verified final answer, band L3/L4, contains an explicit check or self-correction step, and its problem does not appear in AIME/MATH/GPQA source pools",
+      "code": "repo-level context with a test suite that actually passes at the recorded commit",
+      "stem_math": "textbook, proof or olympiad-grade source with a resolvable claim",
+      "long_context": "single documents of 64k-128k tokens - real long documents, not concatenations of short ones",
+      "general_web": "reference-grade only (encyclopaedic, institutional, dated, attributable)"
+    }
+  },
+  "difficulty_bands": {
+    "_about": "Bands are assigned per document at cleaning time and carried in the shard manifest, so the curriculum can sample them. Levels are the session's nursery->PhD ladder. Real examples for every band, drawn from the corpus this repo actually cleaned, are in results/band_examples.md.",
+    "D0": {
+      "name": "Nursery",
+      "description": "single-clause factual prose, common vocabulary, no dependency longer than a sentence"
+    },
+    "D1": {
+      "name": "School",
+      "description": "multi-sentence explanation or a 2-3 step arithmetic word problem; grade-school register"
+    },
+    "D2": {
+      "name": "High school / undergrad",
+      "description": "structured argument, a competition-style problem, or a self-contained function with its test"
+    },
+    "D3": {
+      "name": "Graduate",
+      "description": "research-register text, multi-file code change, or a problem needing several non-obvious steps"
+    },
+    "D4": {
+      "name": "Frontier / PhD",
+      "description": "olympiad or research-level problem, repo-scale change with hidden tests, or a document only a specialist can follow"
+    }
+  },
+  "reasoning_length_bands": {
+    "_about": "The effort dial is not created at inference time; it selects among behaviours the model was trained to produce. So the reasoning share is a *distribution over trace lengths*, and each band gets its own control token. Measured token counts and real examples are in results/band_examples.md.",
+    "L0_direct": {
+      "reasoning_tokens": "0-32",
+      "control_token": "<effort=none>",
+      "use": "lookup and recall; the model must answer immediately"
+    },
+    "L1_short": {
+      "reasoning_tokens": "32-256",
+      "control_token": "<effort=low>",
+      "use": "one or two steps of mental arithmetic or a single inference hop"
+    },
+    "L2_medium": {
+      "reasoning_tokens": "256-1024",
+      "control_token": "<effort=medium>",
+      "use": "a worked solution with named intermediate results"
+    },
+    "L3_long": {
+      "reasoning_tokens": "1024-4096",
+      "control_token": "<effort=high>",
+      "use": "explores an alternative, verifies an intermediate result, corrects itself"
+    },
+    "L4_ultra": {
+      "reasoning_tokens": "4096-32768",
+      "control_token": "<effort=ultra>",
+      "use": "multiple attempted routes, explicit dead ends, a final verification pass"
+    },
+    "training_note": "Bands must span mathematics, code and general problem solving, otherwise the dial ends up tied to one domain. Band balance is enforced per domain, not just globally."
+  },
+  "proxy_protocol": {
+    "_about": "Every proportion above is a hypothesis. This is the experiment that is allowed to kill it, specified before the numbers are trusted.",
+    "stage_1": {
+      "scale": "1B params x 30B tokens per arm, 8 arms",
+      "arms": [
+        "V5-proposed (this spec)",
+        "Session-5 composer default (24/2/6/6/16/12/34)",
+        "Naive web-heavy ('crawl what is cheap')",
+        "Code-heavy (+8 code, -8 web)",
+        "Indic-lite (Indic 8%, floor off)",
+        "Floor-off (V5 shares, selector unconstrained)",
+        "Floor-doubled (29% protected)",
+        "Anneal-off (reserve spent uniformly through the main run)"
+      ],
+      "primary_metric": "capability-weighted validation NLL W = 0.30*code + 0.20*agentic-trajectory + 0.20*Indic-verified + 0.15*reasoning + 0.10*long-context + 0.05*web, each measured on a decontaminated held-out set and normalised to the best arm",
+      "secondary_metrics": [
+        "MILU-Indic",
+        "FLORES en->hi chrF++",
+        "BFCL AST accuracy (format-level, the part that moves at 1B)",
+        "RULER@8k",
+        "GSM8K 8-shot",
+        "ARC-e",
+        "HumanEval pass@10"
+      ],
+      "confirms_if": "the V5-proposed arm has the best W with non-overlapping bootstrap CIs (n>=500 per set) against the composer default, AND no individual lane is more than 2% relative worse than that lane's best arm",
+      "refutes_if": "the naive web-heavy arm is within CI of V5-proposed on W. RegMix's finding that web correlates best with downstream performance makes this a live outcome, not a formality. If it happens, the mixture's complexity is not paying for itself and we revert to a simpler high-web mixture with only the protected floors retained.",
+      "floor_test": "Floor-off vs V5-proposed: measure the *realized* lane shares after selection. If floor-off lands within 1 point of floor-on for Indic and agentic, the floor is unnecessary and we drop it. If floor-off collapses those lanes (the predicted outcome), the floor's level is set to the smallest value that keeps realized share within 1 point of scheduled share."
+    },
+    "stage_2": {
+      "scale": "3B params x 60B tokens, top 3 arms",
+      "purpose": "check that the stage-1 ordering survives a 3x parameter and 2x token step; RegMix reports that mixture effects do transcend scaling laws, but ordering is what we need to hold, not magnitudes",
+      "additional_test": "run the curriculum itself, not just the average mixture: stage-ordered vs flat-mixture at identical integrated shares. If stage-ordering shows no gain at 3B, the curriculum is dropped and only the anneal is kept."
+    },
+    "cost": {
+      "stage_1_flops": 1.44e+21,
+      "stage_2_flops": 3.24e+21,
+      "main_run_flops": 7.2e+23,
+      "fraction_of_main_run_pct": 0.65,
+      "wall_clock": "~2.2 days on 64 H100s at 40% MFU"
+    },
+    "local_proxy_actually_run": {
+      "what": "A reduced RegMix-style ablation on real cleaned data from all seven lanes, run on CPU in this repo. RegMix itself fits its regression on 512 models of 1M params x 1B tokens; ours is smaller still.",
+      "honest_scope": "This is a rank-order instrument for lane interference and a demonstration that the pipeline runs end to end. It cannot confirm the mixture - it is 3 orders of magnitude below the 1B protocol. It CAN refute 'the mixture does not matter', and it does.",
+      "results": "results/proxy_report.md"
+    }
+  },
+  "risks": [
+    {
+      "risk": "Agentic synthesis under-delivers",
+      "trigger": "<7B verified synthetic tokens at D-30",
+      "action": "main-run agentic share falls to 0.7%; the anneal's 10% is protected, because the cooldown is where those tokens pay"
+    },
+    {
+      "risk": "Verified Indic collection under-delivers",
+      "trigger": "<70B verified tokens at D-30",
+      "action": "Tier A share drops from 28% to 22% and Tier B absorbs it; Tier C/D are NOT raised, because translationese is the failure mode we are protecting against"
+    },
+    {
+      "risk": "Mixture transition destabilises the run",
+      "trigger": "gradient-norm rises >3x over a 2B-token window",
+      "action": "roll back to the previous blend and re-enter over a 16B-token warm-up; V4 saw ~150x when a Hindi step-change met frozen embeddings"
+    },
+    {
+      "risk": "Selector starves a protected lane anyway (floor implemented as a soft weight)",
+      "trigger": "realized lane share < scheduled share - 1pt over any 10B-token window",
+      "action": "hard-reserve the floor at the dataloader, not in the sampler"
+    },
+    {
+      "risk": "Reserve leaks into the main run",
+      "trigger": "any reserve-tagged shard appears in a main-run manifest",
+      "action": "treat as a data incident: the shard is burned, not re-quarantined, because its value was in being unseen"
+    },
+    {
+      "risk": "Long/ultra reasoning traces (L3/L4) cannot be collected",
+      "trigger": "measured now: 0 of 20,753 cleaned open traces reach L3",
+      "action": "distil L3/L4 from a teacher at increasing effort on answer-verifiable problems, keep only answer-checked traces, and gate the band split on delivery (28% -> 18% L3+L4 if short)"
+    }
+  ]
+}

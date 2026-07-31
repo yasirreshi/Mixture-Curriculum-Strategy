@@ -1,0 +1,12 @@
+data/
+__pycache__/
+*.pyc
+.venv/
+*.zip
+*.tar
+
+# course session material, not part of this submission
+*.pptx
+*.pdf
+*.png
+*.mp4

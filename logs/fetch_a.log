@@ -1,0 +1,45 @@
+
+=== fetching lane: agentic
+  [prov] agentic        gorilla-openfunctions-v1              27.37 MB   12,126 docs
+  [prov] agentic        apibench-huggingface                  22.24 MB    8,192 docs
+  [prov] agentic        apibench-tensorflow                   12.83 MB    6,191 docs
+  [prov] agentic        apibench-torchhub                      1.77 MB      838 docs
+  [prov] agentic        bfcl-v4-live-multiple                  3.89 MB    1,053 docs
+  [prov] agentic        bfcl-v4-multi-turn                     0.39 MB      201 docs
+  [prov] agentic        bfcl-v4-parallel                       0.35 MB      200 docs
+  (11s)
+
+=== fetching lane: reasoning
+  fetching PRM800K slice (~140 MB of 456 MB)
+       1.0/140 MB       2.1/140 MB       3.1/140 MB       4.2/140 MB       5.2/140 MB       6.3/140 MB       7.3/140 MB       8.4/140 MB       9.4/140 MB      10.5/140 MB      11.5/140 MB      12.6/140 MB      13.6/140 MB      14.7/140 MB      15.7/140 MB      16.8/140 MB      17.8/140 MB      18.9/140 MB      19.9/140 MB      21.0/140 MB      22.0/140 MB      23.1/140 MB      24.1/140 MB      25.2/140 MB      26.2/140 MB      27.3/140 MB      28.3/140 MB      29.4/140 MB      30.4/140 MB      31.5/140 MB      32.5/140 MB      33.6/140 MB      34.6/140 MB      35.7/140 MB      36.7/140 MB      37.7/140 MB      38.8/140 MB      39.8/140 MB      40.9/140 MB      41.9/140 MB      43.0/140 MB      44.0/140 MB      45.1/140 MB      46.1/140 MB      47.2/140 MB      48.2/140 MB      49.3/140 MB      50.3/140 MB      51.4/140 MB      52.4/140 MB      53.5/140 MB      54.5/140 MB      55.6/140 MB      56.6/140 MB      57.7/140 MB      58.7/140 MB      59.8/140 MB      60.8/140 MB      61.9/140 MB      62.9/140 MB      64.0/140 MB      65.0/140 MB      66.1/140 MB      67.1/140 MB      68.2/140 MB      69.2/140 MB      70.3/140 MB      71.3/140 MB      72.4/140 MB      73.4/140 MB      74.4/140 MB      75.5/140 MB      76.5/140 MB      77.6/140 MB      78.6/140 MB      79.7/140 MB      80.7/140 MB      81.8/140 MB      82.8/140 MB      83.9/140 MB      84.9/140 MB      86.0/140 MB      87.0/140 MB      88.1/140 MB      89.1/140 MB      90.2/140 MB      91.2/140 MB      92.3/140 MB      93.3/140 MB      94.4/140 MB      95.4/140 MB      96.5/140 MB      97.5/140 MB      98.6/140 MB      99.6/140 MB     100.7/140 MB     101.7/140 MB     102.8/140 MB     103.8/140 MB     104.9/140 MB     105.9/140 MB     107.0/140 MB     108.0/140 MB     109.1/140 MB     110.1/140 MB     111.1/140 MB     112.2/140 MB     113.2/140 MB     114.3/140 MB     115.3/140 MB     116.4/140 MB     117.4/140 MB     118.5/140 MB     119.5/140 MB     120.6/140 MB     121.6/140 MB     122.7/140 MB     123.7/140 MB     124.8/140 MB     125.8/140 MB     126.9/140 MB     127.9/140 MB     129.0/140 MB     130.0/140 MB     131.1/140 MB     132.1/140 MB     133.2/140 MB     134.2/140 MB     135.3/140 MB     136.3/140 MB     137.4/140 MB     138.4/140 MB     139.5/140 MB     140.5/140 MB
+  [prov] reasoning      prm800k-phase2                       140.50 MB   26,551 docs
+  [prov] reasoning      gsm8k-train                            4.17 MB    7,473 docs
+  [prov] reasoning      gsm8k-train_socratic                   5.40 MB    7,473 docs
+  (14s)
+
+=== fetching lane: code
+    psf/requests                    32 files
+    pallets/flask                   64 files
+    pallets/click                   63 files
+    tiangolo/fastapi               731 files
+    psf/black                      242 files
+    numpy/numpy                    826 files
+    scikit-learn/scikit-learn      878 files
+    karpathy/nanoGPT                11 files
+    expressjs/express              127 files
+    lodash/lodash                   46 files
+    gin-gonic/gin                   95 files
+    spf13/cobra                     36 files
+    BurntSushi/ripgrep             102 files
+    sharkdp/fd                      25 files
+    redis/redis                    825 files
+    sqlite/sqlite                  461 files
+  [prov] code           github-permissive-16-repos            65.51 MB    4,564 docs
+  (16s)
+
+=== fetching lane: long_context
+    books: 1    books: 2    books: 3    books: 4    books: 5    books: 6    books: 7    books: 8    books: 9    books: 10    books: 11    books: 12    books: 13    books: 14    books: 15    books: 16    books: 17    books: 18    books: 19    books: 20    books: 21    books: 22    books: 23    books: 24    books: 25    books: 26    books: 27    books: 28    books: 29    books: 30    books: 31    books: 32    books: 33    books: 34    books: 35    books: 36    books: 37    books: 38    books: 39    books: 40    books: 41    books: 42    books: 43    books: 44    books: 45    books: 46    books: 47    books: 48    books: 49    books: 50    books: 51    books: 52    books: 53    books: 54    books: 55    books: 56    books: 57    books: 58    books: 59    books: 60    books: 61    books: 62    books: 63    books: 64    books: 65    books: 66    books: 67    books: 68    books: 69    books: 70    books: 71    books: 72    books: 73    books: 74    books: 75    books: 76    books: 77    books: 78    books: 79    books: 80    books: 81    books: 82    books: 83    books: 84    books: 85    books: 86    books: 87    books: 88    books: 89    books: 90    books: 91    books: 92    books: 93    books: 94    books: 95    books: 96    books: 97    books: 98    books: 99    books: 100    books: 101    books: 102    books: 103    books: 104    books: 105    books: 106    books: 107    books: 108    books: 109    books: 110    books: 111    books: 112    books: 113
+  [prov] long_context   project-gutenberg                    101.08 MB      113 docs
+  (344s)
+
+provenance -> D:\Educational\ERA_v5\S5\data\raw\provenance.jsonl

@@ -1,0 +1,14 @@
+[1a_prm800k] kept=6495  dropped_unusable_or_bad_step=20056
+[1_extract] docs=62217
+[2_normalize] docs=62217  indic_joiners_preserved=8836  control_chars_stripped=640
+[3_language_id] docs=62217  script_mismatches=165  note=documents whose declared language did not survive a runtime script check
+[4_quality_filter] docs_in=62217  docs_out=61820  survival_pct=99.36
+[5_dedup] docs_in=61820  exact_removed=1092  near_removed=777  docs_out=59951  method=sha256 + 5-word shingles / 64-perm MinHash LSH @0.8
+[6_pii_scrub] note=code lane exempt from IPv4 rule; S4 found this regex layer has real false positives (a UDISE code read as a phone number)
+[7_decontaminate] docs_in=59951  benchmark_overlap_removed=10  industry_canary_hits=0  heldout_probes=1319  method=10-word shingle overlap + BIG-bench canary GUID
+  readability quantile cut-offs per script group: {'as': [12.95, 13.65, 15.17], 'latin': [12.57, 14.45, 16.36], 'bn': [13.0, 13.73, 14.76], 'gu': [12.43, 13.5, 14.65], 'hi': [12.35, 13.33, 14.64], 'kn': [13.92, 14.66, 15.6], 'ml': [15.38, 16.37, 17.36], 'mr': [12.82, 13.44, 14.59], 'or': [12.62, 13.51, 14.64], 'pa': [12.26, 13.16, 14.9], 'ta': [14.3, 15.6, 17.15], 'te': [13.5, 14.29, 15.69], 'ur': [13.01, 14.85, 20.54]}
+  tokenising 20,000/59,941 (107s)  tokenising 40,000/59,941 (113s)
+[8_band_and_manifest] docs=59941  total_tokens=81042167  reserve_tokens=46716477  shards=12
+
+wrote D:\Educational\ERA_v5\S5\stats\s5_pipeline_stats.json  (316.5s)
+S5 clean tokens: 81,042,167

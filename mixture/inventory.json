@@ -1,0 +1,111 @@
+{
+  "_about": "Supply side of the V5 mixture. Token figures are UNIQUE post-clean tokens available to the run. Every number carries an evidence tag: [course] = the Session-5 Dataset Inventory widget's running total for that lane; [paper] = stated in the cited paper/dataset card; [estimate] = our derivation, with the method given in `basis`; [measured] = counted by our own pipeline in this repo. Where [course] and a per-dataset breakdown disagree, the lane total is the [course] figure and the breakdown is illustrative of what fills it.",
+  "unit": "tokens",
+  "lanes": {
+    "code": {
+      "lane_total_tokens": 1.10e12,
+      "lane_total_evidence": "[course] supply 1.1T at the lane level",
+      "datasets": [
+        {"name": "The Stack v2 (dedup, permissive subset)", "samples": 6.0e8, "tokens": 9.0e11, "license": "permissive-filtered", "tier": "B", "evidence": "[course] 600M files / ~900B tokens; StarCoder2 paper (arXiv:2402.19173) reports Stack v2 is 4x Stack v1 across 619 languages"},
+        {"name": "GitHub pull requests + issues (StarCoder2 extras)", "samples": 3.0e7, "tokens": 8.0e10, "license": "permissive-filtered", "tier": "B", "evidence": "[paper] StarCoder2 lists PRs, Kaggle/Jupyter notebooks and code documentation as additional high-quality sources"},
+        {"name": "Kaggle / Jupyter notebooks + code documentation", "samples": 1.0e7, "tokens": 6.0e10, "license": "permissive-filtered", "tier": "B", "evidence": "[paper] StarCoder2"},
+        {"name": "Commit diffs / CommitPack-style edit pairs", "samples": 5.0e7, "tokens": 4.0e10, "license": "permissive-filtered", "tier": "A", "evidence": "[estimate] diff corpora are the training shape that matches Aider Polyglot's diff-edit metric"},
+        {"name": "S5 local pull: 16 permissive repos (this repo)", "samples": null, "tokens": null, "license": "MIT/Apache-2.0/BSD-3/PD", "tier": "A", "evidence": "[measured] see results/cleaning_report.md"}
+      ]
+    },
+    "general_web": {
+      "lane_total_tokens": 4.50e12,
+      "lane_total_evidence": "[course] supply 4.5T (deck text says ~4.8T available)",
+      "datasets": [
+        {"name": "DCLM-baseline", "samples": null, "tokens": 2.6e12, "license": "CC-BY-4.0 / CommonCrawl ToU", "tier": "B", "evidence": "[paper] arXiv:2406.11794 - 7B trained on 2.6T DCLM-baseline tokens reaches 64% MMLU"},
+        {"name": "FineWeb-Edu", "samples": null, "tokens": 1.3e12, "license": "ODC-By", "tier": "B", "evidence": "[paper] arXiv:2406.17557 - 1.3T educational subset of the 15T FineWeb"},
+        {"name": "Curated reference (Wikipedia 320+ langs, public-domain books)", "samples": null, "tokens": 6.0e11, "license": "CC BY-SA / PD", "tier": "A", "evidence": "[estimate]"}
+      ]
+    },
+    "indic": {
+      "lane_total_tokens": 2.76e11,
+      "lane_total_evidence": "[course] supply 276B across all provenance tiers",
+      "tier_supply": {
+        "A_verified_native": {"tokens": 6.0e10, "evidence": "[estimate] the manually-verified share of Sangraha plus Indic Wikipedia, government/judicial/NCERT text and licensed news. Sangraha's 251B total is [paper] (arXiv:2403.06350) and is explicitly a blend of 'highly curated manually verified data, unverified yet valuable data, and synthetic data'; the verified share is the smallest of the three and we hold it to ~24% of the lane until a per-split count is confirmed."},
+        "B_unverified_crawl": {"tokens": 1.35e11, "evidence": "[estimate] Sangraha unverified/romanised + IndicCorp v2 (20.9B [paper]) + Varta + regional crawl that passes our S4 filters but has no native-speaker sign-off"},
+        "C_translated_transliterated": {"tokens": 4.5e10, "evidence": "[estimate] BPCC/Samanantar parallel corpora plus machine-translated English source; this tier is elastic - it can be manufactured from English supply at translation cost"},
+        "D_synthetic": {"tokens": 3.6e10, "evidence": "[estimate] Sangraha synthetic + IndicLLMSuite's Wikipedia/WikiHow-grounded generations (74.8M instruction-response pairs [paper]); also elastic"}
+      },
+      "datasets": [
+        {"name": "Sangraha (IndicLLMSuite)", "samples": null, "tokens": 2.51e11, "license": "permissive", "tier": "A/B/D mixed", "evidence": "[paper] arXiv:2403.06350 - 22 languages, 251B tokens, 74.8M instruction-response pairs"},
+        {"name": "IndicCorp v2", "samples": null, "tokens": 2.09e10, "license": "permissive", "tier": "B", "evidence": "[paper] AI4Bharat IndicCorp v2, 20.9B tokens / 24 languages"},
+        {"name": "sarvamai/samvaad-hi-v1 (cleaned in S4)", "samples": 100346, "tokens": 6.308e7, "license": "Apache-2.0", "tier": "B", "evidence": "[measured] S4 pipeline: 63.35M raw -> 63.08M clean, 55.5% hi / 27.8% code-switched"},
+        {"name": "S5 local pull: Indic Wikipedia, 12 languages (this repo)", "samples": null, "tokens": null, "license": "CC BY-SA 4.0", "tier": "A", "evidence": "[measured] see results/cleaning_report.md"}
+      ]
+    },
+    "stem_math": {
+      "lane_total_tokens": 2.50e11,
+      "lane_total_evidence": "[course] supply 250B",
+      "datasets": [
+        {"name": "Nemotron-CC-Math / math-filtered web", "samples": null, "tokens": 1.3e11, "license": "permissive", "tier": "B", "evidence": "[estimate]"},
+        {"name": "proof-pile-2 / AlgebraicStack / OpenWebMath", "samples": null, "tokens": 5.5e10, "license": "permissive", "tier": "A", "evidence": "[estimate] OpenWebMath is 14.7B [paper]; proof-pile-2 aggregates it with arXiv math and code"},
+        {"name": "arXiv full text (math/physics/cs)", "samples": 2.4e6, "tokens": 3.0e10, "license": "arXiv distribution terms", "tier": "A", "evidence": "[estimate]"},
+        {"name": "FineMath (4+ quality bucket)", "samples": null, "tokens": 3.4e10, "license": "ODC-By", "tier": "A", "evidence": "[estimate]"},
+        {"name": "S5 local pull: arXiv abstracts, 9 categories (this repo)", "samples": null, "tokens": null, "license": "arXiv terms", "tier": "A", "evidence": "[measured]"}
+      ]
+    },
+    "reasoning": {
+      "lane_total_tokens": 8.5e10,
+      "lane_total_evidence": "[course] supply 85B - 'needs repetition'",
+      "datasets": [
+        {"name": "OpenThoughts-3 / OpenR1-Math / OpenMathReasoning", "samples": 6.0e6, "tokens": 4.0e10, "license": "permissive", "tier": "A", "evidence": "[estimate] long distilled chains at ~6-8k tokens/sample"},
+        {"name": "Nemotron post-training reasoning splits", "samples": 3.0e7, "tokens": 3.0e10, "license": "permissive", "tier": "A", "evidence": "[estimate]"},
+        {"name": "NuminaMath 1.5 / MetaMathQA / worked-solution corpora", "samples": 2.0e6, "tokens": 8.0e9, "license": "permissive", "tier": "B", "evidence": "[estimate] short and medium traces"},
+        {"name": "PRM800K phase-2 (step-level labelled CoT)", "samples": 8.0e5, "tokens": 1.0e9, "license": "MIT", "tier": "A", "evidence": "[paper] 800k step-level labels over MATH solutions; [measured] 140MB slice cleaned in this repo"},
+        {"name": "GSM8K train + socratic", "samples": 1.5e4, "tokens": 3.0e6, "license": "MIT", "tier": "A", "evidence": "[measured] cleaned in this repo - the L1/L2 band anchor"}
+      ]
+    },
+    "long_context": {
+      "lane_total_tokens": 1.00e11,
+      "lane_total_evidence": "[course] supply 100B - 'needs repetition'",
+      "datasets": [
+        {"name": "Repo-level packs (whole repository in one sequence)", "samples": 2.0e6, "tokens": 4.0e10, "license": "permissive-filtered", "tier": "A", "evidence": "[estimate] built by us from the code lane; this is the long-context data that actually matches SWE-bench's context shape"},
+        {"name": "Books (public domain + licensed)", "samples": 3.0e5, "tokens": 2.5e10, "license": "PD / licensed", "tier": "A", "evidence": "[estimate]"},
+        {"name": "arXiv / court judgments / gazettes / long gov reports", "samples": 5.0e6, "tokens": 2.5e10, "license": "mixed", "tier": "A", "evidence": "[estimate] Indian judgments and gazettes double as Indic + long-context supply"},
+        {"name": "Multi-doc synthetic long-context (needle/aggregation tasks)", "samples": null, "tokens": 1.0e10, "license": "generated", "tier": "D", "evidence": "[estimate]"},
+        {"name": "S5 local pull: Project Gutenberg full books (this repo)", "samples": null, "tokens": null, "license": "PD", "tier": "A", "evidence": "[measured]"}
+      ]
+    },
+    "agentic": {
+      "lane_total_tokens": 6.3e8,
+      "lane_total_evidence": "[course] supply 0.63B - 'must synthesize'. This is the binding constraint of the entire mixture.",
+      "datasets": [
+        {"name": "ToolBench / ToolLLM", "samples": 1.2e5, "tokens": 8.0e7, "license": "Apache-2.0", "tier": "B", "evidence": "[course] 120k samples / 80M tokens; [paper] arXiv:2307.16789 - 16,464 real REST APIs, 49 categories, DFS-searched solution paths"},
+        {"name": "xLAM function-calling corpus", "samples": 6.0e4, "tokens": 6.0e7, "license": "CC-BY-NC / mixed", "tier": "B", "evidence": "[paper] arXiv:2409.03215 - unified/augmented/synthesised agent data; licence needs a per-split check before use"},
+        {"name": "Gorilla APIBench + OpenFunctions + BFCL", "samples": 2.0e5, "tokens": 9.0e7, "license": "Apache-2.0", "tier": "A", "evidence": "[measured] cleaned in this repo - see results/cleaning_report.md"},
+        {"name": "SWE-Gym / SWE-smith style repo-task trajectories", "samples": 5.0e4, "tokens": 2.0e8, "license": "permissive-filtered", "tier": "A", "evidence": "[estimate] ~4k tokens/trajectory; the only public data whose shape matches SWE-bench Verified"},
+        {"name": "Terminal / OS / web-agent traces (OSWorld, WorkArena-style)", "samples": 3.0e4, "tokens": 2.0e8, "license": "mixed", "tier": "A", "evidence": "[estimate]"}
+      ]
+    }
+  },
+  "synthesis_capacity": {
+    "_about": "What we can manufacture, and at what rate. A share that exceeds 4 epochs of unique supply is only legitimate if it is covered here.",
+    "agentic_verified_trajectories": {
+      "tokens_per_run_window": 1.0e10,
+      "basis": "Costed per environment family rather than as a single round number, because the binding resource is verified environments, not generation FLOPs. Repo-level tasks from permissive GitHub repos that have CI: 300k verified trajectories x 9k tokens = 2.7B. Terminal/shell tasks in a sandbox: 250k x 4k = 1.0B. API tool-calls against mock REST services generated from OpenAPI specs: 600k x 3k = 1.8B. Browse tasks against a cached web snapshot: 150k x 12k = 1.8B. Multi-turn policy/user-simulation (tau-bench shape, including Hindi and Hinglish user sims): 400k x 6k = 2.4B. Total 9.7B, rounded to 10B. Every trajectory is kept only if the environment confirms the outcome the trace claims.",
+      "gate": "If the programme delivers < 7B verified tokens by the D-30 checkpoint, the agentic pretraining share drops from 0.96% to 0.7% and the anneal's 10B is protected first. The epoch cap is the invariant; the share is not."
+    },
+    "indic_translated": {
+      "tokens_per_run_window": 8.0e10,
+      "basis": "Machine translation of the FineWeb-Edu / textbook / STEM slice into 12 Indic languages with an IndicTrans2-class system, plus BPCC/Samanantar parallel data. Elastic: bounded by translation throughput and by a chrF++/COMET quality gate, not by source scarcity."
+    },
+    "indic_synthetic": {
+      "tokens_per_run_window": 6.0e10,
+      "basis": "Wikipedia/WikiHow-grounded generation in-language, following the IndicLLMSuite recipe (74.8M instruction-response pairs [paper]) extended to document-length text. Held to <=18% of the Indic lane because synthetic Indic text inherits the teacher's register and flattens dialect variety."
+    },
+    "reasoning_long_traces_L3_L4": {
+      "tokens_per_run_window": 2.5e10,
+      "basis": "MEASURED GAP: cleaning 140MB of PRM800K plus all of GSM8K produced 20,753 usable traces and not one of them lands in band L3 (>=1024 reasoning tokens) - the open, reachable corpus is entirely L1/L2. The long and ultra bands therefore have to be distilled: sample a strong teacher at increasing effort settings on problems whose answers are independently verifiable, keep only traces whose final answer checks out, and keep the failed branches that were later corrected (they are what teaches self-correction). ~3M traces x ~8k tokens = 24B.",
+      "gate": "If the distillation programme delivers < 15B verified L3/L4 tokens, the L3+L4 share of the reasoning lane drops from 28% to 18% and the difference goes to L2 - a shallower model is better than one trained on unverified long traces."
+    },
+    "long_context_packs": {
+      "tokens_per_run_window": 4.0e10,
+      "basis": "Repo-level and multi-document packing is re-composition of tokens we already own, so it is cheap - but packed tokens are NOT new unique tokens and are counted against their source lane's epoch budget."
+    }
+  }
+}

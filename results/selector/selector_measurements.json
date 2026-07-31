@@ -1,0 +1,108 @@
+{
+  "keep_fraction": 0.4,
+  "prefix_tokens": 500,
+  "proxy_mix": {
+    "general_web": 0.45,
+    "code": 0.4,
+    "stem_math": 0.15
+  },
+  "scheduled_share_pct": {
+    "code": 24.0,
+    "general_web": 31.0,
+    "indic": 17.9,
+    "stem_math": 11.5,
+    "reasoning": 7.0,
+    "long_context": 7.6,
+    "agentic": 1.0
+  },
+  "modes": {
+    "prefix_500": {
+      "mean_cosine": {
+        "code": 0.12507953534036356,
+        "general_web": 0.17789701263601257,
+        "indic": 0.006173278212500864,
+        "stem_math": 0.12480428465026369,
+        "reasoning": 0.07263790498302265,
+        "long_context": 0.0049845015987734975,
+        "agentic": 0.05863511546461811
+      },
+      "retention_pct": {
+        "code": 68.88888888888889,
+        "general_web": 93.33333333333333,
+        "indic": 0.0,
+        "stem_math": 81.11111111111111,
+        "reasoning": 22.22222222222222,
+        "long_context": 0.0,
+        "agentic": 14.444444444444445
+      },
+      "n_candidates_per_lane": 90,
+      "realized_share_pct": {
+        "code": 29.265414495033923,
+        "general_web": 51.21447536630937,
+        "indic": 0.0,
+        "stem_math": 16.510964696627003,
+        "reasoning": 2.7534664175435144,
+        "long_context": 0.0,
+        "agentic": 0.25567902448618357
+      },
+      "share_delta_pt": {
+        "code": 5.265414495033923,
+        "general_web": 20.214475366309372,
+        "indic": -17.9,
+        "stem_math": 5.010964696627003,
+        "reasoning": -4.246533582456486,
+        "long_context": -7.6,
+        "agentic": -0.7443209755138165
+      },
+      "floor_required_pct": {
+        "indic": 16.9,
+        "agentic": 0.0,
+        "reasoning": 5.71
+      }
+    },
+    "full_document_window": {
+      "mean_cosine": {
+        "code": 0.17196551009996078,
+        "general_web": 0.1638453981704527,
+        "indic": 0.008442723910203592,
+        "stem_math": 0.1264245509738987,
+        "reasoning": 0.08403510772349955,
+        "long_context": 0.16873187152590688,
+        "agentic": 0.055143971909204365
+      },
+      "retention_pct": {
+        "code": 64.44444444444444,
+        "general_web": 70.0,
+        "indic": 1.1111111111111112,
+        "stem_math": 47.77777777777778,
+        "reasoning": 15.555555555555555,
+        "long_context": 77.77777777777777,
+        "agentic": 3.3333333333333335
+      },
+      "n_candidates_per_lane": 90,
+      "realized_share_pct": {
+        "code": 30.99946552645644,
+        "general_web": 43.492784607161944,
+        "indic": 0.39862818457153043,
+        "stem_math": 11.012381970425798,
+        "reasoning": 2.1824336362016745,
+        "long_context": 11.847496882237662,
+        "agentic": 0.06680919294494923
+      },
+      "share_delta_pt": {
+        "code": 6.99946552645644,
+        "general_web": 12.492784607161944,
+        "indic": -17.501371815428467,
+        "stem_math": -0.4876180295742021,
+        "reasoning": -4.817566363798326,
+        "long_context": 4.247496882237662,
+        "agentic": -0.9331908070550508
+      },
+      "floor_required_pct": {
+        "indic": 16.89,
+        "agentic": 0.0,
+        "reasoning": 5.82
+      }
+    }
+  }
+}

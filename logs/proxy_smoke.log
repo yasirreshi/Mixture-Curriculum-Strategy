@@ -1,0 +1,10 @@
+building lane streams ...
+  code           train    170,000  held-out  120,000
+  general_web    train    170,000  held-out  120,000
+  indic          train    170,000  held-out  120,000
+  stem_math      train    170,000  held-out  120,000
+  reasoning      train    170,000  held-out  120,000
+  long_context   train    170,000  held-out  120,000
+  agentic        train    170,000  held-out  120,000
+  v5_proposed            step     0/48  loss 10.423  1s  eta 47s  v5_proposed            step    25/48  loss 7.867  24s  eta 21s
+  naive_web_heavy        step     0/48  loss 10.415  1s  eta 53s

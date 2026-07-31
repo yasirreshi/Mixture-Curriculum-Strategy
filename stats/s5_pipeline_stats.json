@@ -1,0 +1,247 @@
+{
+  "stages": {
+    "1a_prm800k": {
+      "kept": 6495,
+      "dropped_unusable_or_bad_step": 20056
+    },
+    "1_extract": {
+      "docs": 62217,
+      "lanes": {
+        "indic": 2252,
+        "general_web": 289,
+        "code": 4564,
+        "stem_math": 5685,
+        "long_context": 113,
+        "reasoning": 21441,
+        "agentic": 27873
+      }
+    },
+    "2_normalize": {
+      "docs": 62217,
+      "indic_joiners_preserved": 8836,
+      "control_chars_stripped": 640
+    },
+    "3_language_id": {
+      "docs": 62217,
+      "script_mismatches": 165,
+      "note": "documents whose declared language did not survive a runtime script check",
+      "per_lang": {
+        "as": 94,
+        "mixed_or_other": 165,
+        "bn": 94,
+        "gu": 196,
+        "hi": 194,
+        "kn": 118,
+        "ml": 117,
+        "mr": 368,
+        "or": 123,
+        "pa": 172,
+        "ta": 253,
+        "te": 219,
+        "ur": 139,
+        "en": 55401,
+        "code": 4564
+      }
+    },
+    "4_quality_filter": {
+      "docs_in": 62217,
+      "docs_out": 61820,
+      "survival_pct": 99.36,
+      "rejected": {
+        "too_short": 93,
+        "mean_word_length": 22,
+        "duplicate_lines": 57,
+        "symbol_ratio": 225
+      }
+    },
+    "5_dedup": {
+      "docs_in": 61820,
+      "exact_removed": 1092,
+      "near_removed": 777,
+      "docs_out": 59951,
+      "method": "sha256 + 5-word shingles / 64-perm MinHash LSH @0.8"
+    },
+    "6_pii_scrub": {
+      "redactions": {
+        "EMAIL": 2019,
+        "PHONE_IN": 324,
+        "IPV4": 794,
+        "AADHAAR_LIKE": 11
+      },
+      "note": "code lane exempt from IPv4 rule; S4 found this regex layer has real false positives (a UDISE code read as a phone number)"
+    },
+    "7_decontaminate": {
+      "docs_in": 59951,
+      "benchmark_overlap_removed": 10,
+      "industry_canary_hits": 0,
+      "heldout_probes": 1319,
+      "method": "10-word shingle overlap + BIG-bench canary GUID"
+    },
+    "8_band_and_manifest": {
+      "docs": 59941,
+      "total_tokens": 81042167,
+      "reserve_tokens": 46716477,
+      "shards": 12,
+      "lanes": {
+        "indic": {
+          "docs": 2251,
+          "tokens": 13643684,
+          "sup_tokens": 13643684,
+          "ctx_tokens": 0,
+          "reserve_docs": 1090,
+          "reserve_tokens": 10745464,
+          "difficulty": {
+            "D1": 686,
+            "D0": 361,
+            "D2": 761,
+            "D3": 443
+          },
+          "length_band": {},
+          "seq_bucket": {
+            "64k": 44,
+            "32k": 131,
+            "8k": 383,
+            "4k": 1429,
+            "16k": 249,
+            "128k": 15
+          }
+        },
+        "general_web": {
+          "docs": 289,
+          "tokens": 3506900,
+          "sup_tokens": 3506900,
+          "ctx_tokens": 0,
+          "reserve_docs": 169,
+          "reserve_tokens": 3003960,
+          "difficulty": {
+            "D3": 70,
+            "D2": 128,
+            "D1": 77,
+            "D0": 14
+          },
+          "length_band": {},
+          "seq_bucket": {
+            "32k": 58,
+            "16k": 72,
+            "8k": 48,
+            "4k": 91,
+            "64k": 20
+          }
+        },
+        "code": {
+          "docs": 4392,
+          "tokens": 17412250,
+          "sup_tokens": 17412250,
+          "ctx_tokens": 0,
+          "reserve_docs": 1070,
+          "reserve_tokens": 5223432,
+          "difficulty": {
+            "D2": 2350,
+            "D3": 1266,
+            "D1": 776
+          },
+          "length_band": {},
+          "seq_bucket": {
+            "4k": 3297,
+            "8k": 524,
+            "16k": 344,
+            "32k": 159,
+            "64k": 67,
+            "128k": 1
+          }
+        },
+        "stem_math": {
+          "docs": 5087,
+          "tokens": 1097781,
+          "sup_tokens": 1097781,
+          "ctx_tokens": 0,
+          "reserve_docs": 0,
+          "reserve_tokens": 0,
+          "difficulty": {
+            "D3": 5087
+          },
+          "length_band": {},
+          "seq_bucket": {
+            "4k": 5087
+          }
+        },
+        "long_context": {
+          "docs": 113,
+          "tokens": 28586780,
+          "sup_tokens": 28586780,
+          "ctx_tokens": 0,
+          "reserve_docs": 93,
+          "reserve_tokens": 27667625,
+          "difficulty": {
+            "D3": 107,
+            "D2": 6
+          },
+          "length_band": {},
+          "seq_bucket": {
+            "128k": 93,
+            "64k": 15,
+            "32k": 5
+          }
+        },
+        "reasoning": {
+          "docs": 20753,
+          "tokens": 5012873,
+          "sup_tokens": 3832719,
+          "ctx_tokens": 1180154,
+          "reserve_docs": 0,
+          "reserve_tokens": 0,
+          "difficulty": {
+            "D4": 1797,
+            "D3": 2893,
+            "D2": 1160,
+            "D1": 14903
+          },
+          "length_band": {
+            "L2_medium": 3640,
+            "L1_short": 17106,
+            "L0_direct": 7
+          },
+          "seq_bucket": {
+            "4k": 20753
+          }
+        },
+        "agentic": {
+          "docs": 27056,
+          "tokens": 11781899,
+          "sup_tokens": 4529722,
+          "ctx_tokens": 7252177,
+          "reserve_docs": 189,
+          "reserve_tokens": 75996,
+          "difficulty": {
+            "D2": 24897,
+            "D3": 1964,
+            "D4": 195
+          },
+          "length_band": {},
+          "seq_bucket": {
+            "4k": 27054,
+            "8k": 2
+          }
+        }
+      },
+      "fertility_tokens_per_word": {
+        "as": 4.534,
+        "bn": 4.633,
+        "gu": 4.01,
+        "hi": 3.581,
+        "kn": 5.758,
+        "ml": 7.483,
+        "mr": 4.991,
+        "or": 4.46,
+        "pa": 3.273,
+        "ta": 5.573,
+        "te": 5.401,
+        "ur": 1.976,
+        "en": 1.81
+      }
+    }
+  },
+  "started_utc": "2026-07-31T16:04:43+00:00",
+  "finished_utc": "2026-07-31T16:09:59+00:00",
+  "wall_seconds": 316.5
+}

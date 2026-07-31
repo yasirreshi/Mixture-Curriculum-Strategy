@@ -1,0 +1,365 @@
+[
+  {
+    "shard": "agentic.jsonl",
+    "lane": "agentic",
+    "reserve": false,
+    "docs": 26867,
+    "tokens": 11705903,
+    "supervised_tokens": 4499528,
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "sources": [
+      "bfcl-v4-live-multiple",
+      "bfcl-v4-multi-turn",
+      "bfcl-v4-parallel",
+      "gorilla-apibench-huggingface",
+      "gorilla-apibench-tensorflow",
+      "gorilla-openfunctions-v1"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D2": 24897,
+      "D3": 1964,
+      "D4": 6
+    },
+    "content_sha256": "afe98e6b4145c32302f77fb031d9d6bf1abbed384ec1c7ad15b3c6702614d75e",
+    "written_utc": "2026-07-31T16:09:57+00:00"
+  },
+  {
+    "shard": "agentic_RESERVE.jsonl",
+    "lane": "agentic",
+    "reserve": true,
+    "docs": 189,
+    "tokens": 75996,
+    "supervised_tokens": 30194,
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "sources": [
+      "bfcl-v4-multi-turn"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D4": 189
+    },
+    "content_sha256": "d55cc6df9835214bbf3e8ef1515af30ff47218c600abc64b366caf4f937f930a",
+    "written_utc": "2026-07-31T16:09:57+00:00"
+  },
+  {
+    "shard": "code.jsonl",
+    "lane": "code",
+    "reserve": false,
+    "docs": 3322,
+    "tokens": 12188818,
+    "supervised_tokens": 12188818,
+    "licenses": [
+      "Apache-2.0",
+      "BSD-3-Clause",
+      "MIT",
+      "Public domain"
+    ],
+    "sources": [
+      "BurntSushi/ripgrep",
+      "expressjs/express",
+      "gin-gonic/gin",
+      "karpathy/nanoGPT",
+      "lodash/lodash",
+      "numpy/numpy",
+      "pallets/click",
+      "pallets/flask",
+      "psf/black",
+      "psf/requests",
+      "redis/redis",
+      "scikit-learn/scikit-learn"
+    ],
+    "languages": [
+      "code"
+    ],
+    "difficulty": {
+      "D2": 1722,
+      "D1": 718,
+      "D3": 882
+    },
+    "content_sha256": "926fbe8a5b496d0cb755068e8a7c9fd626378ba78ea54b4999a83d1a99ef7c5d",
+    "written_utc": "2026-07-31T16:09:57+00:00"
+  },
+  {
+    "shard": "code_RESERVE.jsonl",
+    "lane": "code",
+    "reserve": true,
+    "docs": 1070,
+    "tokens": 5223432,
+    "supervised_tokens": 5223432,
+    "licenses": [
+      "Apache-2.0",
+      "BSD-3-Clause",
+      "MIT",
+      "Public domain"
+    ],
+    "sources": [
+      "expressjs/express",
+      "gin-gonic/gin",
+      "karpathy/nanoGPT",
+      "lodash/lodash",
+      "numpy/numpy",
+      "pallets/click",
+      "pallets/flask",
+      "psf/black",
+      "psf/requests",
+      "redis/redis",
+      "scikit-learn/scikit-learn",
+      "sqlite/sqlite"
+    ],
+    "languages": [
+      "code"
+    ],
+    "difficulty": {
+      "D2": 628,
+      "D3": 384,
+      "D1": 58
+    },
+    "content_sha256": "d0f633a15afc9845fbebb6c217d3d32bfe1710ce95da64a448368d23d2036962",
+    "written_utc": "2026-07-31T16:09:58+00:00"
+  },
+  {
+    "shard": "general_web.jsonl",
+    "lane": "general_web",
+    "reserve": false,
+    "docs": 120,
+    "tokens": 502940,
+    "supervised_tokens": 502940,
+    "licenses": [
+      "CC BY-SA 4.0"
+    ],
+    "sources": [
+      "wikipedia:en"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D1": 77,
+      "D0": 14,
+      "D2": 12,
+      "D3": 17
+    },
+    "content_sha256": "feb676e7144fb4414889c27ca343611874d440631211c17efbc83e518b856857",
+    "written_utc": "2026-07-31T16:09:58+00:00"
+  },
+  {
+    "shard": "general_web_RESERVE.jsonl",
+    "lane": "general_web",
+    "reserve": true,
+    "docs": 169,
+    "tokens": 3003960,
+    "supervised_tokens": 3003960,
+    "licenses": [
+      "CC BY-SA 4.0"
+    ],
+    "sources": [
+      "wikipedia:en"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D3": 53,
+      "D2": 116
+    },
+    "content_sha256": "45cbba2ea64e4feec5f0267db3388f94767ef931c0efb5357d514469f14173c9",
+    "written_utc": "2026-07-31T16:09:58+00:00"
+  },
+  {
+    "shard": "indic.jsonl",
+    "lane": "indic",
+    "reserve": false,
+    "docs": 1161,
+    "tokens": 2898220,
+    "supervised_tokens": 2898220,
+    "licenses": [
+      "CC BY-SA 4.0"
+    ],
+    "sources": [
+      "wikipedia:as",
+      "wikipedia:bn",
+      "wikipedia:gu",
+      "wikipedia:hi",
+      "wikipedia:kn",
+      "wikipedia:ml",
+      "wikipedia:mr",
+      "wikipedia:or",
+      "wikipedia:pa",
+      "wikipedia:ta",
+      "wikipedia:te",
+      "wikipedia:ur"
+    ],
+    "languages": [
+      "as",
+      "bn",
+      "gu",
+      "hi",
+      "kn",
+      "mixed_or_other",
+      "ml",
+      "mr",
+      "or",
+      "pa",
+      "ta",
+      "te",
+      "ur"
+    ],
+    "difficulty": {
+      "D0": 361,
+      "D3": 227,
+      "D1": 285,
+      "D2": 288
+    },
+    "content_sha256": "f888c8e4750baa2931beff4338db741e8acafc6c477bb4829940b3405f81e3ec",
+    "written_utc": "2026-07-31T16:09:58+00:00"
+  },
+  {
+    "shard": "indic_RESERVE.jsonl",
+    "lane": "indic",
+    "reserve": true,
+    "docs": 1090,
+    "tokens": 10745464,
+    "supervised_tokens": 10745464,
+    "licenses": [
+      "CC BY-SA 4.0"
+    ],
+    "sources": [
+      "wikipedia:as",
+      "wikipedia:bn",
+      "wikipedia:gu",
+      "wikipedia:hi",
+      "wikipedia:kn",
+      "wikipedia:ml",
+      "wikipedia:mr",
+      "wikipedia:or",
+      "wikipedia:pa",
+      "wikipedia:ta",
+      "wikipedia:te",
+      "wikipedia:ur"
+    ],
+    "languages": [
+      "as",
+      "bn",
+      "gu",
+      "hi",
+      "kn",
+      "ml",
+      "mr",
+      "or",
+      "pa",
+      "ta",
+      "te",
+      "ur"
+    ],
+    "difficulty": {
+      "D1": 401,
+      "D2": 473,
+      "D3": 216
+    },
+    "content_sha256": "965642a751f72cabbcb0e914aacd3ab97adf8787bea9909ca39e365a0e40673f",
+    "written_utc": "2026-07-31T16:09:58+00:00"
+  },
+  {
+    "shard": "long_context.jsonl",
+    "lane": "long_context",
+    "reserve": false,
+    "docs": 20,
+    "tokens": 919155,
+    "supervised_tokens": 919155,
+    "licenses": [
+      "Public domain"
+    ],
+    "sources": [
+      "project-gutenberg"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D3": 14,
+      "D2": 6
+    },
+    "content_sha256": "ffa3f1b31069f9e589f533266ee1d2fd8ea252b524aac1bc27154192e60523e9",
+    "written_utc": "2026-07-31T16:09:58+00:00"
+  },
+  {
+    "shard": "long_context_RESERVE.jsonl",
+    "lane": "long_context",
+    "reserve": true,
+    "docs": 93,
+    "tokens": 27667625,
+    "supervised_tokens": 27667625,
+    "licenses": [
+      "Public domain"
+    ],
+    "sources": [
+      "project-gutenberg"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D3": 93
+    },
+    "content_sha256": "2148de9a1ef225ce2e7c2cb0e6e9006e97ab7c066e552ff86add0c97bbeb660b",
+    "written_utc": "2026-07-31T16:09:59+00:00"
+  },
+  {
+    "shard": "reasoning.jsonl",
+    "lane": "reasoning",
+    "reserve": false,
+    "docs": 20753,
+    "tokens": 5012873,
+    "supervised_tokens": 3832719,
+    "licenses": [
+      "MIT"
+    ],
+    "sources": [
+      "gsm8k-plain",
+      "gsm8k-socratic",
+      "prm800k-phase2"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D4": 1797,
+      "D3": 2893,
+      "D2": 1160,
+      "D1": 14903
+    },
+    "content_sha256": "6a3b34d1a5bb7f4fd0d360504c2c6a25696265b482f0b25fe080a33119b17377",
+    "written_utc": "2026-07-31T16:09:59+00:00"
+  },
+  {
+    "shard": "stem_math.jsonl",
+    "lane": "stem_math",
+    "reserve": false,
+    "docs": 5087,
+    "tokens": 1097781,
+    "supervised_tokens": 1097781,
+    "licenses": [
+      "arXiv terms"
+    ],
+    "sources": [
+      "arxiv"
+    ],
+    "languages": [
+      "en"
+    ],
+    "difficulty": {
+      "D3": 5087
+    },
+    "content_sha256": "4528c714b6f07da016a8f5ca656be15f6cc3234026f4a3e45f1e1fd46f6913fa",
+    "written_utc": "2026-07-31T16:09:59+00:00"
+  }
+]
