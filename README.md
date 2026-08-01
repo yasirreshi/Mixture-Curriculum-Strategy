@@ -16,6 +16,7 @@ mixture placed **4th of 6** and then **last of 4**.
 | Budget | **3.0T tokens** = 2.9T main run + **100B anneal reserve** |
 | Hard rule | **≤ 4 epochs on any lane** ([arXiv:2305.16264](https://arxiv.org/abs/2305.16264)) |
 | Protected floor | **90% of the scheduled share** of Indic + agentic + reasoning — **23.3%** of every batch, set from measured selector retention (§5) |
+| Walkthrough | [`walkthrough.html`](walkthrough.html) — the ten activities in order, and the six numbers measurements forced to change |
 | Cleaned this session | **81.0M tokens**, 13 shards, 30 licensed sources — **144.5M cumulative** with S4 |
 
 **The three numbers a reviewer should attack first:** the agentic lane is 0.96% and 94% synthetic

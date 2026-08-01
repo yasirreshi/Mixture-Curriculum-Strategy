@@ -1,0 +1,648 @@
+<title>How the V5 mixture was arrived at — a decision log</title>
+<style>
+:root{
+  --paper:#EDF0F3; --surface:#FFFFFF; --sunk:#E3E8EC;
+  --ink:#101922; --muted:#5C6C7C; --rule:#D3DBE2;
+  --signal:#0B6E7F; --signal-soft:#0B6E7F1A;
+  --overturn:#A8451E; --overturn-soft:#A8451E14;
+  --hold:#3D6B3A; --hold-soft:#3D6B3A14;
+  --shadow:0 1px 2px #10192209, 0 8px 24px #1019220a;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0D1418; --surface:#141C22; --sunk:#0A1014;
+    --ink:#E6ECF1; --muted:#8B9CAB; --rule:#243039;
+    --signal:#4EB4C5; --signal-soft:#4EB4C520;
+    --overturn:#DB7A50; --overturn-soft:#DB7A5018;
+    --hold:#82B172; --hold-soft:#82B17218;
+    --shadow:0 1px 2px #00000040, 0 8px 24px #00000030;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1418; --surface:#141C22; --sunk:#0A1014;
+  --ink:#E6ECF1; --muted:#8B9CAB; --rule:#243039;
+  --signal:#4EB4C5; --signal-soft:#4EB4C520;
+  --overturn:#DB7A50; --overturn-soft:#DB7A5018;
+  --hold:#82B172; --hold-soft:#82B17218;
+  --shadow:0 1px 2px #00000040, 0 8px 24px #00000030;
+}
+:root[data-theme="light"]{
+  --paper:#EDF0F3; --surface:#FFFFFF; --sunk:#E3E8EC;
+  --ink:#101922; --muted:#5C6C7C; --rule:#D3DBE2;
+  --signal:#0B6E7F; --signal-soft:#0B6E7F1A;
+  --overturn:#A8451E; --overturn-soft:#A8451E14;
+  --hold:#3D6B3A; --hold-soft:#3D6B3A14;
+  --shadow:0 1px 2px #10192209, 0 8px 24px #1019220a;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1020px; margin:0 auto; padding:0 24px 96px}
+.serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif}
+.mono,code,.num{font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  font-variant-numeric:tabular-nums}
+p{max-width:68ch}
+a{color:var(--signal); text-underline-offset:3px; text-decoration-thickness:1px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--signal); outline-offset:3px; border-radius:2px}
+
+/* ---------- masthead ---------- */
+.mast{padding:72px 0 40px; border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:11.5px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  font-weight:600; font-size:clamp(2.1rem,5.2vw,3.3rem); line-height:1.1; letter-spacing:-.015em;
+  margin:.5rem 0 .9rem; text-wrap:balance}
+.standfirst{font-size:1.14rem; color:var(--muted); max-width:60ch; margin:0}
+
+.facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); border-radius:3px; margin:36px 0 0; overflow:hidden}
+.fact{background:var(--surface); padding:14px 16px}
+.fact dt{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 5px}
+.fact dd{margin:0; font-size:1.32rem; font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.fact dd small{font-size:.72rem; color:var(--muted); letter-spacing:0}
+
+/* ---------- generic section ---------- */
+section{padding-top:60px}
+h2{font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  font-weight:600; font-size:1.75rem; letter-spacing:-.01em; margin:.4rem 0 1rem; text-wrap:balance}
+h3{font-size:1.03rem; margin:2rem 0 .5rem; letter-spacing:-.005em}
+.lede{color:var(--muted); max-width:66ch}
+
+/* ---------- the log ---------- */
+.log{margin-top:34px; display:grid; gap:0}
+.step{display:grid; grid-template-columns:52px 1fr; gap:0 22px; position:relative; padding-bottom:34px}
+.step::before{content:""; position:absolute; left:25px; top:34px; bottom:0; width:1px; background:var(--rule)}
+.step:last-child::before{display:none}
+.marker{width:52px; height:34px; display:flex; align-items:center; justify-content:center;
+  font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; font-weight:600;
+  color:var(--signal); background:var(--signal-soft); border-radius:3px; letter-spacing:.02em}
+.step-body{min-width:0}
+.step-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; min-height:34px}
+.step-title{font-family:"Iowan Old Style",Palatino,Georgia,serif; font-size:1.24rem; font-weight:600;
+  letter-spacing:-.01em}
+.tool{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; color:var(--muted);
+  background:var(--sunk); border:1px solid var(--rule); border-radius:3px; padding:2px 7px}
+.step p{margin:.6rem 0 0}
+
+/* readout: what came back */
+.readout{margin-top:14px; background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+  box-shadow:var(--shadow); overflow:hidden}
+.readout-h{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); padding:9px 14px; border-bottom:1px solid var(--rule);
+  background:var(--sunk)}
+.readout-b{padding:12px 14px}
+.kv{display:grid; grid-template-columns:1fr auto; gap:3px 18px; margin:0}
+.kv dt{color:var(--muted); font-size:.92rem; min-width:0}
+.kv dd{margin:0; font-family:ui-monospace,Menlo,Consolas,monospace; font-variant-numeric:tabular-nums;
+  font-size:.92rem; text-align:right; white-space:nowrap}
+
+/* overturn strip */
+.turn{margin-top:14px; border-left:3px solid var(--overturn); background:var(--overturn-soft);
+  padding:12px 16px; border-radius:0 4px 4px 0}
+.turn.kept{border-left-color:var(--hold); background:var(--hold-soft)}
+.turn-l{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--overturn); font-weight:600}
+.turn.kept .turn-l{color:var(--hold)}
+.turn p{margin:.35rem 0 0; font-size:.97rem}
+.was{text-decoration:line-through; text-decoration-thickness:1px; color:var(--muted)}
+.now{color:var(--overturn); font-weight:600}
+.turn.kept .now{color:var(--hold)}
+
+/* ---------- tables ---------- */
+.scroll{overflow-x:auto; margin:18px 0; border:1px solid var(--rule); border-radius:4px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.9rem; min-width:520px}
+caption{caption-side:bottom; text-align:left; color:var(--muted); font-size:.82rem; padding:10px 14px 0}
+th,td{padding:8px 14px; text-align:left; border-bottom:1px solid var(--rule)}
+thead th{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); font-weight:500; background:var(--sunk); white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right; font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-variant-numeric:tabular-nums; white-space:nowrap}
+tr.rank td{background:var(--overturn-soft)}
+tr.total td{font-weight:600; background:var(--sunk)}
+.tag{display:inline-block; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px;
+  padding:1.5px 6px; border-radius:3px; border:1px solid var(--rule); color:var(--muted); white-space:nowrap}
+.tag.warn{color:var(--overturn); border-color:var(--overturn); background:var(--overturn-soft)}
+.tag.ok{color:var(--hold); border-color:var(--hold); background:var(--hold-soft)}
+
+/* bar cell */
+.bar{display:block; height:6px; border-radius:1px; background:var(--signal); opacity:.8; min-width:2px}
+
+.note{border-top:1px solid var(--rule); margin-top:40px; padding-top:18px; color:var(--muted); font-size:.9rem}
+.note p{max-width:74ch}
+@media (max-width:620px){
+  .step{grid-template-columns:38px 1fr; gap:0 14px}
+  .step::before{left:18px}
+  .marker{width:38px}
+  body{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">ERA V5 · Session 5 · decision log</div>
+  <h1>How the V5 mixture was arrived at</h1>
+  <p class="standfirst">Not the plan — the route to it. Ten activities in the order they ran, what
+  each one returned, and the six numbers that changed because of what came back.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Budget planned</dt><dd>3.0<small>T tokens</small></dd></div>
+    <div class="fact"><dt>Cleaned S4+S5</dt><dd>144.5<small>M</small></dd></div>
+    <div class="fact"><dt>Models trained</dt><dd>11<small> arms</small></dd></div>
+    <div class="fact"><dt>CPU time</dt><dd>2.6<small> hours</small></dd></div>
+    <div class="fact"><dt>Numbers overturned</dt><dd>6</dd></div>
+  </dl>
+</header>
+
+<section>
+  <div class="eyebrow">Starting position</div>
+  <h2>Two constraints that shaped every method choice</h2>
+  <p>Neither was chosen. Both are worth stating first, because they explain why the experiments look
+  the way they do rather than the way a lab would run them.</p>
+  <p><strong>No GPU.</strong> The plan commits to 1B and 3B proxy runs; this machine has CPU-only
+  PyTorch. So the pre-registered protocol is written for the cluster, and what actually ran here is
+  the same instrument three orders of magnitude down — 11.4M-parameter models, 3.0M tokens each.
+  That gap is stated everywhere the results are used, and it is the reason the runs are treated as
+  <em>direction-finding</em> rather than confirmation.</p>
+  <p><strong>Hugging Face was unreachable from this network.</strong> Its API and CDN reset the
+  connection, so no dataset could come from there. Every source was re-routed to something reachable
+  and licence-checked: Wikimedia <span class="mono">cirrussearch</span> dumps, raw GitHub, Project
+  Gutenberg, arXiv. This turned out to matter — pulling PRM800K as a raw file rather than a
+  pre-processed dataset is what later made the L3 reconstruction possible at all.</p>
+</section>
+
+<section>
+  <div class="eyebrow">The sequence</div>
+  <h2>Ten activities, in order</h2>
+  <p class="lede">Each entry is what ran, what came back, and — where it applies — the number in the
+  plan that had to move as a result.</p>
+
+  <div class="log">
+
+    <!-- 1 -->
+    <div class="step">
+      <div class="marker">01</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Acquire the starved lanes</span>
+          <span class="tool">01_fetch_lanes.py</span>
+        </div>
+        <p>The mixture arithmetic said four lanes were starved: agentic, reasoning, long-context and
+        <em>verified-native</em> Indic. Collection went after exactly those. For Indic that meant
+        breadth, not volume — Session 4 had already delivered 63M tokens of Hindi, so this pass took
+        all twelve languages instead of more of one.</p>
+        <div class="readout">
+          <div class="readout-h">What came back</div>
+          <div class="readout-b">
+            <dl class="kv">
+              <dt>Sources, each logged with url · licence · sha256 · timestamp</dt><dd>30</dd>
+              <dt>Raw acquired</dt><dd>~370 MB</dd>
+              <dt>Indic languages (Wikimedia cirrus dumps)</dt><dd>12</dd>
+              <dt>Permissive GitHub repositories</dt><dd>16</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="step">
+      <div class="marker">02</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Clean, mask and band</span>
+          <span class="tool">02_clean_lanes.py</span>
+        </div>
+        <p>Session 4's eight stages carried forward, plus the three things Session 5 needs: a
+        <strong>per-segment loss mask</strong>, <strong>difficulty and trace-length bands</strong>, and an
+        <strong>anneal-reserve flag</strong>. The reserve is written to physically separate shards, so a
+        mis-weighted sampler cannot reach it.</p>
+        <div class="readout">
+          <div class="readout-h">What came back</div>
+          <div class="readout-b">
+            <dl class="kv">
+              <dt>Clean tokens · shards</dt><dd>81,042,167 · 13</dd>
+              <dt>Quality-filter survival</dt><dd>99.36%</dd>
+              <dt>Duplicates removed (exact + MinHash near)</dt><dd>1,092 + 777</dd>
+              <dt>Documents leaking GSM8K test verbatim</dt><dd>10</dd>
+              <dt>Declared language failing a runtime script check</dt><dd>165</dd>
+              <dt>PII redactions (email / phone / IPv4 / Aadhaar-like)</dt><dd>2,019 · 324 · 794 · 11</dd>
+              <dt>Indic joiners (ZWNJ/ZWJ) preserved</dt><dd>8,836</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="turn">
+          <div class="turn-l">Overturned #1 — how the agentic lane is sized</div>
+          <p>Of 11,781,899 agentic tokens, only <strong>4,529,722 carry loss</strong> — the rest are tool
+          schemas, user turns and observation slots the model reads but must never reproduce. The lane is
+          <span class="now">38.4% supervised</span>. Sizing it from dataset bytes overstates its learning
+          signal by <strong>2.6×</strong>, so the plan now states shares in <em>consumed</em> tokens and
+          tracks supervised tokens separately.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="step">
+      <div class="marker">03</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Solve the mixture against real supply</span>
+          <span class="tool">03_solve_mixture.py</span>
+        </div>
+        <p>Written as a test, not a report: it reads the spec plus the inventory, converts every share
+        into an epoch count, and <strong>exits non-zero</strong> if any of a dozen invariants breaks. Change
+        a number in the spec and this tells you which constraint you just violated.</p>
+        <div class="readout">
+          <div class="readout-h">Invariants enforced</div>
+          <div class="readout-b">
+            <dl class="kv">
+              <dt>Stage weights sum to 100 · schedule integrates to declared share</dt><dd>✓</dd>
+              <dt>No lane or Indic tier above 4 epochs</dt><dd>✓</dd>
+              <dt>Protected floor never breached by the stage schedule</dt><dd>✓</dd>
+              <dt>Anneal affordable from the same unique supply</dt><dd>✓</dd>
+              <dt>Trace-length schedule integrates to the lane split</dt><dd>✓</dd>
+              <dt>Proxy cost equals what the plan claims</dt><dd>0.65%</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="turn kept">
+          <div class="turn-l">Held — the 4-epoch cap did its job</div>
+          <p>The agentic lane fails at 2% and passes at 0.96%. That asymmetry — cut the share, never
+          raise the cap — is what stops the document being a wish list.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="step">
+      <div class="marker">04</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Six-arm mixture ablation</span>
+          <span class="tool">04_proxy_ablation.py</span>
+        </div>
+        <p>Six mixtures, identical seed, identical token budget, identical everything except the
+        composition. Scored on <span class="mono">W</span>, a capability-weighted held-out loss with each
+        lane normalised to the best arm on that same lane.</p>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Rank</th><th>Arm</th><th class="n">W</th><th>What it says</th></tr></thead>
+            <tbody>
+              <tr><td class="n">1</td><td class="mono">indic_heavy</td><td class="n">1.0246</td><td>Indic 30%</td></tr>
+              <tr><td class="n">2</td><td class="mono">code_heavy</td><td class="n">1.0249</td><td>+8 code, −8 web</td></tr>
+              <tr><td class="n">3</td><td class="mono">s5_composer_default</td><td class="n">1.0300</td><td>the session's preset</td></tr>
+              <tr class="rank"><td class="n">4</td><td class="mono">v5_proposed</td><td class="n">1.0379</td><td>this plan</td></tr>
+              <tr><td class="n">5</td><td class="mono">indic_lite</td><td class="n">1.0633</td><td>Indic 8%</td></tr>
+              <tr><td class="n">6</td><td class="mono">naive_web_heavy</td><td class="n">1.1981</td><td>“crawl what is cheap”</td></tr>
+            </tbody>
+          </table>
+          <caption>Lower is better. The plan placed fourth of six on its own objective.</caption>
+        </div>
+        <div class="turn kept">
+          <div class="turn-l">Held — the refutation test did not fire</div>
+          <p>The pre-registered kill condition was <em>web-heavy lands within CI of the plan</em>. It came
+          last by 16%: it buys 3.5% better web loss and pays +10.8% on code, +11.1% on Indic, +16.3% on
+          reasoning and +37% on agentic. Structure is paying for itself.</p>
+        </div>
+        <div class="turn">
+          <div class="turn-l">Overturned #2 — the experiment could not answer its own question</div>
+          <p>Three arms beat the plan. Two of them win by overspending scarce lanes — and this ablation
+          samples every lane with replacement, so <strong>a bigger share always helps and no arm ever pays
+          for repetition</strong>. Repetition is the entire basis for the agentic number, so the instrument
+          was blind to the one thing it was aimed at. That became a required correction to the 1B protocol,
+          and step 06.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="step">
+      <div class="marker">05</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Measure the selector's bias</span>
+          <span class="tool">05_selector_floor.py</span>
+        </div>
+        <p>An OPUS-shaped selector built on the cleaned corpus: a proxy gradient direction weighted
+        towards English web and code, a first-order utility score per candidate batch, top-40% retention.
+        Run twice — once scoring the <strong>first 500 tokens</strong> of a document, once scoring a window
+        from anywhere in the same documents.</p>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Lane</th><th class="n">Retained · prefix-500</th><th class="n">Retained · full doc</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>general web</td><td class="n">93.3%</td><td class="n">70.0%</td><td><span class="bar" style="width:93%"></span></td></tr>
+              <tr><td>STEM / math</td><td class="n">81.1%</td><td class="n">47.8%</td><td><span class="bar" style="width:81%"></span></td></tr>
+              <tr><td>code</td><td class="n">68.9%</td><td class="n">64.4%</td><td><span class="bar" style="width:69%"></span></td></tr>
+              <tr><td>reasoning</td><td class="n">22.2%</td><td class="n">15.6%</td><td><span class="bar" style="width:22%"></span></td></tr>
+              <tr><td>agentic</td><td class="n">14.4%</td><td class="n">3.3%</td><td><span class="bar" style="width:14%"></span></td></tr>
+              <tr class="rank"><td>long context</td><td class="n">0.0%</td><td class="n">77.8%</td><td><span class="bar" style="width:1%"></span></td></tr>
+              <tr class="rank"><td>Indic</td><td class="n">0.0%</td><td class="n">1.1%</td><td><span class="bar" style="width:1%"></span></td></tr>
+            </tbody>
+          </table>
+          <caption>Same data, same proxy, same model — the two columns differ only in where the scorer looks.</caption>
+        </div>
+        <div class="turn">
+          <div class="turn-l">Overturned #3 — the protected floor</div>
+          <p>Zero of 90 Indic candidate batches survive selection. A 12% absolute floor would have
+          delivered exactly 12% against a 17.9% schedule — a 5.9-point shortfall in <em>every batch</em>
+          across 2.9T tokens. The floor is no longer an absolute number:
+          <span class="was">Indic 12% + agentic 0.5% + long reasoning 2% = 14.5%</span> →
+          <span class="now">90% of each protected lane's scheduled share = 23.3% of every batch</span>.</p>
+        </div>
+        <div class="turn">
+          <div class="turn-l">Overturned #4 — the 500-token prefix is not a detail</div>
+          <p>Long-context candidates retain <strong>0.0%</strong> scored on a document's opening and
+          <strong>77.8%</strong> scored anywhere else in the same documents. A 78-point swing from scorer
+          placement alone. The session says this about agentic traces; it generalises to every lane whose
+          payload is not in the opening lines.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="step">
+      <div class="marker">06</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Re-run it epoch-honestly</span>
+          <span class="tool">04 --supply-scaled</span>
+        </div>
+        <p>The fix for step 04's blind spot: cap each lane's stream at its <em>real unique supply scaled
+        to the proxy budget</em>. Agentic's 10.63B becomes ~11,000 tokens, so an arm spending 2% genuinely
+        reads that pool 5.5 times. The caps reproduce the plan's real epoch counts almost exactly.</p>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Rank</th><th>Arm</th><th class="n">W</th><th>Prediction written before the run</th></tr></thead>
+            <tbody>
+              <tr><td class="n">1</td><td class="mono">v5_agentic_2pct</td><td class="n">1.0165</td><td><span class="tag warn">prediction wrong</span> should have lost</td></tr>
+              <tr><td class="n">2</td><td class="mono">code_heavy</td><td class="n">1.0226</td><td><span class="tag">half right</span> kept its edge, halved</td></tr>
+              <tr><td class="n">3</td><td class="mono">indic_heavy</td><td class="n">1.0236</td><td><span class="tag ok">confirmed</span> advantage collapsed</td></tr>
+              <tr class="rank"><td class="n">4</td><td class="mono">v5_proposed</td><td class="n">1.0243</td><td>this plan — last of four</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="turn kept">
+          <div class="turn-l">Confirmed — one artifact identified correctly</div>
+          <p><span class="mono">indic_heavy</span>'s wins over the plan on reasoning (−1.14% → +0.18%),
+          agentic (−1.88% → +0.29%) and STEM (−0.43% → +0.33%) all flip to losses once repetition is
+          charged for. Its step-04 lead was the instrument, exactly as diagnosed.</p>
+        </div>
+        <div class="turn">
+          <div class="turn-l">Overturned #5 — the agentic share, and it was the one that mattered</div>
+          <p><span class="mono">v5_agentic_2pct</span> still beats the plan on the agentic lane by
+          <strong>5.7%</strong> while repeating an 11k-token pool 5.5 times against the plan's 2.7 — and
+          takes the best W. The 4-epoch cap is a cliff in the arithmetic and a <em>slope</em> in
+          measurement. One validity objection survives: the agentic hold-out cannot separate tool use from
+          memorising the Gorilla/BFCL format. So <span class="now">0.96% is now explicitly provisional</span>,
+          the 1B protocol gains an out-of-distribution hold-out to settle it, and a written rule raises the
+          share to 2.0% <em>together with</em> the synthesis target, 10B → 17B, if it survives.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="step">
+      <div class="marker">07</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Fit share against loss</span>
+          <span class="tool">08_proxy_analysis.py</span>
+        </div>
+        <p>RegMix's actual contribution is the regression, not the small models. With a handful of arms a
+        full seven-dimensional fit is underdetermined, so this fits the one relationship each arm varies:
+        <span class="mono">nll = a + b·ln(share)</span>. The coefficient is what a lane pays for being squeezed.</p>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Lane</th><th class="n">b — nats per e-fold</th><th class="n">R²</th><th class="n">range tested</th></tr></thead>
+            <tbody>
+              <tr><td>reasoning</td><td class="n">−0.604</td><td class="n">0.98</td><td class="n">2.0 – 7.0%</td></tr>
+              <tr><td>code</td><td class="n">−0.543</td><td class="n">0.98</td><td class="n">8.0 – 32.0%</td></tr>
+              <tr><td>agentic</td><td class="n">−0.467</td><td class="n">0.78</td><td class="n">1.0 – 2.0%</td></tr>
+              <tr><td>Indic</td><td class="n">−0.429</td><td class="n">1.00</td><td class="n">6.0 – 30.0%</td></tr>
+              <tr><td>STEM / math</td><td class="n">−0.341</td><td class="n">0.99</td><td class="n">4.0 – 12.0%</td></tr>
+              <tr class="rank"><td>general web</td><td class="n">−0.214</td><td class="n">0.97</td><td class="n">23.0 – 78.0%</td></tr>
+              <tr><td>long context</td><td class="n">−0.056</td><td class="n">0.82</td><td class="n">2.0 – 7.6%</td></tr>
+            </tbody>
+          </table>
+          <caption>More negative = steeper curve = more expensive to cut.</caption>
+        </div>
+        <div class="turn">
+          <div class="turn-l">Overturned #6 — the burden of proof on general web</div>
+          <p>Web is the <strong>flattest of the large lanes</strong>, the cheapest to cut in loss terms. That
+          argues against the plan's own case for holding it at 31%. Loss on web is not downstream MMLU, so
+          it is not a refutation — but §2 now carries the objection openly and web 31% is the first number
+          the 1B runs are pointed at. The long-context row (−0.056) measures the <em>instrument</em>: at
+          context 256 the model cannot express long-context ability at all, which became the second
+          protocol correction.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="step">
+      <div class="marker">08</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Build the band that does not exist</span>
+          <span class="tool">09_build_long_traces.py</span>
+        </div>
+        <p>Cleaning found the reachable open reasoning corpus tops out at 992 reasoning tokens —
+        median 132, p99 778 — so bands L3 and L4 were empty. The threshold objection was obvious and had to
+        be answered by the distribution rather than the cut-off: the mass sits an order of magnitude below
+        the boundary, so moving the line changes the count, not the conclusion.</p>
+        <p>PRM800K is not a list of solutions; it is a <em>tree search</em> over them, in which humans rated
+        <strong>60,398 completions as wrong</strong>. Step 02 discarded all of that to get clean linear traces.
+        Replaying the search in the order it happened — rejected attempt, correction marker, then the
+        continuation actually chosen — is the plan's own recipe executed rather than promised.</p>
+        <div class="readout">
+          <div class="readout-h">What came back</div>
+          <div class="readout-b">
+            <dl class="kv">
+              <dt>Real L3 traces reconstructed</dt><dd>253</dd>
+              <dt>Tokens, own <span class="mono">D_constructed</span> shard</dt><dd>328,340</dd>
+              <dt>Longest trace · rejected steps inside it</dt><dd>3,250 · 5</dd>
+              <dt>L4 after reconstruction</dt><dd>still empty</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="turn kept">
+          <div class="turn-l">Held — L4 is reported empty rather than filled</div>
+          <p>Reconstruction lifts the ceiling from 992 to 3,250, still short of 4,096. An empty row with a
+          costed acquisition plan behind it is worth more than a filled one with an invented example.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="step">
+      <div class="marker">09</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Pull a real example for every band</span>
+          <span class="tool">06_band_examples.py</span>
+        </div>
+        <p>Every rung of both ladders anchored to a document that exists in <span class="mono">data/clean/</span>,
+        with its measured token count. Difficulty and trace length are independent axes — a hard problem with
+        a short trace and an easy one with an ultra trace are not interchangeable — so both are stamped per
+        document and both are scheduled per stage.</p>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Band</th><th class="n">Docs</th><th>Anchored to</th></tr></thead>
+            <tbody>
+              <tr><td>B0 Nursery</td><td class="n">299</td><td>a Tamil Wikipedia article, structurally flat</td></tr>
+              <tr><td>B1 Grade-school</td><td class="n">16,135</td><td>GSM8K socratic, one arithmetic chain</td></tr>
+              <tr><td>B2 High-school</td><td class="n">28,020</td><td>a single-call API trajectory · a FastAPI module</td></tr>
+              <tr><td>B3 Undergraduate</td><td class="n">5,014</td><td>a tool call with 52 supervised / 342 context tokens</td></tr>
+              <tr><td>B4 Graduate</td><td class="n">3,140</td><td>a 10-step PRM800K solution · a scikit-learn estimator</td></tr>
+              <tr><td>B5 Research / PhD</td><td class="n">7,333</td><td>an arXiv abstract · BFCL multi-turn, ≥3 tool calls</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="step">
+      <div class="marker">10</div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Account the cumulative target</span>
+          <span class="tool">07_cleaning_report.py</span>
+        </div>
+        <p>The gate is 10–100M cleaned tokens per session, and the plan is only reviewed once it is met.
+        Session 4 delivered 63.08M; this session adds 81.04M collected plus 0.33M constructed.</p>
+        <div class="readout">
+          <div class="readout-h">Reserve fill — admission criteria applied to real documents</div>
+          <div class="readout-b">
+            <dl class="kv">
+              <dt>long context</dt><dd>96.8%</dd>
+              <dt>general web</dt><dd>75.5%</dd>
+              <dt>Indic</dt><dd>65.7%</dd>
+              <dt>code</dt><dd>30.0%</dd>
+              <dt>agentic</dt><dd>0.6%</dd>
+              <dt>reasoning</dt><dd>0.0%</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="turn kept">
+          <div class="turn-l">Held — and it is the clearest argument in the plan</div>
+          <p>Lanes fed by curated sources fill trivially; a public-domain book simply <em>is</em>
+          long-context reserve material. The two lanes this model exists for do not fill at all. At 0.6%,
+          a 10B agentic reserve would need ~1.55T of cleaned agentic candidates and total real supply is
+          0.63B. The reserve's hard problem is manufacturing, not selection — which is why it has to be
+          decided now rather than discovered at the end of the run.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Consolidated</div>
+  <h2>Six numbers that moved, and what moved them</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>#</th><th>What changed</th><th>From</th><th>To</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td>Agentic lane sizing</td><td>dataset bytes</td><td>consumed tokens, supervised tracked apart</td><td>38.4% supervised, 2.6× overstatement</td></tr>
+        <tr><td class="n">2</td><td>Proxy protocol</td><td>sample with replacement</td><td>per-lane unique-supply caps</td><td>arms never paid for repetition</td></tr>
+        <tr><td class="n">3</td><td>Protected floor</td><td>14.5% absolute</td><td>23.3% — 90% of scheduled share</td><td>Indic retention 0.0%</td></tr>
+        <tr><td class="n">4</td><td>Proxy protocol, again</td><td>context 256</td><td>context long enough to be measurable</td><td>long-context elasticity −0.056</td></tr>
+        <tr><td class="n">5</td><td>Agentic share status</td><td>settled at 0.96%</td><td>provisional, OOD hold-out to settle it</td><td>2% won at 5.5 epochs</td></tr>
+        <tr><td class="n">6</td><td>General web 31%</td><td>defended</td><td>defended but first in line for scrutiny</td><td>flattest large lane, −0.214</td></tr>
+      </tbody>
+    </table>
+    <caption>Every row is a case where a measurement contradicted a written intention, and the intention moved.</caption>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Result</div>
+  <h2>Where it landed</h2>
+  <p class="lede">The plan those ten steps produced. Every share is checked against real unique supply
+  and converted to an epoch count; the full argument for each sits in the specification.</p>
+
+  <h3>Seven lanes across a 3.0T budget</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Lane</th><th class="n">Share</th><th class="n">Total demand</th><th class="n">Unique supply</th><th class="n">Epochs</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>general web</td><td class="n">31.03%</td><td class="n">906.0B</td><td class="n">4.50T</td><td class="n">0.20</td><td><span class="tag ok">covered</span></td></tr>
+        <tr><td>code</td><td class="n">24.00%</td><td class="n">714.0B</td><td class="n">1.10T</td><td class="n">0.65</td><td><span class="tag ok">covered</span></td></tr>
+        <tr><td>Indic</td><td class="n">17.90%</td><td class="n">541.0B</td><td class="n">276.0B</td><td class="n">1.96</td><td><span class="tag">needs repetition</span></td></tr>
+        <tr><td>STEM / math</td><td class="n">11.52%</td><td class="n">348.0B</td><td class="n">250.0B</td><td class="n">1.39</td><td><span class="tag">needs repetition</span></td></tr>
+        <tr><td>long context</td><td class="n">7.56%</td><td class="n">231.1B</td><td class="n">100.0B</td><td class="n">2.31</td><td><span class="tag">needs repetition</span></td></tr>
+        <tr><td>reasoning</td><td class="n">7.03%</td><td class="n">222.0B</td><td class="n">85.0B</td><td class="n">2.61</td><td><span class="tag">needs repetition</span></td></tr>
+        <tr><td>agentic</td><td class="n">0.96%</td><td class="n">37.9B</td><td class="n">10.6B</td><td class="n">3.57</td><td><span class="tag warn">94% manufactured</span></td></tr>
+      </tbody>
+    </table>
+    <caption>Shares are not round because they are the token-weighted integral of the stage schedule — the curriculum is the primary object.</caption>
+  </div>
+
+  <h3>The Indic slot across its four provenance tiers</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Tier</th><th class="n">Main run</th><th class="n">Anneal</th><th class="n">Demand</th><th class="n">Collected</th><th class="n">Epochs</th></tr></thead>
+      <tbody>
+        <tr><td>A — verified native</td><td class="n">28%</td><td class="n">70%</td><td class="n">160.7B</td><td class="n">60.0B</td><td class="n">1.89</td></tr>
+        <tr><td>B — unverified crawl</td><td class="n">30%</td><td class="n">5%</td><td class="n">156.8B</td><td class="n">135.0B</td><td class="n">1.16</td></tr>
+        <tr><td>C — translated</td><td class="n">24%</td><td class="n">10%</td><td class="n">126.8B</td><td class="n">45.0B</td><td class="n">1.01</td></tr>
+        <tr><td>D — synthetic</td><td class="n">18%</td><td class="n">15%</td><td class="n">96.7B</td><td class="n">36.0B</td><td class="n">1.01</td></tr>
+      </tbody>
+    </table>
+    <caption>Not the session preset's 40/25/20/15 — 40% verified does not fit the supply. The main run takes 28% and the anneal runs 70%, which is the entire argument for having a reserve.</caption>
+  </div>
+
+  <h3>The curriculum</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Stage</th><th class="n">Tokens</th><th class="n">Seq</th><th class="n">Web</th><th class="n">Code</th><th class="n">Indic</th><th class="n">STEM</th><th class="n">Reason</th><th class="n">Long-ctx</th><th class="n">Agentic</th></tr></thead>
+      <tbody>
+        <tr><td>A Foundation <span class="tag">seed inside</span></td><td class="n">900B</td><td class="n">4K</td><td class="n">56.0</td><td class="n">18.0</td><td class="n">15.0</td><td class="n">6.0</td><td class="n">2.0</td><td class="n">2.5</td><td class="n">0.5</td></tr>
+        <tr><td>B Technical ramp</td><td class="n">900B</td><td class="n">8K</td><td class="n">28.0</td><td class="n">30.0</td><td class="n">18.0</td><td class="n">14.0</td><td class="n">6.0</td><td class="n">3.0</td><td class="n">1.0</td></tr>
+        <tr><td>C Long-context + reasoning</td><td class="n">700B</td><td class="n">32K</td><td class="n">14.0</td><td class="n">24.0</td><td class="n">18.0</td><td class="n">14.0</td><td class="n">12.0</td><td class="n">16.8</td><td class="n">1.2</td></tr>
+        <tr><td>D Consolidation</td><td class="n">400B</td><td class="n">32→128K</td><td class="n">11.5</td><td class="n">24.0</td><td class="n">24.0</td><td class="n">14.0</td><td class="n">12.0</td><td class="n">13.0</td><td class="n">1.5</td></tr>
+        <tr class="total"><td>integrated</td><td class="n">2.9T</td><td class="n"></td><td class="n">31.03</td><td class="n">24.00</td><td class="n">17.90</td><td class="n">11.52</td><td class="n">7.03</td><td class="n">7.56</td><td class="n">0.96</td></tr>
+      </tbody>
+    </table>
+    <caption>Plus a 100B anneal reserve at decayed learning rate, quarantined at manifest level. Every transition blends over an 8B-token warm-up — V4 saw the gradient norm jump ~150× when a step change met frozen embeddings.</caption>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Open</div>
+  <h2>What is still unsettled</h2>
+  <p><strong>The agentic share.</strong> 0.96% survives on a validity objection, not on a win. The 1B run
+  with an out-of-distribution hold-out settles it, and the rule for what happens either way is already
+  written.</p>
+  <p><strong>General web at 31%.</strong> The elasticity fit argues against it. Held for now on the
+  grounds that held-out loss is not a downstream benchmark, but it is first in the queue.</p>
+  <p><strong>L4 traces.</strong> Do not exist in reachable open data and cannot be reconstructed from
+  PRM800K's search depth. Costed at 25B of distillation with a delivery gate; until that lands, the top of
+  the effort dial is unfunded.</p>
+  <p><strong>Everything at scale.</strong> Eleven models of 11.4M parameters cannot confirm shares for a
+  40B run. They were run to find direction and to catch the two protocol flaws above — which they did, at
+  a cost of 2.2 CPU-hours against a pre-registered cluster experiment costing 0.65% of the main run.</p>
+
+  <div class="note">
+    <p>Every figure on this page is read from an artifact in the repository —
+    <span class="mono">stats/s5_pipeline_stats.json</span>, <span class="mono">manifests/s5_shard_manifest.json</span>,
+    <span class="mono">results/proxy/runs.json</span>, <span class="mono">results/proxy/runs_supply_scaled.json</span>,
+    <span class="mono">results/selector/selector_measurements.json</span> — and is reproducible by running the
+    ten scripts in order. The specification itself, with the full argument behind every number, is the
+    repository README.</p>
+  </div>
+</section>
+
+</div>
