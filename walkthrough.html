@@ -200,14 +200,14 @@ ul{max-width:69ch; padding-left:1.1rem} li{margin-bottom:.35rem}
   <div class="eyebrow">ERA V5 · Session 5 · how the plan was reached</div>
   <h1>A mixture is an argument with the supply</h1>
   <p class="standfirst">Seven capabilities, one fixed budget, and data that does not exist in the
-  proportions anyone would like. This traces the reasoning behind every share — and the six places
+  proportions anyone would like. This traces the reasoning behind every share — and the seven places
   where a measurement contradicted the intention and the intention moved.</p>
   <dl class="facts">
     <div class="fact"><dt>Budget</dt><dd>3.0<small>T tokens</small></dd></div>
     <div class="fact"><dt>Lanes</dt><dd>7</dd></div>
     <div class="fact"><dt>Cleaned S4+S5</dt><dd>144.5<small>M — 144,450,507</small></dd></div>
     <div class="fact"><dt>Models trained</dt><dd>11</dd></div>
-    <div class="fact"><dt>Numbers overturned</dt><dd>6</dd></div>
+    <div class="fact"><dt>Numbers overturned</dt><dd>7</dd></div>
   </dl>
 </header>
 
@@ -391,6 +391,36 @@ ul{max-width:69ch; padding-left:1.1rem} li{margin-bottom:.35rem}
     absorbs it; C and D are never raised, because translationese is the failure this split exists to prevent.</caption>
   </div>
 
+  <h3>The anneal reserve — 100B held back before the run starts</h3>
+  <p>Most of pretraining runs on a broad mixture. Near the end the learning rate drops and the model
+  trains briefly on a small reserve of exceptionally good data, and the capability gain is
+  disproportionate. That only works <strong>if the reserve survives the main run</strong> — if the
+  selector eats the best Indic, agentic and reasoning data early, there is nothing special left. So
+  the reserve is a Session-5 allocation decision, not an end-of-run discovery.</p>
+  <p>It is quarantined at manifest level: an admitted shard carries <span class="mono">reserve=true</span>
+  and is <em>excluded</em> from the main-run dataloader, not down-weighted. The cleaning pass implements
+  this physically — reserve shards are separate files with their own hashes, so a mis-weighted sampler
+  cannot reach them. If a reserve shard ever appears in a main-run manifest it is burned rather than
+  re-quarantined: its value was in being unseen.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Lane</th><th class="n">Share</th><th class="n">Tokens</th><th>Admission criterion</th></tr></thead>
+      <tbody>
+        <tr><td>Indic</td><td class="n">22%</td><td class="n">22.0B</td><td>native-speaker verified, attributable, no translationese, absent from any Indic benchmark's source pool</td></tr>
+        <tr><td>code</td><td class="n">18%</td><td class="n">18.0B</td><td>repo-level context with a test suite that passes at the recorded commit</td></tr>
+        <tr><td>reasoning</td><td class="n">18%</td><td class="n">18.0B</td><td>verified answer, band L3/L4, contains an explicit check or self-correction</td></tr>
+        <tr><td>STEM / math</td><td class="n">14%</td><td class="n">14.0B</td><td>textbook, proof or olympiad grade with a resolvable claim</td></tr>
+        <tr><td>long context</td><td class="n">12%</td><td class="n">12.0B</td><td>single documents of 64k–128k tokens — real ones, not concatenations</td></tr>
+        <tr><td>agentic</td><td class="n">10%</td><td class="n">10.0B</td><td>≥3 tool calls, ≥1 failure-and-recovery turn, verified against real environment ground truth</td></tr>
+        <tr><td>general web</td><td class="n">6%</td><td class="n">6.0B</td><td>reference-grade only: encyclopaedic, institutional, dated, attributable</td></tr>
+      </tbody>
+    </table>
+    <caption><strong>The inversion is the point.</strong> Reserve Indic runs 70% Tier-A verified against
+    28% in the main run, and reserve reasoning runs 70% band L3/L4 against 28%. The scarcest, best material
+    is deliberately spent last, on a model able to use it — which is also why the fill-rate measurement in
+    Act III matters so much.</caption>
+  </div>
+
   <h4>Which languages, and the Sanskrit rule</h4>
   <p>All twelve plus Hinglish enter at <strong>stage A</strong>, not later: script and morphology must
   be learned while the embedding table is still plastic, and V4's gradient incident came precisely
@@ -450,6 +480,7 @@ ul{max-width:69ch; padding-left:1.1rem} li{margin-bottom:.35rem}
       <div class="readout"><div class="readout-h">What came back</div>
         <dl class="kv">
           <dt>Sources, each logged with url · licence · sha256 · timestamp</dt><dd>30</dd>
+          <dt>Session gate — cleaned tokens required per session</dt><dd>10–100M</dd>
           <dt>Raw acquired</dt><dd>~370 MB</dd>
           <dt>Indic languages · permissive repos · public-domain books</dt><dd>12 · 16 · 113</dd>
         </dl>
@@ -584,6 +615,26 @@ ul{max-width:69ch; padding-left:1.1rem} li{margin-bottom:.35rem}
     4.68e21 FLOPs, 0.65% of the run it protects. What ran here is the same instrument at 11.4M
     parameters and 3.0M tokens per arm: enough to find direction and to catch flaws in the protocol
     itself, not enough to confirm a share.</p>
+  </div>
+
+  <div class="rulebox">
+    <span class="eyebrow">Pre-registered before any arm was trained</span>
+    <p><strong>Stage 1</strong> — 8 arms × 1B params × 30B tokens: V5-proposed · session composer default ·
+    naive web-heavy · code-heavy · Indic-lite · floor-off · floor-doubled · anneal-off.
+    <strong>Stage 2</strong> — 3B × 60B on the top three, plus the test an averaged mixture cannot make:
+    stage-ordered against flat at identical integrated shares.</p>
+    <div class="formula">W = 0.30·code + 0.20·agentic + 0.20·Indic + 0.15·reasoning
+    + 0.10·long-context + 0.05·web        (each lane normalised to the best arm)</div>
+    <p style="margin-top:12px"><strong>Confirms if</strong> V5-proposed has the best <span class="mono">W</span>
+    with non-overlapping bootstrap CIs (n ≥ 500/set) against the composer default, <em>and</em> no lane is
+    more than 2% relative worse than that lane's best arm.<br>
+    <strong>Refutes if</strong> naive web-heavy lands within CI of V5-proposed — a live outcome, not a
+    formality, because RegMix finds web correlates best with downstream performance. If it fires, the
+    mixture's complexity is not paying and we revert to a high-web mixture keeping only the floors.<br>
+    <strong>Floor test</strong> — floor-off vs floor-on, measuring <em>realized</em> lane shares after
+    selection. Within 1pt for Indic and agentic and the floor is unnecessary.</p>
+    <p style="margin-top:10px">Cost: <strong>4.68e21 FLOPs — 0.65%</strong> of the 7.2e23-FLOP main run,
+    about 2.2 days on 64 H100s. The experiment costs two-thirds of one percent of the run it protects.</p>
   </div>
 
   <div class="step">
@@ -816,12 +867,42 @@ ul{max-width:69ch; padding-left:1.1rem} li{margin-bottom:.35rem}
   efficient from an already-strong technical model — and web sits at its floor by then.</p>
 
   <h4>Two ladders, scheduled independently</h4>
-  <p>Difficulty runs the session's six rungs, <span class="mono">B0</span> nursery to
-  <span class="mono">B5</span> research/PhD, moving 25/35/25/12/3/0 in stage A to 0/5/15/25/35/20 in
-  stage D. Trace length runs <span class="mono">L0</span> direct to <span class="mono">L4</span> ultra
-  and is scheduled <em>separately</em> — a hard problem with a short trace and an easy one with an ultra
-  trace are not interchangeable, so both are stamped per document and both move per stage. Every rung
-  is anchored to a real document in the cleaned corpus with its measured token count.</p>
+  <p>Difficulty and trace length are <strong>separate axes</strong> — a hard problem with a short trace
+  and an easy one with an ultra trace are not interchangeable — so both are stamped per document at
+  cleaning time and both move per stage. For text lanes difficulty is a population quantile of a
+  readability proxy computed <em>within script group</em>, because a fixed threshold silently mislabels
+  entire languages: a Malayalam word is far longer in code points than an English one. For code,
+  reasoning and agentic it is structural.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Difficulty</th><th class="n">A → D</th><th class="n">Docs</th><th>Anchored to a real document in <span class="mono">data/clean/</span></th></tr></thead>
+      <tbody>
+        <tr><td><strong>B0</strong> Nursery</td><td class="n">25 → 0</td><td class="n">299</td><td>a Tamil Wikipedia article of plain declarative sentences — long, but structurally flat, which is what B0 measures</td></tr>
+        <tr><td><strong>B1</strong> Grade-school</td><td class="n">35 → 5</td><td class="n">16,135</td><td>GSM8K socratic, one arithmetic chain — 390 tok, <strong>287 supervised / 103 context</strong></td></tr>
+        <tr><td><strong>B2</strong> High-school</td><td class="n">25 → 15</td><td class="n">28,020</td><td>a single-call API trajectory (521 tok) · a FastAPI routing module (602 tok)</td></tr>
+        <tr><td><strong>B3</strong> Undergraduate</td><td class="n">12 → 25</td><td class="n">5,014</td><td>a tool call against a long schema — 394 tok, <strong>52 supervised / 342 context</strong>, a 7.6× context-to-signal ratio in one document</td></tr>
+        <tr><td><strong>B4</strong> Graduate</td><td class="n">3 → 35</td><td class="n">3,140</td><td>a 10-step PRM800K solution (301 tok) · a full scikit-learn estimator module (12,075 tok)</td></tr>
+        <tr><td><strong>B5</strong> Research / PhD</td><td class="n">0 → 20</td><td class="n">7,333</td><td>an arXiv abstract on Byzantine consensus · a 14+-step solution · BFCL multi-turn with ≥3 tool calls</td></tr>
+      </tbody>
+    </table>
+    <caption>The schedule inverts across the run: stage A is 60% B0–B1, stage D is 55% B4–B5.</caption>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Trace length</th><th class="n">Reasoning tok</th><th>Control token</th><th class="n">Found</th><th>Anchored to</th></tr></thead>
+      <tbody>
+        <tr><td><strong>L0</strong> direct</td><td class="n">0–32</td><td class="mono">&lt;effort=none&gt;</td><td class="n">7</td><td>a GSM8K item answered with no chain at all (86 tok, 31 supervised). Seven exist in the entire corpus</td></tr>
+        <tr><td><strong>L1</strong> short</td><td class="n">32–256</td><td class="mono">&lt;effort=low&gt;</td><td class="n">17,106</td><td>GSM8K socratic, <em>"Andrew is having two friends over… 3 donuts each"</em> — 365 tok, no branching</td></tr>
+        <tr><td><strong>L2</strong> medium</td><td class="n">256–1024</td><td class="mono">&lt;effort=medium&gt;</td><td class="n">3,640</td><td>PRM800K, <em>"given tan θ = 5, find…"</em> — 971 tok, names and checks each intermediate result</td></tr>
+        <tr class="hi"><td><strong>L3</strong> long</td><td class="n">1024–4096</td><td class="mono">&lt;effort=high&gt;</td><td class="n">0 → 253</td><td><em>"largest 2-digit prime factor of C(200,100)"</em> — 3,250 reasoning tokens through <strong>5 human-rated wrong steps</strong> before the right route. Built, not found</td></tr>
+        <tr class="hi"><td><strong>L4</strong> ultra</td><td class="n">4096–32768</td><td class="mono">&lt;effort=ultra&gt;</td><td class="n">0</td><td>several routes, explicit dead ends, a final verification pass — <strong>no example exists</strong>, ceiling 3,250 even after reconstruction</td></tr>
+      </tbody>
+    </table>
+    <caption>The effort dial is not created at inference time; it selects among behaviours the model was
+    trained to produce. Two of five rungs had to be manufactured, and one still cannot be.</caption>
+  </div>
 
   <div class="note">
     <p>Every figure on this page is read from an artifact in the repository —
