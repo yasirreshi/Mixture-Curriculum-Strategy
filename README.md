@@ -3,14 +3,12 @@
 **ERA V5, Session 5.** The plan for what the 40B India-first model sees, how much of it, and in
 what order — written so that every number can be attacked, and so that attacking it is cheap.
 
-Three commitments run through it. **No number is asserted without its supply** — every share is
-checked against real unique tokens and converted to an epoch count, and a share needing more than 4
-epochs is either cut or explicitly manufactured. **Every number is produced by a script here and
-checked by a test**: [`scripts/03_solve_mixture.py`](scripts/03_solve_mixture.py) verifies a dozen
-invariants and exits non-zero if one breaks. **The plan is a hypothesis with a kill condition** — §8
-pre-registers the 1B/3B proxy and then reports the two reduced proxies actually run, in which this
-mixture placed **4th of 6** and then **last of 4**, refuting a prediction I had written down in
-advance about my own agentic share.
+No number is asserted without its supply: every share is converted to an epoch count against real
+unique tokens, and one needing more than 4 epochs is cut or explicitly manufactured. Every number is
+produced by a script here and checked by [`03_solve_mixture.py`](scripts/03_solve_mixture.py), which
+verifies a dozen invariants and exits non-zero if one breaks. And the plan carries a kill condition:
+§8 pre-registers the 1B/3B proxy, then reports the two reduced proxies actually run — in which this
+mixture placed **4th of 6** and then **last of 4**.
 
 | | |
 |---|---|
@@ -59,10 +57,6 @@ real licensed data; the "what it found" column is the output, not an intention.
 | 8 | **Built the L3 band that doesn't exist** | [`09_build_long_traces.py`](scripts/09_build_long_traces.py) — reconstructs PRM800K's search from 60,398 human-rated *wrong* branches | **253 real L3 traces, 328k tokens**, ceiling 3,250 reasoning tokens. L4 still empty |
 | 9 | **Pulled a real example for every band** | [`06_band_examples.py`](scripts/06_band_examples.py) | [`band_examples.md`](results/band_examples.md) — B0–B5 and L0–L3 with measured token counts |
 | 10 | **Accounted the cumulative target** | [`07_cleaning_report.py`](scripts/07_cleaning_report.py) | [`cleaning_report.md`](results/cleaning_report.md) — **144,450,507 cumulative** with S4; gate met |
-
-**The three results that changed the plan** — the floor (§5), the agentic share now under test (§8.3),
-and three corrections to the 1B protocol (§8.1). Where an experiment contradicted me it is reported
-as a contradiction, not smoothed over.
 
 ---
 
@@ -576,8 +570,7 @@ several small transformers, identical seed and identical token budget, differing
 evaluated on per-lane held-out sets they never saw. This is RegMix's method (which fits its own
 regression on 512 models of 1M params × 1B tokens); ours is smaller than that.
 
-It can rank arms and refute *"the mixture does not matter"*; it cannot confirm absolute shares for
-a 40B run. Six arms, 11.4M parameters each, 3.0M tokens each, identical seed and identical budget, 72 minutes
+Six arms, 11.4M parameters each, 3.0M tokens each, identical seed and identical budget, 72 minutes
 of CPU. Full output: [`results/proxy_report.md`](results/proxy_report.md).
 
 | rank | arm | **W** | code | web | Indic | STEM | reasoning | long-ctx | agentic |
@@ -624,15 +617,11 @@ share:
 | long context | −0.056 | 0.82 | 2.0 – 7.6% |
 
 Reasoning and code are the steep lanes: cutting them is expensive. **General web is the flattest of
-the large lanes** — which cuts against my own §2 argument for holding it at 31%, and is the single
-most useful thing this run produced. It does not settle the question (loss on web ≠ downstream MMLU,
-and RegMix's correlation finding is about benchmarks, not held-out loss), but it means the burden of
-proof on web 31% now sits with me, and the 1B runs have to discharge it.
-
-The long-context row measures the instrument rather than the lane: at context 256 a model cannot
-express long-context capability at all, so its loss barely responds to share. That is a finding
-about the *design* — the stage-1 arms must run at a context long enough for the lane to mean
-something, or they will be blind to it the same way.
+the large lanes**, which cuts against my own §2 argument for holding it at 31%. It does not settle
+the question — loss on web is not downstream MMLU — but the burden of proof on that number now sits
+with me. The long-context row (−0.056) measures the instrument, not the lane: at context 256 the
+model cannot express long-context capability at all, which is why §8.1 now requires stage-1 arms to
+train at a context where the lane means something.
 
 **What I changed as a result:** the stage-1 protocol (supply caps in the dataloader, and a context
 long enough to make the long-context lane measurable — §8.1). What I did *not* change: the headline
