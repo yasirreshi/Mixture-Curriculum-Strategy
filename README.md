@@ -205,7 +205,7 @@ collection targets and evaluation targets now, and pretraining lanes when and on
 threshold is met.
 
 **Measured, from this repo:** the S5 cleaning pass produced 13.6M tokens of verified-native Indic
-across all 12 languages, of which **78.8% qualifies for the anneal reserve** on the criteria in §6 —
+across all 12 languages, of which **65.7% qualifies for the anneal reserve** on the criteria in §6 —
 a reminder that the constraint on Tier A is acquisition, not quality gating.
 Fertility on our 32k proxy tokenizer ranged from **1.98 (Urdu) to 7.48 (Malayalam)** tokens/word
 against 1.81 for English, which is the fertility tax S3's 200k vocab exists to pay down, and the
@@ -387,8 +387,8 @@ repo** ([full table](results/cleaning_report.md)):
 | lane | measured fill rate | cleaned pool needed to fill its reserve share |
 |---|---:|---|
 | long context | 96.8% | 0.01T |
-| general web | 85.7% | 0.01T |
-| Indic | 78.8% | 0.03T |
+| general web | 75.5% | 0.01T |
+| Indic | 65.7% | 0.04T |
 | code | 30.0% | 0.06T |
 | STEM / math | 0.0% | our arXiv-abstract sample is too short to qualify |
 | **agentic** | **0.6%** | **1.55T — and total real agentic supply is 0.63B** |
