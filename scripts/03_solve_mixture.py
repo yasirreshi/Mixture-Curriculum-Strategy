@@ -158,6 +158,22 @@ check(abs(sum(MIX["lanes"]["reasoning"]["length_band_split_pct"].values()) - 100
 for st in stages:
     check(abs(sum(st["difficulty_mix"].values()) - 100.0) < 1e-6,
           f"stage {st['id']} difficulty mix does not sum to 100")
+    check(sorted(st["difficulty_mix"]) == ["B0", "B1", "B2", "B3", "B4", "B5"],
+          f"stage {st['id']} does not use the session's six-rung B0-B5 ladder")
+    check(abs(sum(st["reasoning_length_mix"].values()) - 100.0) < 1e-6,
+          f"stage {st['id']} reasoning-length mix does not sum to 100")
+
+# the session states that trace length is scheduled, not just apportioned: the
+# per-stage schedule must integrate to the lane's declared band split
+rw = {st["id"]: st["tokens"] * st["weights_pct"]["reasoning"] / 100.0 for st in stages}
+rtot = sum(rw.values())
+band_int = {b: sum(st["reasoning_length_mix"][b] * rw[st["id"]] / rtot for st in stages)
+            for b in stages[0]["reasoning_length_mix"]}
+for b, v in band_int.items():
+    declared = MIX["lanes"]["reasoning"]["length_band_split_pct"][b]
+    check(abs(v - declared) <= 1.0,
+          f"reasoning band {b}: declared {declared}% but the stage schedule integrates "
+          f"to {v:.2f}%")
 
 # ------------------------------------------------------------------ 7 compute
 p = MIX["proxy_protocol"]["cost"]
@@ -200,12 +216,24 @@ for st in stages:
       + " | ".join(f"{st['weights_pct'][ln]:.1f}" for ln in LANES) + " |")
 A("| **integrated** | | | " + " | ".join(f"**{integrated[ln]:.2f}**" for ln in LANES) + " |\n")
 
-A("### difficulty band schedule\n")
-A("| stage | D0 | D1 | D2 | D3 | D4 |")
-A("|---|---:|---:|---:|---:|---:|")
+A("### difficulty band schedule (the session's B0-B5 ladder)\n")
+A("| stage | B0 nursery | B1 grade-school | B2 high-school | B3 undergrad | B4 graduate | B5 research |")
+A("|---|---:|---:|---:|---:|---:|---:|")
 for st in stages:
     dm = st["difficulty_mix"]
-    A(f"| {st['id']} | " + " | ".join(f"{dm[k]}" for k in ("D0", "D1", "D2", "D3", "D4")) + " |")
+    A(f"| {st['id']} | " + " | ".join(f"{dm[k]}" for k in
+      ("B0", "B1", "B2", "B3", "B4", "B5")) + " |")
+A("")
+
+A("### reasoning-length schedule - trace length is scheduled too\n")
+A("| stage | L0 direct | L1 short | L2 medium | L3 long | L4 ultra |")
+A("|---|---:|---:|---:|---:|---:|")
+for st in stages:
+    lm = st["reasoning_length_mix"]
+    A(f"| {st['id']} | " + " | ".join(f"{lm[k]}" for k in
+      ("L0_direct", "L1_short", "L2_medium", "L3_long", "L4_ultra")) + " |")
+A("| **integrated** | " + " | ".join(f"**{band_int[k]:.1f}**" for k in
+  ("L0_direct", "L1_short", "L2_medium", "L3_long", "L4_ultra")) + " |")
 A("")
 
 A("## 4. Protected always-on floor\n")

@@ -19,10 +19,10 @@ ROOT = Path(__file__).resolve().parents[1]
 CLEAN = ROOT / "data" / "clean"
 OUT = ROOT / "results" / "band_examples.md"
 
-DIFF_ORDER = ["D0", "D1", "D2", "D3", "D4"]
+DIFF_ORDER = ["B0", "B1", "B2", "B3", "B4", "B5"]
 LEN_ORDER = ["L0_direct", "L1_short", "L2_medium", "L3_long", "L4_ultra"]
-DIFF_NAME = {"D0": "Nursery", "D1": "School", "D2": "High school / undergrad",
-             "D3": "Graduate", "D4": "Frontier / PhD"}
+DIFF_NAME = {"B0": "Nursery", "B1": "Grade-school", "B2": "High-school",
+             "B3": "Undergraduate", "B4": "Graduate", "B5": "Research / PhD"}
 
 
 def snippet(d, n=420):

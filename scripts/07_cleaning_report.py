@@ -163,12 +163,12 @@ def main():
         L.append("")
 
     L.append("## Per-lane band distribution\n")
-    L.append("| lane | D0 | D1 | D2 | D3 | D4 | L0 | L1 | L2 | L3 | L4 |")
-    L.append("|---|" + "---:|" * 10)
+    L.append("| lane | B0 | B1 | B2 | B3 | B4 | B5 | L0 | L1 | L2 | L3 | L4 |")
+    L.append("|---|" + "---:|" * 11)
     for lane, v in sorted(lanes.items()):
         d = v["difficulty"]
         b = v["length_band"]
-        row = [str(d.get(x, 0)) for x in ("D0", "D1", "D2", "D3", "D4")] + \
+        row = [str(d.get(x, 0)) for x in ("B0", "B1", "B2", "B3", "B4", "B5")] + \
               [str(b.get(x, 0)) for x in ("L0_direct", "L1_short", "L2_medium",
                                           "L3_long", "L4_ultra")]
         L.append(f"| {lane} | " + " | ".join(row) + " |")

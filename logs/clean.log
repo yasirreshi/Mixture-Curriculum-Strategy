@@ -6,9 +6,9 @@
 [5_dedup] docs_in=61820  exact_removed=1092  near_removed=777  docs_out=59951  method=sha256 + 5-word shingles / 64-perm MinHash LSH @0.8
 [6_pii_scrub] note=code lane exempt from IPv4 rule; S4 found this regex layer has real false positives (a UDISE code read as a phone number)
 [7_decontaminate] docs_in=59951  benchmark_overlap_removed=10  industry_canary_hits=0  heldout_probes=1319  method=10-word shingle overlap + BIG-bench canary GUID
-  readability quantile cut-offs per script group: {'as': [12.95, 13.65, 15.17], 'latin': [12.57, 14.45, 16.36], 'bn': [13.0, 13.73, 14.76], 'gu': [12.43, 13.5, 14.65], 'hi': [12.35, 13.33, 14.64], 'kn': [13.92, 14.66, 15.6], 'ml': [15.38, 16.37, 17.36], 'mr': [12.82, 13.44, 14.59], 'or': [12.62, 13.51, 14.64], 'pa': [12.26, 13.16, 14.9], 'ta': [14.3, 15.6, 17.15], 'te': [13.5, 14.29, 15.69], 'ur': [13.01, 14.85, 20.54]}
-  tokenising 20,000/59,941 (107s)  tokenising 40,000/59,941 (113s)
-[8_band_and_manifest] docs=59941  total_tokens=81042167  reserve_tokens=46716477  shards=12
+  readability quantile cut-offs per script group: {'as': [12.82, 13.35, 13.77, 14.56, 16.18], 'latin': [12.41, 13.45, 14.82, 15.96, 18.47], 'bn': [12.84, 13.37, 13.82, 14.4, 15.5], 'gu': [12.33, 12.87, 13.64, 14.43, 15.63], 'hi': [12.17, 12.86, 13.49, 14.38, 15.91], 'kn': [13.81, 14.38, 14.83, 15.41, 16.13], 'ml': [15.25, 15.93, 16.51, 17.14, 18.05], 'mr': [12.75, 13.21, 13.58, 14.26, 15.69], 'or': [12.5, 13.07, 13.61, 14.26, 15.56], 'pa': [12.11, 12.69, 13.36, 14.49, 15.98], 'ta': [14.08, 15.06, 15.86, 16.83, 18.02], 'te': [13.39, 13.93, 14.47, 15.24, 16.76], 'ur': [12.83, 13.74, 15.49, 18.78, 24.3]}
+  tokenising 20,000/59,941 (405s)  tokenising 40,000/59,941 (432s)
+[8_band_and_manifest] docs=59941  total_tokens=81042167  reserve_tokens=44573598  shards=12
 
-wrote D:\Educational\ERA_v5\S5\stats\s5_pipeline_stats.json  (316.5s)
+wrote D:\Educational\ERA_v5\S5\stats\s5_pipeline_stats.json  (1092.2s)
 S5 clean tokens: 81,042,167

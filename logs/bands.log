@@ -7,122 +7,100 @@ _Every example below is a document from `data/clean/` in this repo, with the tok
 
 | band | name | docs in corpus | lanes present | median tokens |
 |---|---|---:|---|---:|
-| **D0** | Nursery | 351 | general_web, indic | 3,522 |
-| **D1** | School | 16,410 | code, general_web, indic, reasoning | 177 |
-| **D2** | High school / undergrad | 29,352 | agentic, code, general_web, indic, long_context, reasoning | 345 |
-| **D3** | Graduate | 11,904 | agentic, code, general_web, indic, long_context, reasoning, stem_math | 290 |
-| **D4** | Frontier / PhD | 1,935 | agentic, reasoning | 579 |
+| **B0** | Nursery | 299 | general_web, indic | 2,471 |
+| **B1** | Grade-school | 16,135 | code, general_web, indic, reasoning | 175 |
+| **B2** | High-school | 28,020 | agentic, code, general_web, indic, reasoning | 335 |
+| **B3** | Undergraduate | 5,014 | agentic, code, general_web, indic, long_context, reasoning | 479 |
+| **B4** | Graduate | 3,140 | agentic, code, general_web, indic, long_context, reasoning | 1,067 |
+| **B5** | Research / PhD | 7,333 | agentic, general_web, indic, reasoning, stem_math | 252 |
 
-### D0 - Nursery
+### B0 - Nursery
 
-- **lane** `indic` · **source** `wikipedia:mr` · **1,492 tokens** (1,492 supervised / 0 context) · lang `mr`
-  > माघ पौर्णिमा ही माघ महिन्याच्या शुद्ध पक्षातील पंधरावी तिथी आहे. माघ पौर्णिमा हा एक बौद्ध सण आहे. या दिवशी तथागत बुद्धांनी वैशाली नगरीमध्ये इ.स.पू. ४८३ला ४५ वा वर्षावास केला होता. तथागतांनी माघ पौर्णिमेलाच आपल्या महापरिनिर्वाणाची घोषणा केली होती. या पौर्णिमेला बुद्ध पौर्णिमा व माघ पौर्णिमा एवढेच महत्त्व प्राप्त झाले आहे. या दिवशी बौद्ध राष्ट्रात आणि जम्बुद्विप भारतातील बौद्ध धम्मीय लोक हा माघ पौर्णिमेचा सोहळा साजरा क ...
+- **lane** `indic` · **source** `wikipedia:ta` · **7,542 tokens** (7,542 supervised / 0 context) · lang `ta`
+  > இசை (ஒலிப்பு) (music) என்பது ஒழுங்கு செய்யப்பட்ட, கட்டுப்படுத்தப்பட்ட, அழகு ஒலியாகும். இசை என்ற சொல்லுக்கு இசைய வைப்பது என்று பொருள். மனிதனையும் மற்ற உயிரினங்களையும் இசைய வைக்கின்ற, பணிய வைக்கின்ற ஓர் அருஞ்சாதனம் இசை. இசையை சிரவண கலை எனவும் அழைப்பர். சங்கீதம் என்பது செவிக்கு இன்பம் தரும் தொனி(ஒலி)களைப் பற்றிய கலையாகும். இசையை வடமொழியில் நாதம் என அழைப்பர். இசை இன்று பல்வேறு பயன்களைத் தருகின்றது. தற்போது படித்தவர் முதல ...
 
-- **lane** `general_web` · **source** `wikipedia:en` · **5,462 tokens** (5,462 supervised / 0 context) · lang `en`
-  > "America the Beautiful" is an American patriotic song. Its lyrics were written by Katharine Lee Bates and its music was composed by church organist and choirmaster Samuel A. Ward at Grace Episcopal Church in Newark, New Jersey, though the two never met. Bates wrote the words as a poem, originally titled "Pikes Peak". It was first published in the Fourth of July 1895 edition of the church periodical, The Congregationa ...
+- **lane** `general_web` · **source** `wikipedia:en` · **5,031 tokens** (5,031 supervised / 0 context) · lang `en`
+  > Anacondas or water boas are a group of large boas of the genus Eunectes. They are a semiaquatic group of snakes found in tropical South America. Three to five extant and one extinct species are currently recognized, including one of the largest snakes in the world, E. murinus, the green anaconda. The generic name Eunectes is derived from Ancient Greek: εὐνήκτης, romanized: eunēktēs, lit. 'good swimmer'. The South Ame ...
 
-### D1 - School
+### B1 - Grade-school
 
-- **lane** `reasoning` · **source** `gsm8k-plain` · **91 tokens** (51 supervised / 40 context) · lang `en`
-  > Problem: Steph needs to cook fried chicken for the kid's party. She bought 24 pieces of drumstick and 4 fewer breast parts. How many fried chickens can Steph make?
-<reasoning>
-Steph bought 24 - 4 = <<24-4=20>>20 breast parts.
-Thus, she can make 24 + 20 = <<24+20=44>>44 fried chickens.
-</reasoning>
-Answer: 44
+- **lane** `reasoning` · **source** `gsm8k-socratic` · **390 tokens** (287 supervised / 103 context) · lang `en`
+  > Problem: Mr. Rocky went to the market to sell his handmade crafts on a particular week. He was selling jewelry at $30 each and paintings at $100 each. However, he realized the income from the sales wasn't worth the labor and materials he had used, so he decided to increase the price of jewelry by $10 each and the cost of each painting by 20%. Calculate the total price a buyer who takes two pieces of jewelry and five  ...
 
-- **lane** `code` · **source** `pallets/flask` · **289 tokens** (289 supervised / 0 context) · lang `code`
-  > from celery import Celery
-from celery import Task
-from flask import Flask
-from flask import render_template
-def create_app() -> Flask:
- app = Flask(__name__)
- app.config.from_mapping(
- CELERY={
- "broker_url": "redis://localhost",
- "result_backend": "redis://localhost",
- "task_ignore_result": True,
- },
- )
- app.config.from_prefixed_env()
- celery_init_app(app)
- @app.route("/")
- def index() -> str:
- return render_templat ...
+- **lane** `code` · **source** `sqlite/sqlite` · **191 tokens** (191 supervised / 0 context) · lang `code`
+  > /*
+** 2023-08-04
+**
+** The author disclaims copyright to this source code. In place of
+** a legal notice, here is a blessing:
+**
+** May you do good and not evil.
+** May you find forgiveness for yourself and forgive others.
+** May you share freely, never taking more than you give.
+**
+*************************************************************************
+** This file is part of the JNI bindings for the sqlite3 C API ...
 
-### D2 - High school / undergrad
+### B2 - High-school
 
-- **lane** `agentic` · **source** `gorilla-openfunctions-v1` · **558 tokens** (47 supervised / 511 context) · lang `en`
-  > <tools>
-{'name': 'aws', 'api_name': 'aws.iotsitewise.list_asset_properties', 'description': 'Retrieves a paginated list of properties associated with an asset. If you update properties associated with the model before you finish listing all the properties, you need to start all over again.list-asset-properties is a paginated operation. Multiple API calls may be issued in order to retrieve the entire data set of resul ...
+- **lane** `agentic` · **source** `gorilla-apibench-huggingface` · **521 tokens** (488 supervised / 33 context) · lang `en`
+  > <user>
+I am writing an automatic essay scorer. I want to identify if the given essay contradicts the provided prompt statement or not.
+</user>
+<assistant>
+<<<domain>>>: Natural Language Processing Zero-Shot Classification
+<<<api_call>>>: AutoModelForSequenceClassification.from_pretrained('MoritzLaurer/DeBERTa-v3-xsmall-mnli-fever-anli-ling-binary')
+<<<api_provider>>>: Hugging Face Transformers
+<<<explanation>>>: 1. T ...
 
-- **lane** `code` · **source** `tiangolo/fastapi` · **1,208 tokens** (1,208 supervised / 0 context) · lang `code`
-  > import importlib
-import pytest
+- **lane** `code` · **source** `tiangolo/fastapi` · **602 tokens** (602 supervised / 0 context) · lang `code`
+  > from fastapi import Depends, FastAPI, Security
+from fastapi.security.open_id_connect_url import OpenIdConnect
 from fastapi.testclient import TestClient
 from inline_snapshot import snapshot
-from tests.utils import needs_py310
-@pytest.fixture(
- name="client",
- params=[
- pytest.param("tutorial002_py310", marks=[needs_py310]),
- pytest.param("tutorial002_an_py310", marks=[needs_py310]),
- ],
-)
-def get_client(request: pytest.FixtureRequest):
- mod = importlib.import_module(f"docs_src.cookie_param_model ...
+from pydantic import BaseModel
+app = FastAPI()
+oid = OpenIdConnect(openIdConnectUrl="/openid", auto_error=False)
+class User(BaseModel):
+ username: str
+def get_current_user(oauth_header: str \| None = Security(oid)):
+ if oauth_header ...
 
-### D3 - Graduate
+### B3 - Undergraduate
 
-- **lane** `stem_math` · **source** `arxiv` · **83 tokens** (83 supervised / 0 context) · lang `en`
-  > Robustness and efficiency of leaderless probabilistic consensus protocols within Byzantine infrastructures This paper investigates leaderless binary majority consensus protocols with low computational complexity in noisy Byzantine infrastructures. Using computer simulations, we show that explicit randomization of the consensus protocol can significantly increase the robustness towards faulty and malicious nodes. We i ...
+- **lane** `agentic` · **source** `gorilla-openfunctions-v1` · **394 tokens** (52 supervised / 342 context) · lang `en`
+  > <tools>
+{'name': 'PyArrow', 'api_name': 'logical_or', 'description': 'Logical OR', 'parameters': {'required': [{'name': 'x', 'description': 'Argument to compute function. Can be an array-like or scalar-like value.'}, {'name': 'y', 'description': 'Argument to compute function. Can be an array-like or scalar-like value.'}, {'name': 'memory_pool', 'description': 'Optional. If not passed, memory will be allocated from th ...
 
-- **lane** `code` · **source** `lodash/lodash` · **9,081 tokens** (9,081 supervised / 0 context) · lang `code`
-  > (function(QUnit) {
- var router = null;
- var location = null;
- var lastRoute = null;
- var lastArgs = [];
- var onRoute = function(routerParam, route, args) {
- lastRoute = route;
- lastArgs = args;
- };
- var Location = function(href) {
- this.replace(href);
- };
- _.extend(Location.prototype, {
- parser: document.createElement('a'),
- replace: function(href) {
- this.parser.href = href;
- _.extend(this, _.pick(this.parser,
- 'hre ...
+- **lane** `indic` · **source** `wikipedia:te` · **455 tokens** (455 supervised / 0 context) · lang `mixed_or_other`
+  > బఠానీ లేదా బఠానీలు (శాస్త్రీయనామం: పీసం సెటైవమ్) ఒక రకమైన గింజ ధాన్యాలు. వీటిని పచ్చిగానూ, ఎండబెట్టి కూడా వాడుతారు. పచ్చి బఠానీలను కూరల వినియోగంలోనూ, ఎండు బఠానీలను చిరుతిండి గానూ ఉపయోగిస్తారు. బఠానీల తొక్కలు ముదిరి ముడతలు పడకూడదు, తొక్కలపై నల్లటి పసుపు రంగు మరకలుండరాదు Schaefer, Hanno; Hechenleitner, Paulina; Santos-Guerra, Arnoldo; de Sequeira, Miguel Menezes; Pennington, R Toby; Kenicer, Gregory; Carine, Mark A (20 ...
 
-### D4 - Frontier / PhD
+### B4 - Graduate
 
-- **lane** `reasoning` · **source** `prm800k-phase2` · **586 tokens** (560 supervised / 26 context) · lang `en`
-  > Problem: How many ways are there to put 4 balls in 3 boxes if the balls are distinguishable but the boxes are not?
+- **lane** `reasoning` · **source** `prm800k-phase2` · **301 tokens** (264 supervised / 37 context) · lang `en`
+  > Problem: The ratio of the length of a rectangular room to its width is $5:3$. The perimeter of the room is 48 feet. What is the area of the room?
 <reasoning>
-This problem is about counting arrangements of distinguishable objects in indistinguishable containers.
-One way to approach this problem is to use the idea of partitions, which are ways of expressing a positive integer as a sum of smaller positive integers.
-For example, 4 can be partitioned a ...
+I want to find the area of the room, which is the product of the length and the width.
+But I don't know the exact values of the length and the width, only their ratio.
+Maybe I can use the ratio to write the length and the width in terms of a common variable.
+Let ...
 
-- **lane** `agentic` · **source** `bfcl-v4-multi-turn` · **474 tokens** (210 supervised / 264 context) · lang `en`
-  > <user>
-It's getting late here, and I'm wrapping up my notes for the day. Please initiate a file creation in our communal folder, labeling it as 'Annual_Report_2023.docx'.
-</user>
-<tool_call>
-cd(folder='communal')
-touch(file_name='Annual_Report_2023.docx')
-</tool_call>
-<observation>
-(environment result)
-</observation>
-<user>
-Hi, I want to put some statistics in the annual report. Here are the things I want to put 'Com ...
+- **lane** `code` · **source** `scikit-learn/scikit-learn` · **12,075 tokens** (12,075 supervised / 0 context) · lang `code`
+  > """Bagging meta-estimator."""
+# Authors: The scikit-learn developers
+# SPDX-License-Identifier: BSD-3-Clause
+import itertools
+import numbers
+from abc import ABCMeta, abstractmethod
+from functools import partial
+from numbers import Integral
+from warnings import warn
+import numpy as np
+from sklearn.base import ClassifierMixin, RegressorMixin, _fit_context
+from sklearn.ensemble._base import BaseEnsemble, _partition_esti ...
 
-## Reasoning-length bands
+### B5 - Research / PhD
 
-| band | reasoning tokens | control token | docs in corpus | median total tokens |
-|---|---|---|---:|---:|
-| **L0_direct** | 0-32 | `<effort=none>` | 0 | 0 |
+- **lane** `stem_math` · **source** `arxiv` · **138 tokens** (138 supervised / 0 context) · lang `en`
+  > Simultaneous FPQ-Ordering and Hybrid Planarity Testing We study the interplay between embedding constrained planarity and hybrid planarity testing. We consider a constrained planarity testing problem, called 1-Fixed Constrained Planarity, and prove that this problem can be solved in quadratic time for biconnected graphs. Our solution is based on a new definition of fixedness that makes it possible to simplify and ext ...
+

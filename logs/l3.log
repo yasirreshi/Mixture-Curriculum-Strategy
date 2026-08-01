@@ -1,0 +1,9 @@
+scanned 26,551 PRM800K records
+band distribution of reconstructed search traces: {'L1_short': 4589, 'L2_medium': 15073, 'L3_long': 253}
+wrote 253 L3/L4 traces -> data\clean\reasoning_L3L4_constructed.jsonl  (328,340 tokens)
+
+longest reconstructed trace: 3,250 reasoning tokens, 5 rejected steps across 1 branch points, band L3_long
+  problem: What is the largest $2$-digit prime factor of the integer $n = {200\choose 100}$?
+  answer : 61
+
+L4_ultra remains EMPTY even after reconstruction (ceiling 3,250 reasoning tokens). PRM800K's searches are not deep enough; L4 can only come from a teacher sampled at high effort on problems with verifiable answers. That is the gate in mixture/v5_mixture.json.

@@ -28,7 +28,7 @@ selection.
 
 ```mermaid
 flowchart LR
-  R[raw sources<br/>licence + provenance] --> C[8-stage clean<br/>+ loss masks<br/>+ D0-D4 / L0-L4 bands]
+  R[raw sources<br/>licence + provenance] --> C[8-stage clean<br/>+ loss masks<br/>+ B0-B5 / L0-L4 bands]
   C --> Q{admission<br/>criteria}
   Q -->|reserve=false| M[(main-run shards<br/>2.9T)]
   Q -->|reserve=true| V[(anneal reserve<br/>100B - quarantined)]
@@ -50,14 +50,14 @@ real licensed data; the "what it found" column is the output, not an intention.
 | # | what was done | how | what it produced / found |
 |---|---|---|---|
 | 1 | **Acquired 30 sources** for the four starved lanes | [`01_fetch_lanes.py`](scripts/01_fetch_lanes.py) — Wikimedia cirrus dumps (12 Indic + en), Gorilla/BFCL, PRM800K, GSM8K, Gutenberg, 16 permissive GitHub repos, arXiv | ~370 MB raw, every file logged in `data/raw/provenance.jsonl` with url, licence, sha256, byte count, timestamp |
-| 2 | **Cleaned them through 8 stages** + 3 additions Session 5 needs | [`02_clean_lanes.py`](scripts/02_clean_lanes.py) — S4's pipeline plus **per-segment loss masks**, **D0–D4 / L0–L4 banding**, **reserve flags** | **81,042,167 tokens**, 12 shards, manifest with per-shard hashes. Found: agentic is **38.4% supervised**; 10 docs leaked GSM8K test verbatim; 165 failed a runtime script check |
+| 2 | **Cleaned them through 8 stages** + 3 additions Session 5 needs | [`02_clean_lanes.py`](scripts/02_clean_lanes.py) — S4's pipeline plus **per-segment loss masks**, **B0–B5 / L0–L4 banding**, **reserve flags** | **81,042,167 tokens**, 12 shards, manifest with per-shard hashes. Found: agentic is **38.4% supervised**; 10 docs leaked GSM8K test verbatim; 165 failed a runtime script check |
 | 3 | **Solved the mixture against real supply** | [`03_solve_mixture.py`](scripts/03_solve_mixture.py) — a *test*: a dozen invariants, non-zero exit on failure | [`mixture_report.md`](results/mixture_report.md) — every lane's epochs vs the 4-epoch cap; agentic at 3.57 only because 94% is manufactured |
 | 4 | **Ran a 6-arm mixture ablation** | [`04_proxy_ablation.py`](scripts/04_proxy_ablation.py) — 11.4M-param models, identical seed and budget, 72 min CPU | [`proxy_report.md`](results/proxy_report.md) — web-heavy last by 16%; **my mixture 4th of 6** |
 | 5 | **Measured the OPUS selector's bias** | [`05_selector_floor.py`](scripts/05_selector_floor.py) — proxy gradient direction, first-order utility, top-40% retention, scored twice | [`selector_report.md`](results/selector_report.md) — **Indic retention 0.0%**; long-context **0.0% → 77.8%** on prefix vs full document. Rewrote the floor: 14.5% → **23.3%** |
 | 6 | **Re-ran the ablation epoch-honestly** | `04` with `--supply-scaled` — lane streams capped at real supply scaled to budget | [`proxy_report_supply_scaled.md`](results/proxy_report_supply_scaled.md) — confirmed one artifact, **refuted my own agentic prediction** |
 | 7 | **Fitted share→loss elasticities** | [`08_proxy_analysis.py`](scripts/08_proxy_analysis.py) — `nll = a + b·ln(share)` per lane | web is the flattest large lane (−0.214) — evidence against my own 31% |
 | 8 | **Built the L3 band that doesn't exist** | [`09_build_long_traces.py`](scripts/09_build_long_traces.py) — reconstructs PRM800K's search from 60,398 human-rated *wrong* branches | **253 real L3 traces, 328k tokens**, ceiling 3,250 reasoning tokens. L4 still empty |
-| 9 | **Pulled a real example for every band** | [`06_band_examples.py`](scripts/06_band_examples.py) | [`band_examples.md`](results/band_examples.md) — D0–D4 and L0–L3 with measured token counts |
+| 9 | **Pulled a real example for every band** | [`06_band_examples.py`](scripts/06_band_examples.py) | [`band_examples.md`](results/band_examples.md) — B0–B5 and L0–L3 with measured token counts |
 | 10 | **Accounted the cumulative target** | [`07_cleaning_report.py`](scripts/07_cleaning_report.py) | [`cleaning_report.md`](results/cleaning_report.md) — **144,450,507 cumulative** with S4; gate met |
 
 **The three results that changed the plan** — the floor (§5), the agentic share now under test (§8.3),
@@ -221,6 +221,19 @@ reason the Indic lane's real cost in this budget is measured in tokens rather th
 ## 4. The three scarce lanes, named, with the datasets that fill them
 
 ### 4.1 Agentic — 0.96%, and why it is not 2%
+
+**This is a deliberate breach of a constraint the session fixes.** The Session-5 composer sets two
+protected floors — *Indic ≥ 12%* and *Agentic ≥ 2%* — and states that dragging a lane toward zero
+clamps at the floor. My Indic floor is stricter than the session's (13.5–21.6% by stage, §5). My
+agentic share is **0.96%, which is under the session's floor**, and I am not going to describe that
+as a preference. Here is the case for breaking it.
+
+The composer's own supply check is the argument: at its 2T run, the 2% floor is 40B of demand
+against 0.63B of real supply — **63 epochs**. The floor as printed cannot be met by collected data at
+any run size the session considers; it is a statement of intent to be filled by synthesis, which is
+exactly what the widget's "must synthesize" tag says. So the real question is not *2% or 0.96%* but
+*how much verified agentic data can be manufactured*, and that is a number I costed per environment
+family rather than assumed.
 
 The arithmetic, in full, because this is the number to attack:
 
@@ -406,10 +419,22 @@ one table.
 | **D** Consolidation | 400B | 32K→128K | 11.5 | 24.0 | 24.0 | 14.0 | 12.0 | 13.0 | 1.5 |
 | **integrated** | 2.9T | | **31.03** | **24.00** | **17.90** | **11.52** | **7.03** | **7.56** | **0.96** |
 
-**A** builds language, script and world model. Indic starts at 15% — above its floor — deliberately:
-script and morphology must be learned while the embedding table is still plastic. V4's lesson is
-that raising the Hindi share *late*, against settled embeddings, is what destabilises a run.
-**B** hands the run over to code and STEM. **C** introduces long context only once the model can
+The session's timeline is **Seed → General → Reasoning → Long-context → Anneal**. This schedule maps
+onto it as A(Seed + General) → B → C(Reasoning + Long-context) → D → anneal. Two deliberate
+departures: **Reasoning and long context are merged into stage C**, because they share the same
+prerequisite — a model that can already read — and because long-context batches must be
+length-homogeneous, so interleaving them in one stage is cheaper than two passes; and **Seed is a
+sub-stage rather than a top-level stage**, specified below.
+
+**A0 — Seed (first 60B tokens of stage A, sequence length 2K, bands B0/B1 only).** Optimiser and
+embedding warm-up on the cleanest, simplest text: no code beyond snippets, no long documents, no
+research register. A warm start on hard data wastes the part of the run where the model can least
+use it. It sits inside A's 900B, so the integrated lane shares in the table above are unchanged.
+
+**A** then builds language, script and world model. Indic starts at 15% — above its floor —
+deliberately: script and morphology must be learned while the embedding table is still plastic. V4's
+lesson is that raising the Hindi share *late*, against settled embeddings, is what destabilises a
+run. **B** hands the run over to code and STEM. **C** introduces long context only once the model can
 already read and reason, stepping 8K→16K→32K inside the stage with length-homogeneous batches.
 **D** puts web at its floor and Indic at its peak (24%), because cross-lingual transfer is most
 efficient from an already-strong technical model, and runs the 128K RoPE-θ extension on
@@ -421,18 +446,23 @@ step change in the Hindi share met frozen embeddings. Trigger: gradient norm ris
 
 ### 7.2 Difficulty bands
 
-Bands are stamped per document at cleaning time and carried in the shard manifest. For text lanes
-they are **population quantiles of a readability proxy computed within script group** — not absolute
-thresholds, because a Malayalam word is far longer in code points than an English one and a fixed
-cut-off silently mislabels entire languages. For code, reasoning and agentic they are structural.
+The session's ladder has **six rungs, B0 nursery to B5 research/PhD** — this spec uses those, not a
+collapsed five. Bands are stamped per document at cleaning time and carried in the shard manifest.
+For text lanes they are **population quantiles of a readability proxy computed within script
+group** — not absolute thresholds, because a Malayalam word is far longer in code points than an
+English one and a fixed cut-off silently mislabels entire languages. For code, reasoning and agentic
+they are structural. Difficulty and trace length are **independent axes**: a hard problem with a
+short trace and an easy one with an ultra trace are not interchangeable, so both are stamped per
+document and both are scheduled per stage (§7.1, §7.3).
 
 | band | | A → D | docs | real example from `data/clean/`, with its measured token count |
 |---|---|---|---:|---|
-| **D0** Nursery | single-clause factual prose, no dependency beyond a sentence | 35 → 0 | 375 | a short English Wikipedia stub (440 tok) · an Odia article that the language-ID stage flagged `mixed_or_other` (341 tok) — D0 and a script-purity problem tend to be the same documents |
-| **D1** School | multi-sentence explanation or a 2–3 step word problem | 40 → 8 | 16,442 | GSM8K socratic, one arithmetic chain (125 tok: **71 supervised, 54 context**) · a NumPy utility function (261 tok) |
-| **D2** High school / undergrad | structured argument, competition problem, or a self-contained function with its test | 20 → 27 | 29,302 | a scikit-learn estimator module (898 tok) · a single-call tool trajectory over an API schema (`gorilla-openfunctions-v1`, 373 tok — **73 supervised, 300 context**) |
-| **D3** Graduate | research register, multi-file change, several non-obvious steps | 5 → 45 | 11,830 | an arXiv abstract (481 tok) · a tool call against a long schema (607 tok — **36 supervised, 571 context**, a 17× context-to-signal ratio in a single document) |
-| **D4** Frontier / PhD | olympiad or research problem, repo-scale change, specialist document | 0 → 20 | 1,992 | a PRM800K solution reasoning through partitions (844 tok, 752 supervised) · a BFCL multi-turn filesystem trajectory, `cd`→`mkdir`→`mv`→`grep`→`sort`→`diff` over four turns (638 tok, **286 supervised / 352 context**) |
+| **B0** Nursery | simple children's sentences; single clause, common vocabulary | 25 → 0 | 299 | a Tamil Wikipedia article of plain declarative sentences (7,542 tok) · an English Wikipedia stub (5,031 tok) — long but structurally flat, which is what B0 measures |
+| **B1** Grade-school | basic grade-school text, or a 2–3 step arithmetic word problem | 35 → 5 | 16,135 | GSM8K socratic, one arithmetic chain (390 tok: **287 supervised, 103 context**) · a short SQLite helper (191 tok) |
+| **B2** High-school | a structured explanation or a self-contained function | 25 → 15 | 28,020 | a single-call API trajectory (`gorilla-apibench`, 521 tok) · a FastAPI routing module (602 tok) |
+| **B3** Undergraduate | coursework level: a competition problem, or a module with its tests | 12 → 25 | 5,014 | a tool call against a long schema (`gorilla-openfunctions`, 394 tok — **52 supervised, 342 context**, a 7.6× context-to-signal ratio) · a Telugu article the language-ID stage flagged `mixed_or_other` (455 tok) |
+| **B4** Graduate | graduate-level texts, multi-file changes, several non-obvious steps | 3 → 35 | 3,140 | a 10-step PRM800K solution (301 tok, 264 supervised) · a full scikit-learn estimator module (12,075 tok) |
+| **B5** Research / PhD | research and PhD-grade papers, olympiad problems, repo-scale changes | 0 → 20 | 7,333 | an arXiv abstract (138 tok) · a 14+-step PRM800K solution (366 tok, 320 supervised) · BFCL multi-turn trajectories with ≥3 tool calls |
 
 Verbatim examples with measured token counts: [`results/band_examples.md`](results/band_examples.md).
 

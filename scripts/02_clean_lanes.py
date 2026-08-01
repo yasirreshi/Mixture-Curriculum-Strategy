@@ -8,7 +8,8 @@ added that Session 5 needs and Session 4 did not have:
     model's planning, tool calls and final answer carry loss; the user request,
     the tool observations and the repo files do not. We compute both counts, so
     the agentic lane can be sized in *supervised* tokens rather than raw bytes.
-  * DIFFICULTY BANDS D0-D4 and REASONING-LENGTH BANDS L0-L4 stamped on every
+  * DIFFICULTY BANDS B0-B5 (the session's nursery->PhD ladder) and REASONING-LENGTH
+    BANDS L0-L4 stamped on every
     document, so the curriculum can sample them.
   * an ANNEAL RESERVE flag. The mixture spec's admission criteria are applied to
     real documents here, which turns "we will hold back 100B tokens" into a
@@ -507,30 +508,32 @@ def load_tokenizer(docs):
 
 
 def difficulty_band(d, n_tokens):
-    """Documented heuristic, per lane. Bands are the session's nursery->PhD ladder."""
+    """The session's B0-B5 ladder (nursery, grade-school, high-school, undergraduate,
+    graduate, research/PhD). Structural for code / reasoning / agentic; the text lanes
+    are banded by quantile in assign_text_bands()."""
     lane = d["lane"]
     if lane == "agentic":
         if d.get("multi_turn"):
-            return "D4"
-        return "D3" if d.get("n_tool_calls", 1) > 1 else "D2"
+            return "B5" if d.get("n_tool_calls", 0) >= 3 else "B4"
+        return "B3" if d.get("n_tool_calls", 1) > 1 else "B2"
     if lane == "reasoning":
         src = d["source"]
         if src.startswith("gsm8k"):
-            return "D1"
+            return "B1"
         n = d.get("n_steps", 0)
-        return "D4" if n >= 14 else ("D3" if n >= 7 else "D2")
+        return "B5" if n >= 14 else "B4" if n >= 10 else "B3" if n >= 7 else "B2"
     if lane == "code":
         text = "\n".join(s["text"] for s in d["segments"])
-        if n_tokens > 4000 or "class " in text and "async " in text:
-            return "D3"
-        return "D2" if n_tokens > 400 else "D1"
+        if n_tokens > 4000 or ("class " in text and "async " in text):
+            return "B4"
+        return "B3" if n_tokens > 1500 else "B2" if n_tokens > 400 else "B1"
     if lane == "stem_math":
-        return "D3"
+        return "B5"          # arXiv: research register by construction
     if lane == "long_context":
-        return "D3" if n_tokens > 40000 else "D2"
+        return "B4" if n_tokens > 40000 else "B3"
     # web / indic are banded by quantile of a readability proxy computed WITHIN
     # their script group - see readability_proxy() and assign_text_bands().
-    return d.get("difficulty", "D2")
+    return d.get("difficulty", "B2")
 
 
 def readability_proxy(d):
@@ -555,7 +558,7 @@ def script_group(d):
 
 
 def assign_text_bands(docs):
-    """D0..D3 as population quantiles of the readability proxy, per script group.
+    """B0..B5 as population quantiles of the readability proxy, per script group.
     Quantiles, not fixed cut-offs, because the proxy's scale is script-dependent."""
     groups = defaultdict(list)
     for d in docs:
@@ -565,13 +568,14 @@ def assign_text_bands(docs):
     qs = {}
     for g, vals in groups.items():
         vals.sort()
-        qs[g] = [vals[int(len(vals) * q)] for q in (0.15, 0.45, 0.80)]
+        qs[g] = [vals[int(len(vals) * q)] for q in (0.12, 0.30, 0.52, 0.74, 0.90)]
     for d in docs:
         if d["lane"] not in ("general_web", "indic"):
             continue
         cut = qs[script_group(d)]
         r = d.pop("_read")
-        d["difficulty"] = "D0" if r < cut[0] else "D1" if r < cut[1] else "D2" if r < cut[2] else "D3"
+        d["difficulty"] = next((b for b, c in zip(("B0", "B1", "B2", "B3", "B4"), cut) if r < c),
+                               "B5")
     return qs
 
 
@@ -603,7 +607,7 @@ def reserve_admit(d):
                 and d.get("verified_answer") and d.get("human_checked"))
     if lane == "indic":
         return (d.get("tier") == "A" and d.get("n_tokens", 0) >= 1200
-                and d.get("script_ratio", 0) >= 0.90 and d.get("difficulty") != "D0")
+                and d.get("script_ratio", 0) >= 0.90 and d.get("difficulty") not in ("B0", "B1"))
     if lane == "long_context":
         return d.get("n_tokens", 0) >= 65536
     if lane == "code":
@@ -613,7 +617,7 @@ def reserve_admit(d):
         text = "\n".join(s["text"] for s in d["segments"])
         return ("def test_" in text or "assert " in text) and d.get("n_tokens", 0) > 300
     if lane == "general_web":
-        return d.get("n_tokens", 0) >= 2500 and d.get("difficulty") in ("D2", "D3")
+        return d.get("n_tokens", 0) >= 2500 and d.get("difficulty") in ("B3", "B4", "B5")
     return False
 
 

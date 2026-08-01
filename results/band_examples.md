@@ -6,85 +6,108 @@ _Every example below is a document from `data/clean/` in this repo, with the tok
 
 | band | name | docs in corpus | lanes present | median tokens |
 |---|---|---:|---|---:|
-| **D0** | Nursery | 375 | general_web, indic | 2,547 |
-| **D1** | School | 16,442 | code, general_web, indic, reasoning | 177 |
-| **D2** | High school / undergrad | 29,302 | agentic, code, general_web, indic, long_context, reasoning | 346 |
-| **D3** | Graduate | 11,830 | agentic, code, general_web, indic, long_context, reasoning, stem_math | 288 |
-| **D4** | Frontier / PhD | 1,992 | agentic, reasoning | 581 |
+| **B0** | Nursery | 299 | general_web, indic | 2,471 |
+| **B1** | Grade-school | 16,135 | code, general_web, indic, reasoning | 175 |
+| **B2** | High-school | 28,020 | agentic, code, general_web, indic, reasoning | 335 |
+| **B3** | Undergraduate | 5,014 | agentic, code, general_web, indic, long_context, reasoning | 479 |
+| **B4** | Graduate | 3,140 | agentic, code, general_web, indic, long_context, reasoning | 1,067 |
+| **B5** | Research / PhD | 7,333 | agentic, general_web, indic, reasoning, stem_math | 252 |
 
-### D0 - Nursery
+### B0 - Nursery
 
-- **lane** `indic` · **source** `wikipedia:or` · **341 tokens** (341 supervised / 0 context) · lang `mixed_or_other`
-  > ଇଂରାଜୀ ଲିଙ୍କ https://or.wikipedia.org/wiki/Sunday ରବିବାର ହେଲା ସପ୍ତାହର ଏମିତି ଏକ ଦିନ ଯାହା ଶନିବାର ଆଉ ସୋମବାର ମଝିରେ ଆସେ । ରବିବାର ହେଉଛି ସୂର୍ଯ୍ୟଦେବଙ୍କ ବାର । ଏହିଦିନ ସୂର୍ଯ୍ୟଙ୍କୁ ଧ୍ୟାନ କରି ବ୍ରତ ରଖିବା ସହିତ ସାତ୍ତ୍ୱିକ ଲୁଣବିହୀନ ଖାଦ୍ୟ ଗ୍ରହଣ କରିବା ଉଚିତ । ପୃଥିବୀସାରା ଏହା ଏକ ସାଧାରଣ ଛୁଟିଦିନ । ତେବେ ଗଲ୍ଫ/ଆରବି ଦେଶଗୁଡ଼ିକରେ ଏହି ଦିନରେ ଅଫିସସବୁ ଖୋଲା ରହେ । "Which is the first day of the week? And which is week 1 of the year? (FAQ - Time) : FAQs  ...
+- **lane** `indic` · **source** `wikipedia:ta` · **7,542 tokens** (7,542 supervised / 0 context) · lang `ta`
+  > இசை (ஒலிப்பு) (music) என்பது ஒழுங்கு செய்யப்பட்ட, கட்டுப்படுத்தப்பட்ட, அழகு ஒலியாகும். இசை என்ற சொல்லுக்கு இசைய வைப்பது என்று பொருள். மனிதனையும் மற்ற உயிரினங்களையும் இசைய வைக்கின்ற, பணிய வைக்கின்ற ஓர் அருஞ்சாதனம் இசை. இசையை சிரவண கலை எனவும் அழைப்பர். சங்கீதம் என்பது செவிக்கு இன்பம் தரும் தொனி(ஒலி)களைப் பற்றிய கலையாகும். இசையை வடமொழியில் நாதம் என அழைப்பர். இசை இன்று பல்வேறு பயன்களைத் தருகின்றது. தற்போது படித்தவர் முதல ...
 
-- **lane** `general_web` · **source** `wikipedia:en` · **440 tokens** (440 supervised / 0 context) · lang `en`
-  > Algorithms is a monthly peer-reviewed open-access scientific journal of mathematics, covering design, analysis, and experiments on algorithms. The journal is published by MDPI and was established in 2008. The founding editor-in-chief was Kazuo Iwama (Kyoto University). From May 2014 to September 2019, the editor-in-chief was Henning Fernau (Universität Trier). The current editor-in-chief is Frank Werner (Otto-von-Gue ...
+- **lane** `general_web` · **source** `wikipedia:en` · **5,031 tokens** (5,031 supervised / 0 context) · lang `en`
+  > Anacondas or water boas are a group of large boas of the genus Eunectes. They are a semiaquatic group of snakes found in tropical South America. Three to five extant and one extinct species are currently recognized, including one of the largest snakes in the world, E. murinus, the green anaconda. The generic name Eunectes is derived from Ancient Greek: εὐνήκτης, romanized: eunēktēs, lit. 'good swimmer'. The South Ame ...
 
-### D1 - School
+### B1 - Grade-school
 
-- **lane** `reasoning` · **source** `gsm8k-socratic` · **125 tokens** (71 supervised / 54 context) · lang `en`
-  > Problem: Of the 24 students in class, one-third are in the after-school chess program, and half of those students will be absent from school on Friday for the regional chess tournament. How many of the students in this class are going to that tournament?
-<reasoning>
-How many students are in the after-school chess program? ** There are 24/3=<<24/3=8>>8 students in the program.
-How many students are going to the tourna ...
+- **lane** `reasoning` · **source** `gsm8k-socratic` · **390 tokens** (287 supervised / 103 context) · lang `en`
+  > Problem: Mr. Rocky went to the market to sell his handmade crafts on a particular week. He was selling jewelry at $30 each and paintings at $100 each. However, he realized the income from the sales wasn't worth the labor and materials he had used, so he decided to increase the price of jewelry by $10 each and the cost of each painting by 20%. Calculate the total price a buyer who takes two pieces of jewelry and five  ...
 
-- **lane** `code` · **source** `numpy/numpy` · **261 tokens** (261 supervised / 0 context) · lang `code`
-  > #include <immintrin.h>
-/**
- * Test BW mask operations due to:
- * - MSVC has supported it since vs2019 see,
- * https://developercommunity.visualstudio.com/content/problem/518298/missing-avx512bw-mask-intrinsics.html
- * - Clang >= v8.0
- * - GCC >= v7.1
- */
-int main(void)
-{
- __mmask64 m64 = _mm512_cmpeq_epi8_mask(_mm512_set1_epi8((char)1), _mm512_set1_epi8((char)1));
- m64 = _kor_mask64(m64, m64);
- m64 = _kxor_mask64(m64 ...
+- **lane** `code` · **source** `sqlite/sqlite` · **191 tokens** (191 supervised / 0 context) · lang `code`
+  > /*
+** 2023-08-04
+**
+** The author disclaims copyright to this source code. In place of
+** a legal notice, here is a blessing:
+**
+** May you do good and not evil.
+** May you find forgiveness for yourself and forgive others.
+** May you share freely, never taking more than you give.
+**
+*************************************************************************
+** This file is part of the JNI bindings for the sqlite3 C API ...
 
-### D2 - High school / undergrad
+### B2 - High-school
 
-- **lane** `code` · **source** `scikit-learn/scikit-learn` · **898 tokens** (898 supervised / 0 context) · lang `code`
-  > """
-==========================================================
-Demonstrating the different strategies of KBinsDiscretizer
-==========================================================
-This example presents the different strategies implemented in KBinsDiscretizer:
-- 'uniform': The discretization is uniform in each feature, which means that
- the bin widths are constant in each dimension.
-- 'quantile': The discretization i ...
-
-- **lane** `agentic` · **source** `gorilla-openfunctions-v1` · **373 tokens** (73 supervised / 300 context) · lang `en`
-  > <tools>
-{'name': 'RapidAPI', 'api_name': 'requests.get', 'description': 'This ready-to-use API provides high-accuracy brand detection and logo recognition. [![Examples](https://img.shields.io/badge/View%20examples-gray?logo=gitlab&style=flat)](https://gitlab.com/api4ai/examples/brand-det) [![API4AI](https://img.shields.io/badge/api4.ai%20platform-fee33c?logo=icloud&flat&logoColor=black)](https://api4.ai/apis/brand-re ...
-
-### D3 - Graduate
-
-- **lane** `agentic` · **source** `gorilla-openfunctions-v1` · **607 tokens** (36 supervised / 571 context) · lang `en`
-  > <tools>
-{'name': 'active-directory', 'api_name': 'gcloud.active_directory.domains().restore(domain="my_domain.com", backup="my_backup"', 'description': 'Restore a Managed Microsoft AD domain', 'parameters': [{'name': 'domain'}, {'name': 'backup'}, {'name': 'async'}]}
-{'name': 'RapidAPI', 'api_name': 'requests.get', 'description': "Do you care about accessing free images of dogs on the internet? Do you want your dog p ...
-
-- **lane** `stem_math` · **source** `arxiv` · **481 tokens** (481 supervised / 0 context) · lang `en`
-  > A Maxwell principle for generalized Orlicz balls In [A dozen de {F}inetti-style results in search of a theory, Ann. Inst. H. Poincaré Probab. Statist. 23(2)(1987), 397--423], Diaconis and Freedman studied low-dimensional projections of random vectors from the Euclidean unit sphere and the simplex in high dimensions, noting that the individual coordinates of these random vectors look like Gaussian and exponential rand ...
-
-### D4 - Frontier / PhD
-
-- **lane** `reasoning` · **source** `prm800k-phase2` · **844 tokens** (752 supervised / 92 context) · lang `en`
-  > Problem: Let $z_1$, $z_2$, $z_3$, $\dots$, $z_{12}$ be the 12 zeroes of the polynomial $z^{12} - 2^{36}$. For each $j$, let $w_j$ be one of $z_j$ or $iz_j$. Find the maximum possible value of the real part of
-\[\sum_{j = 1}^{12} w_j.\]
-<reasoning>
-I recognize that $z^{12} - 2^{36}$ is a difference of two perfect 12th powers, so I can factor it as $(z^6 - 2^{18})(z^6 + 2^{18})$.
-Then, each factor is a difference or su ...
-
-- **lane** `agentic` · **source** `bfcl-v4-multi-turn` · **638 tokens** (286 supervised / 352 context) · lang `en`
+- **lane** `agentic` · **source** `gorilla-apibench-huggingface` · **521 tokens** (488 supervised / 33 context) · lang `en`
   > <user>
-I need to schedule a flight soon on booking id 1234 and want to examine different alternatives. Calculate the cost of a business class ticket for the first airport on the available list to the last airport on the same list, on the last day of October 2026. Provide the estimated total payable amount for me.
+I am writing an automatic essay scorer. I want to identify if the given essay contradicts the provided prompt statement or not.
 </user>
-<tool_call>
-list_all_airports()
-get_flight_cost(travel_from='RMS', travel_to='BOS', travel_date=' ...
+<assistant>
+<<<domain>>>: Natural Language Processing Zero-Shot Classification
+<<<api_call>>>: AutoModelForSequenceClassification.from_pretrained('MoritzLaurer/DeBERTa-v3-xsmall-mnli-fever-anli-ling-binary')
+<<<api_provider>>>: Hugging Face Transformers
+<<<explanation>>>: 1. T ...
+
+- **lane** `code` · **source** `tiangolo/fastapi` · **602 tokens** (602 supervised / 0 context) · lang `code`
+  > from fastapi import Depends, FastAPI, Security
+from fastapi.security.open_id_connect_url import OpenIdConnect
+from fastapi.testclient import TestClient
+from inline_snapshot import snapshot
+from pydantic import BaseModel
+app = FastAPI()
+oid = OpenIdConnect(openIdConnectUrl="/openid", auto_error=False)
+class User(BaseModel):
+ username: str
+def get_current_user(oauth_header: str \| None = Security(oid)):
+ if oauth_header ...
+
+### B3 - Undergraduate
+
+- **lane** `agentic` · **source** `gorilla-openfunctions-v1` · **394 tokens** (52 supervised / 342 context) · lang `en`
+  > <tools>
+{'name': 'PyArrow', 'api_name': 'logical_or', 'description': 'Logical OR', 'parameters': {'required': [{'name': 'x', 'description': 'Argument to compute function. Can be an array-like or scalar-like value.'}, {'name': 'y', 'description': 'Argument to compute function. Can be an array-like or scalar-like value.'}, {'name': 'memory_pool', 'description': 'Optional. If not passed, memory will be allocated from th ...
+
+- **lane** `indic` · **source** `wikipedia:te` · **455 tokens** (455 supervised / 0 context) · lang `mixed_or_other`
+  > బఠానీ లేదా బఠానీలు (శాస్త్రీయనామం: పీసం సెటైవమ్) ఒక రకమైన గింజ ధాన్యాలు. వీటిని పచ్చిగానూ, ఎండబెట్టి కూడా వాడుతారు. పచ్చి బఠానీలను కూరల వినియోగంలోనూ, ఎండు బఠానీలను చిరుతిండి గానూ ఉపయోగిస్తారు. బఠానీల తొక్కలు ముదిరి ముడతలు పడకూడదు, తొక్కలపై నల్లటి పసుపు రంగు మరకలుండరాదు Schaefer, Hanno; Hechenleitner, Paulina; Santos-Guerra, Arnoldo; de Sequeira, Miguel Menezes; Pennington, R Toby; Kenicer, Gregory; Carine, Mark A (20 ...
+
+### B4 - Graduate
+
+- **lane** `reasoning` · **source** `prm800k-phase2` · **301 tokens** (264 supervised / 37 context) · lang `en`
+  > Problem: The ratio of the length of a rectangular room to its width is $5:3$. The perimeter of the room is 48 feet. What is the area of the room?
+<reasoning>
+I want to find the area of the room, which is the product of the length and the width.
+But I don't know the exact values of the length and the width, only their ratio.
+Maybe I can use the ratio to write the length and the width in terms of a common variable.
+Let ...
+
+- **lane** `code` · **source** `scikit-learn/scikit-learn` · **12,075 tokens** (12,075 supervised / 0 context) · lang `code`
+  > """Bagging meta-estimator."""
+# Authors: The scikit-learn developers
+# SPDX-License-Identifier: BSD-3-Clause
+import itertools
+import numbers
+from abc import ABCMeta, abstractmethod
+from functools import partial
+from numbers import Integral
+from warnings import warn
+import numpy as np
+from sklearn.base import ClassifierMixin, RegressorMixin, _fit_context
+from sklearn.ensemble._base import BaseEnsemble, _partition_esti ...
+
+### B5 - Research / PhD
+
+- **lane** `stem_math` · **source** `arxiv` · **138 tokens** (138 supervised / 0 context) · lang `en`
+  > Simultaneous FPQ-Ordering and Hybrid Planarity Testing We study the interplay between embedding constrained planarity and hybrid planarity testing. We consider a constrained planarity testing problem, called 1-Fixed Constrained Planarity, and prove that this problem can be solved in quadratic time for biconnected graphs. Our solution is based on a new definition of fixedness that makes it possible to simplify and ext ...
+
+- **lane** `reasoning` · **source** `prm800k-phase2` · **366 tokens** (320 supervised / 46 context) · lang `en`
+  > Problem: Alan saved 500 dollars in a bank account that compounds 3 percent annually. Assuming there are no other transactions, after 10 years, how much is in Alan's bank account? (Give your answer to the nearest dollar.)
+<reasoning>
+I know that compound interest means that each year, the interest is calculated based on the current balance, not the initial deposit.
+So, to find the balance after 10 years, I need to app ...
 
 ## Reasoning-length bands
 
@@ -93,12 +116,12 @@ get_flight_cost(travel_from='RMS', travel_to='BOS', travel_date=' ...
 | **L0_direct** | 0-32 | `<effort=none>` | 7 | 77 |
 | **L1_short** | 32-256 | `<effort=low>` | 17,106 | 175 |
 | **L2_medium** | 256-1024 | `<effort=medium>` | 3,640 | 462 |
-| **L3_long** | 1024-4096 | `<effort=high>` | 0 | 0 |
+| **L3_long** | 1024-4096 | `<effort=high>` | 253 | 1,215 |
 | **L4_ultra** | 4096-32768 | `<effort=ultra>` | 0 | 0 |
 
 ### L0_direct · `<effort=none>`
 
-- **source** `gsm8k-plain` · **86 tokens** (31 supervised) · difficulty `D1`
+- **source** `gsm8k-plain` · **86 tokens** (31 supervised) · difficulty `B1`
   > Problem: Rocky boxed 190 fights in his career. 50 percent of his fights were knockouts, and 20 percent of the knockouts were in the first round. How many knockouts did Rocky have in the first round?
 <reasoning>
 Knockouts:190(.50)=95
@@ -108,27 +131,33 @@ Answer: 19
 
 ### L1_short · `<effort=low>`
 
-- **source** `gsm8k-socratic` · **365 tokens** (235 supervised) · difficulty `D1`
-  > Problem: Andrew is having two of his friends over for a sleepover. For one friend, Brian, he asks his mother to buy 3 donuts. He asks for his other friend, Samuel, to get the same. A day before the sleepover Andrew ends up inviting two more friends and asks his mother to buy them the same amount of donuts. Just in case, Andrew’s mother wants to buy one more donut for each of Andrew’s friends. Andrew’s mother is going to buy the same amount of donuts for Andrew as everybody else. How many donuts will Andrew’s mother need to buy?
+- **source** `gsm8k-socratic` · **309 tokens** (225 supervised) · difficulty `B1`
+  > Problem: The trip from Philip's house to the children's school is 2.5 miles, and the trip to the market is 2 miles. He makes the round trip to school two times (when taking the children to school and when bringing them back) every day for 4 days a week. Then he makes a round trip to the market once during weekends. What is his car's mileage for a typical week?
 <reasoning>
-How many donuts will Andrew’s friends get? ** Andrew is having 4 friends over who will get 3 donuts each, 4 x 3 = <<4*3=12>>12 donuts total.
-How many donu ...
+How many miles does Philip drive when taking the children to school? ** Making the round trip to school means driving from the house to school and then back, for a total of 2.5+2.5 = <<2.5+2.5=5>>5 miles
+How many miles does Philip drive when taking the children to school? ** He makes this trip twice in one day for a total o ...
 
 ### L2_medium · `<effort=medium>`
 
-- **source** `prm800k-phase2` · **971 tokens** (930 supervised) · difficulty `D4`
-  > Problem: Given $\tan \theta = 5,$ find
-\[\frac{1 - \cos \theta}{\sin \theta} - \frac{\sin \theta}{1 + \cos \theta}.\]
+- **source** `prm800k-phase2` · **1,056 tokens** (952 supervised) · difficulty `B5`
+  > Problem: Let $n$ be a positive integer. The sequence $(x_k)$ is defined by $x_0 = 0,$ $x_1 = 1,$ and
+\[x_{k + 2} = \frac{(n - 1) x_{k + 1} - (n - k) x_k}{k + 1}\]for $k \ge 0.$ Find $x_0 + x_1 + x_2 + \dotsb$ as a function of $n.$
 <reasoning>
-To solve this problem, I need to express the cosine and sine of $\theta$ in terms of the tangent.
-I recall that $\tan \theta = \frac{\sin \theta}{\cos \theta},$ so I can solve for $\cos \theta$ by multiplying both sides by $\cos \theta$ and dividing by $\tan \theta.$
-This gives me $\cos \theta = \frac{\sin \theta}{\tan \theta}.$
-I also recall that $\sin^2 \theta + \cos^2 \theta = 1,$ so I can use this identity to find $\sin \theta.$
-Substituting $\cos \theta = \frac{\sin \theta}{\tan \theta}$ into the identity, I get $\sin^2 \theta + \frac{\sin^2 \theta}{\tan^2 \t ...
+I notice that the recurrence relation involves the coefficients $n - 1,$ $n - k,$ and $k + 1,$ which are all binomial coefficients.
+This suggests that I might try to rewrite the recurrence in terms of binomial coefficients and see if I can simplify it.
+I also notice that the initial values $x_0 = 0$ and $x_1 = 1$ are the same as the binomial coefficients $\binom{n}{0}$ and $\binom{n}{1},$ respectively.
+So I wonder if I can find a pattern for $x_k$ in te ...
 
-### L3_long
+### L3_long · `<effort=high>`
 
-_No document in the cleaned corpus falls in this band. That is itself a finding: this band has to be manufactured._
+- **source** `prm800k-phase2-search-reconstruction` · **3,285 tokens** (3,261 supervised) · difficulty `D4`
+  > Problem: What is the largest $2$-digit prime factor of the integer $n = {200\choose 100}$?
+<reasoning>
+To find the largest $2$-digit prime factor of $n$, I need to first express $n$ in terms of its prime factorization.
+I know that ${n\choose k} = \frac{n!}{k!(n-k)!}$, so ${200\choose 100} = \frac{200!}{100!100!}$.
+This means that $n$ is the product of all the prime factors of $200!$ that are not canceled out by the prime factors of $100!100!$.
+I can use the fact that $100! = 1 \times 2 \times \cdots \times 100$ and $200! = 1 \times 2 \times \cdots \times 200$ to identify which prime factors are canceled out.
+For example, the prime factor $2$ appears in both $100!$ and $200!$, but it appears  ...
 
 ### L4_ultra
 

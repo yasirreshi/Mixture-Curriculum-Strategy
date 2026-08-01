@@ -3,7 +3,7 @@
   "version": "1.0",
   "model": {
     "params": 40000000000.0,
-    "basis": "Session 3 strategy report (40B dense, 200k vocab, tied embeddings)"
+    "basis": "Session 3 strategy report (40B dense, 200k vocab, tied embeddings). The Session-5 curriculum widget describes a 120B run (V4's final size). The mixture and curriculum here are scale-invariant - shares, tiers, floors and bands do not change with parameter count - but the 3.0T budget is not: at 40B it is 75 tokens/param, at 120B it would be 25, near Chinchilla-optimal and too few for an inference-heavy deployment. If V5 is sized at 120B the budget rises to ~9T and every epoch figure in this plan must be re-derived, which is why the solver takes the budget as an input rather than a constant."
   },
   "budget": {
     "total_tokens": 3000000000000.0,
@@ -82,11 +82,11 @@
       ],
       "why_this_number": "7% at 2.9T = 203B against 85B unique = 2.4 epochs - inside the 4-epoch cap but with no slack, which is why the lane is protected. The session is explicit that reasoning is *taught later* (SFT + RLVR, sessions 17-18); pretraining's job is to install the structure of a worked multi-step argument so the later stage has something to sharpen. 7% buys that structure across all four length bands; going higher would burn traces we would rather spend at low LR in the anneal and in RLVR. MEASURED CAVEAT: cleaning the open reasoning data we could reach (PRM800K + GSM8K, 20,753 usable traces after dropping every trace containing a human-negatively-rated step) produced zero band-L3/L4 traces. The long half of this lane does not exist in open data and has to be distilled - see inventory.synthesis_capacity.reasoning_long_traces_L3_L4.",
       "length_band_split_pct": {
-        "L0_direct": 10,
-        "L1_short": 30,
-        "L2_medium": 32,
-        "L3_long": 20,
-        "L4_ultra": 8
+        "L0_direct": 9.4,
+        "L1_short": 30.0,
+        "L2_medium": 32.4,
+        "L3_long": 20.8,
+        "L4_ultra": 7.4
       }
     },
     "long_context": {
@@ -126,11 +126,12 @@
         "tokens": 900000000000.0,
         "seq_len": 4096,
         "difficulty_mix": {
-          "D0": 35,
-          "D1": 40,
-          "D2": 20,
-          "D3": 5,
-          "D4": 0
+          "B0": 25,
+          "B1": 35,
+          "B2": 25,
+          "B3": 12,
+          "B4": 3,
+          "B5": 0
         },
         "weights_pct": {
           "general_web": 56.0,
@@ -141,7 +142,23 @@
           "long_context": 2.5,
           "agentic": 0.5
         },
-        "objective": "Language, script, world model, basic structure. Indic starts at 15% - above its floor - because script and morphology have to be learned while the embedding table is still plastic; V4's lesson is that raising the Indic share *late* against settled embeddings is what destabilises a run."
+        "objective": "Language, script, world model, basic structure. Indic starts at 15% - above its floor - because script and morphology have to be learned while the embedding table is still plastic; V4's lesson is that raising the Indic share *late* against settled embeddings is what destabilises a run.",
+        "reasoning_length_mix": {
+          "L0_direct": 20,
+          "L1_short": 55,
+          "L2_medium": 20,
+          "L3_long": 5,
+          "L4_ultra": 0
+        },
+        "seed_substage": {
+          "tokens": 60000000000.0,
+          "seq_len": 2048,
+          "difficulty_bands_allowed": [
+            "B0",
+            "B1"
+          ],
+          "why": "The session's stage 1 is a Seed warm start before the broad base. It lives inside stage A's 900B rather than as a fifth top-level stage, so the integrated lane shares are unchanged. Its job is optimiser and embedding warm-up on the cleanest, simplest text at short sequence length - B0/B1 only, no code beyond snippets, no long documents - because a warm start on hard data wastes the part of the run where the model can least use it."
+        }
       },
       {
         "id": "B",
@@ -149,11 +166,12 @@
         "tokens": 900000000000.0,
         "seq_len": 8192,
         "difficulty_mix": {
-          "D0": 10,
-          "D1": 30,
-          "D2": 40,
-          "D3": 18,
-          "D4": 2
+          "B0": 8,
+          "B1": 22,
+          "B2": 30,
+          "B3": 25,
+          "B4": 13,
+          "B5": 2
         },
         "weights_pct": {
           "general_web": 28.0,
@@ -164,7 +182,14 @@
           "long_context": 3.0,
           "agentic": 1.0
         },
-        "objective": "Code and STEM take over from web. This is where the model becomes technical; web drops by half over an 8B-token blend, not in one step."
+        "objective": "Code and STEM take over from web. This is where the model becomes technical; web drops by half over an 8B-token blend, not in one step.",
+        "reasoning_length_mix": {
+          "L0_direct": 12,
+          "L1_short": 40,
+          "L2_medium": 33,
+          "L3_long": 13,
+          "L4_ultra": 2
+        }
       },
       {
         "id": "C",
@@ -172,11 +197,12 @@
         "tokens": 700000000000.0,
         "seq_len": 32768,
         "difficulty_mix": {
-          "D0": 3,
-          "D1": 15,
-          "D2": 35,
-          "D3": 37,
-          "D4": 10
+          "B0": 2,
+          "B1": 10,
+          "B2": 22,
+          "B3": 30,
+          "B4": 26,
+          "B5": 10
         },
         "weights_pct": {
           "general_web": 14.0,
@@ -187,7 +213,14 @@
           "long_context": 16.8,
           "agentic": 1.2
         },
-        "objective": "Sequence length steps 8K->16K->32K inside the stage, with length-homogeneous batches (a batch cannot mix 4K and 32K samples). Long context is introduced only now, after the model can already read and reason, so it learns to hold information rather than to learn everything at once."
+        "objective": "Sequence length steps 8K->16K->32K inside the stage, with length-homogeneous batches (a batch cannot mix 4K and 32K samples). Long context is introduced only now, after the model can already read and reason, so it learns to hold information rather than to learn everything at once.",
+        "reasoning_length_mix": {
+          "L0_direct": 8,
+          "L1_short": 25,
+          "L2_medium": 35,
+          "L3_long": 24,
+          "L4_ultra": 8
+        }
       },
       {
         "id": "D",
@@ -195,11 +228,12 @@
         "tokens": 400000000000.0,
         "seq_len": 32768,
         "difficulty_mix": {
-          "D0": 0,
-          "D1": 8,
-          "D2": 27,
-          "D3": 45,
-          "D4": 20
+          "B0": 0,
+          "B1": 5,
+          "B2": 15,
+          "B3": 25,
+          "B4": 35,
+          "B5": 20
         },
         "weights_pct": {
           "general_web": 11.5,
@@ -210,9 +244,17 @@
           "long_context": 13.0,
           "agentic": 1.5
         },
-        "objective": "Web at its floor, Indic at its peak (24%) because cross-lingual transfer from a strong technical model is at its most efficient here, and a 128K RoPE-theta extension runs at the end of this stage on long-context data only."
+        "objective": "Web at its floor, Indic at its peak (24%) because cross-lingual transfer from a strong technical model is at its most efficient here, and a 128K RoPE-theta extension runs at the end of this stage on long-context data only.",
+        "reasoning_length_mix": {
+          "L0_direct": 5,
+          "L1_short": 18,
+          "L2_medium": 32,
+          "L3_long": 30,
+          "L4_ultra": 15
+        }
       }
-    ]
+    ],
+    "_stage_map": "Session widget: Seed -> General -> Reasoning -> Long-context -> Anneal. This spec: A(Seed sub-stage + General) -> B(technical ramp) -> C(Reasoning + Long-context) -> D(consolidation) -> anneal. Reasoning and long context are merged into one stage because they share the same prerequisite - a model that can already read - and because long-context batches must be length-homogeneous, so interleaving them inside one stage is cheaper than two passes over the schedule."
   },
   "protected_floor": {
     "_about": "The fraction of EVERY batch that the OPUS selector may not touch. This was 'Indic 12% + agentic 0.5% + long reasoning 2%' until scripts/05_selector_floor.py measured what an English-and-code-weighted proxy actually does to those lanes. It does not under-value them; it erases them. The floor below is the level the measurement demands, not the level that felt proportionate.",
@@ -228,7 +270,8 @@
     "measured_basis": "Measured retention at top-40% selection against a proxy direction built from general_web 45% / code 40% / stem 15%: Indic 0.0% (prefix-500 scoring) and 1.1% (full-document scoring); agentic 14.4% / 3.3%; reasoning 22.2% / 15.6%; against general_web 93.3% / 70.0% and code 68.9% / 64.4%. With Indic retention at ~0, a 12% absolute floor would have delivered a realized Indic share of 12% against a 17.9% schedule - a 5.9pt shortfall every batch, compounding over 2.9T tokens. Holding realized share within 10% of scheduled requires protecting ~90% of the scheduled share, which is what this rule does.",
     "prefix_effect": "The single cleanest number in the repo: long-context candidates retain 0.0% when the selector scores the first 500 tokens of a document and 77.8% when it scores a window from anywhere in the same documents. The session's claim that the scorer only sees the head is not a detail - for long documents it is the whole outcome.",
     "cost_acknowledged": "Protecting ~23% of every batch leaves the selector's efficiency gain applying to ~77% of it, against ~92% under V4's 8% floor. That is the price of not starving the three lanes this model exists for, and it is a real price.",
-    "revisit_trigger": "If the production proxy direction is measured to retain Indic above 30% - e.g. because it includes MILU/IndicGenBench gradients - re-derive the protected fraction from that measurement and lower it. The rule is 'protect what the selector demonstrably rejects', not 'protect 90%'."
+    "revisit_trigger": "If the production proxy direction is measured to retain Indic above 30% - e.g. because it includes MILU/IndicGenBench gradients - re-derive the protected fraction from that measurement and lower it. The rule is 'protect what the selector demonstrably rejects', not 'protect 90%'.",
+    "deviation_from_session_floor": "The Session-5 composer fixes Indic >= 12% and Agentic >= 2%. This spec is STRICTER on Indic (13.5-21.6% by stage, and 90% of it selector-exempt) and BREACHES the agentic floor, running 0.96%. Justification: at the composer's own 2T run, a 2% agentic floor is 40B of demand against 0.63B of collected supply - 63 epochs - so the floor is not a data constraint but a synthesis commitment. We honour the commitment at the size we can actually cost (10B verified tokens) rather than the size that reads well, and §8.3's decision rule raises the share to 2.0% the moment the synthesis programme funds it at <=4 epochs."
   },
   "anneal_reserve": {
     "_about": "Declared now, quarantined from the main run at shard-manifest level, spent in the final 100B tokens at decayed LR. If the selector eats the best Indic, agentic and reasoning data during the main run there is nothing special left for the cooldown, so the reserve is a Session-5 allocation decision, not an end-of-run discovery.",
@@ -267,30 +310,34 @@
     }
   },
   "difficulty_bands": {
-    "_about": "Bands are assigned per document at cleaning time and carried in the shard manifest, so the curriculum can sample them. Levels are the session's nursery->PhD ladder. Real examples for every band, drawn from the corpus this repo actually cleaned, are in results/band_examples.md.",
-    "D0": {
+    "_about": "The Session-5 curriculum widget's ladder, B0 nursery to B5 research/PhD - six rungs, not five. Bands are stamped per document at cleaning time and carried in the shard manifest. For text lanes they are population quantiles of a readability proxy computed WITHIN script group; for code, reasoning and agentic they are structural. Real examples at every rung: results/band_examples.md.",
+    "B0": {
       "name": "Nursery",
-      "description": "single-clause factual prose, common vocabulary, no dependency longer than a sentence"
+      "description": "simple children's sentences; single clause, common vocabulary, no dependency beyond a sentence"
     },
-    "D1": {
-      "name": "School",
-      "description": "multi-sentence explanation or a 2-3 step arithmetic word problem; grade-school register"
+    "B1": {
+      "name": "Grade-school",
+      "description": "basic grade-school text, or a 2-3 step arithmetic word problem"
     },
-    "D2": {
-      "name": "High school / undergrad",
-      "description": "structured argument, a competition-style problem, or a self-contained function with its test"
+    "B2": {
+      "name": "High-school",
+      "description": "high-school level material; a structured explanation or a self-contained function"
     },
-    "D3": {
+    "B3": {
+      "name": "Undergraduate",
+      "description": "undergraduate coursework; a competition problem or a module with its tests"
+    },
+    "B4": {
       "name": "Graduate",
-      "description": "research-register text, multi-file code change, or a problem needing several non-obvious steps"
+      "description": "graduate-level texts, multi-file changes, several non-obvious steps"
     },
-    "D4": {
-      "name": "Frontier / PhD",
-      "description": "olympiad or research-level problem, repo-scale change with hidden tests, or a document only a specialist can follow"
+    "B5": {
+      "name": "Research / PhD",
+      "description": "research and PhD-grade papers, olympiad problems, repo-scale changes with hidden tests"
     }
   },
   "reasoning_length_bands": {
-    "_about": "The effort dial is not created at inference time; it selects among behaviours the model was trained to produce. So the reasoning share is a *distribution over trace lengths*, and each band gets its own control token. Measured token counts and real examples are in results/band_examples.md.",
+    "_about": "The session grades traces short/medium/long/ultra and states that trace length is scheduled alongside difficulty, because a hard problem with a short trace and an easy one with an ultra trace are not interchangeable. This spec adds a fifth rung below the session's four - L0, no trace at all - because the effort dial has an 'instant' setting and a model that cannot answer immediately has not learned the bottom of the dial. Difficulty and trace length are independent axes: both are stamped per document and both are scheduled per stage.",
     "L0_direct": {
       "reasoning_tokens": "0-32",
       "control_token": "<effort=none>",
