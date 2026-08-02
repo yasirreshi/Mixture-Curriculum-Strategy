@@ -91,7 +91,7 @@ Both exit non-zero on failure, so "this plan is consistent" is a test result rat
 | STEM / math | **11.52%** | 348B ÷ 250B = **1.39** | V4 ended at 39%. Sustained here that is 1.13T ÷ 250B = **4.5 epochs, over the cap** — so it ramps 6→14 and holds, and the scarce top (proofs, olympiad) is pushed into the anneal rather than burned early | GPQA, MMLU-Pro STEM |
 | long context | **7.56%** | 231B ÷ 100B = **2.31** | Not a lane you sprinkle: batches must be length-homogeneous, so a short sample in a long batch is wasted compute. Concentrated 2.5/3.0/16.8/13.0 by stage, almost all after the model can already read | RULER, long-eval, SWE-bench context |
 | reasoning | **7.03%** | 222B ÷ 85B = **2.61** | Inside the cap with **no slack**, which is why it is protected. Pretraining installs the *structure* of a worked argument; the capability is bought in RLVR. ⚠ The 85B is **gross** — needs 65.3% quality-gate survival to hold | AIME, MATH-500, HLE |
-| agentic | **0.96%** | 37.9B ÷ 10.6B = **3.57** | The composer's 2% would spend 68B ÷ 10.63B = **6.4 epochs**, over the cap. 0.96% is the largest share the supply funds — and 10.0B of that 10.6B is **manufactured**, costed per environment family | SWE-bench, BFCL, tau2-bench |
+| agentic | **0.96%** | 37.9B ÷ 10.6B = **3.57** | The composer's 2% would spend 68B ÷ 10.63B = **6.4 epochs**, over the cap. 0.96% is the largest share the supply funds — and **94% of that supply is manufactured**, not collected, costed per environment family | SWE-bench, BFCL, tau2-bench |
 
 Shares are the token-weighted integral of the stage schedule — the curriculum is the primary object.
 **Only agentic runs near the cap**, and only because 10.0B of its 10.6B supply is manufactured. It is
@@ -121,7 +121,7 @@ conservative one and is the one quoted in the headline.
 | code | The Stack v2 permissive 900B · GitHub PRs & issues 80B · notebooks & docs 60B · **commit diffs 40B** | Diffs are listed separately on purpose: a diff is the training *shape* that matches Aider's metric, so it is a lane requirement rather than a nice-to-have |
 | Indic | Sangraha 251B · IndicCorp v2 20.9B · samvaad-hi (S4, cleaned) · Indic Wikipedia ×12 (cleaned here) | Sangraha's 251B is explicitly a *blend* of verified, unverified and synthetic — which is exactly why this lane is priced by tier, not by total |
 | STEM / math | Nemotron-CC-Math 130B · proof-pile-2 / OpenWebMath 55B · FineMath 34B · arXiv full text 30B | Adequate in volume; the binding limit is the *top* of the distribution (proofs, olympiad), which is why that fraction is pushed into the anneal |
-| long context | repo-level packs ~40B · books ~25B · arXiv, court judgments & gazettes ~25B · multi-doc synthetic ~10B | Packs are the majority because they match SWE-bench's shape — but **packed tokens are not new unique tokens** and are charged to the source lane |
+| long context | repo-level packs ~40B · books ~25B · arXiv, court judgments & gazettes ~25B · multi-doc synthetic **needle**/aggregation tasks ~10B | Packs are the majority because they match SWE-bench's shape — but **packed tokens are not new unique tokens** and are charged to the source lane |
 | reasoning | OpenThoughts-3 / OpenR1 / OpenMathReasoning ~40B · Nemotron splits ~30B · NuminaMath ~8B · PRM800K 1B · GSM8K | The only lane whose headline supply we actively distrust: 85B is gross, and the L3/L4 half has **zero** collected tokens |
 | agentic | ToolBench 80M · Gorilla + BFCL 90M · xLAM 60M · SWE-Gym ~200M · terminal/OS/web traces ~200M | **0.63B total — two orders of magnitude below every other lane.** The number that forces the whole synthesis programme |
 
@@ -152,6 +152,58 @@ if the two views ever diverge.
 Two ladders are scheduled independently across these stages: **difficulty B0–B5** and **trace length
 L0–L4**, each with a real document from `data/clean/` at every rung. L4 is reported **empty** rather
 than filled.
+
+---
+
+## The two ladders, with a real example at every rung
+
+Difficulty and trace length are **independent axes** — a hard problem with a short trace and an easy
+one with an ultra trace are not interchangeable — so both are stamped per document at cleaning time
+and both are scheduled per stage. Every example below is a real document in `data/clean/`, with its
+measured token count; verbatim text is in [`results/band_examples.md`](results/band_examples.md).
+
+**Difficulty · the session's six rungs.** For text lanes the band is a **population quantile of a
+readability proxy computed within script group** — not an absolute threshold, because a Malayalam word
+is far longer in code points than an English one and a fixed cut-off silently mislabels whole
+languages. For code, reasoning and agentic it is structural.
+
+| band | A → D | docs | a real document at this level |
+|---|---|---:|---|
+| **B0** Nursery | 25 → 0 | 854 | a **Gujarati** Wikipedia article of plain declarative sentences — **1,183 tok** · an English stub — 3,214 tok. Long, but structurally flat, which is what B0 measures |
+| **B1** Grade-school | 35 → 5 | 16,966 | **GSM8K socratic**, one arithmetic chain — **233 tok**, 173 supervised / 60 context · a Flask helper module — 218 tok |
+| **B2** High-school | 25 → 15 | 29,065 | a single-call **API trajectory** (`gorilla-apibench`) — **266 tok**, 236 supervised / 30 context · a short PRM800K solution — 115 tok |
+| **B3** Undergraduate | 12 → 25 | 6,076 | a tool call against a **long schema** (`gorilla-openfunctions`) — **396 tok, 72 supervised / 324 context**, a 5.5× context-to-signal ratio in one document |
+| **B4** Graduate | 3 → 35 | 3,929 | a **NumPy** core module — **10,302 tok** · a dense encyclopaedic article — 959 tok |
+| **B5** Research / PhD | 0 → 20 | 24,100 | an **arXiv abstract** on a transmission–computation–energy tradeoff — **243 tok** · BFCL multi-turn with ≥3 tool calls |
+
+Stage A is 60% B0–B1; stage D inverts to 55% B4–B5.
+
+**Trace length · five rungs where the session's ladder has four.** `L0 — no trace at all` is a
+**declared addition**: the effort dial needs an "answer immediately" setting, and a model never trained
+to skip reasoning will emit a chain whatever the control token says.
+
+| band | reasoning tok | control token | share | found | a real trace at this level |
+|---|---|---|---:|---:|---|
+| **L0** direct | 0–32 | `<effort=none>` | 9.4% | **7** | a GSM8K item answered with no chain at all — *"**Rocky boxed** 190 fights, 50 percent knockouts…"* — **86 tok**, only 31 supervised. Seven such documents exist in the entire corpus |
+| **L1** short | 32–256 | `<effort=low>` | 30.0% | 17,106 | GSM8K socratic — *"**Brinley's** teacher took the grade six students…"* — **342 tok**, 228 supervised, one chain, no branching |
+| **L2** medium | 256–1024 | `<effort=medium>` | 32.4% | 3,640 | PRM800K — *"A line passes through the distinct vectors…"* — **1,129 tok**, 903 supervised, names and checks each intermediate result |
+| **L3** long | 1024–4096 | `<effort=high>` | 20.8% | **0 → 253** | *"largest 2-digit **prime factor** of C(200,100)"* — **3,285 tok**, 3,250 reasoning tokens through **5 human-rated wrong steps** before the right route; answer 61. **Built, not found** |
+| **L4** ultra | 4096–32768 | `<effort=ultra>` | 7.4% | **0** | **No example exists, and I am not inventing one.** The rung requires several attempted routes, explicit dead ends and a final verification pass. Reconstruction lifted the ceiling from 992 to **3,250** reasoning tokens — still short of 4,096 |
+
+**On the two rungs that had to be manufactured.** The collected corpus is L1 and L2 and essentially
+nothing else. Before that becomes a finding, the obvious objection has to be answered — *your corpus
+tops out at 992 and you drew the L3 line at 1024, so you engineered the result.* The distribution
+answers it, not the threshold: **median 132, p99 778, maximum 992 across 20,753 traces.** The mass sits
+an order of magnitude below the boundary; moving the line to 768 or 1536 changes the count, not the
+conclusion. Open worked-solution data is short because MATH-style solutions are short.
+
+So **L3 was built from real data rather than left empty**:
+[`09_build_long_traces.py`](scripts/09_build_long_traces.py) replays PRM800K's *tree search* over the
+**60,398 completions humans rated wrong** — rejected attempt, correction marker, then the continuation
+actually chosen. Every token is original generator output and every verdict a human's; only the
+ordering is constructed, and it ships in its own `D_constructed` shard so it can never be mistaken for
+collected data. **L4 stays empty with a costed 25B distillation plan behind it** — an empty row with an
+acquisition plan is worth more than a filled one with an invented example.
 
 ---
 
@@ -228,6 +280,32 @@ python scripts/03_solve_mixture.py        # TEST 1 — arithmetic
 python scripts/10_gpu_proxy.py --tokens 28000000   # needs CUDA
 python scripts/12_assignment_audit.py     # TEST 2 — the brief
 ```
+
+---
+
+## The experiment that is allowed to kill this plan
+
+Every proportion above is a **hypothesis**. This is the experiment specified to refute it, written
+before any arm was trained.
+
+**Stage 1 — 8 arms × 1B params × 30B tokens.** V5-proposed · Session-5 composer default · naive
+web-heavy · code-heavy (+8 code −8 web) · Indic-lite (8%, floor off) · floor-off · floor-doubled ·
+anneal-off. **Stage 2 — 3B × 60B on the top three**, plus the test an averaged mixture cannot make:
+stage-ordered vs flat at identical integrated shares.
+
+**The metric.** Capability-weighted held-out NLL on decontaminated per-lane sets, each lane normalised
+to the best arm on that same lane so tokenizer fertility cancels out:
+
+```
+W = 0.30·code + 0.20·agentic + 0.20·Indic + 0.15·reasoning + 0.10·long-context + 0.05·web
+```
+
+| | the pre-registered rule |
+|---|---|
+| **Confirms if** | V5-proposed takes the best `W` with **non-overlapping bootstrap CIs** (n ≥ 500/set) against the composer default, **and** no single lane is more than 2% relative worse than that lane's best arm |
+| **Refutes if** | the naive web-heavy arm lands **within CI** of V5-proposed on `W`. RegMix's finding that web correlates best with downstream performance makes this a live outcome, not a formality — if it fires, the mixture's complexity is not paying for itself and we revert to a high-web mixture keeping only the floors |
+| **Floor test** | floor-off vs V5-proposed, measuring *realized* lane shares after selection. Within 1pt for Indic and agentic ⇒ the floor is unnecessary and we drop it |
+| **Cost** | **4.68e21 FLOPs = 0.65%** of the 7.2e23-FLOP main run — ~2.2 days on 64 H100s. The experiment costs two-thirds of one percent of the run it protects |
 
 ---
 
