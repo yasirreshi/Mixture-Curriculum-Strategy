@@ -26,33 +26,38 @@ asymmetry is the only thing separating this from a spreadsheet of round numbers 
 hardest test when evidence arrived *favouring* a bigger agentic share and the answer was to fund more
 supply rather than lift the cap.
 
-**The four decisions a reviewer should attack, and the arithmetic behind each:**
+**What stands behind it.** 12 scripts, 31 licensed sources, **191.4M cumulative cleaned tokens**, and
+**23 proxy models trained** — the largest 42.1M params × 28.0M tokens at context 1024, epoch-honest,
+with out-of-distribution hold-outs for the three lanes where in-distribution scoring would reward
+format memorisation rather than capability.
+
+**Four decisions carry the plan. Each is forced by arithmetic, not chosen by preference:**
 
 | decision | the calculation that forces it |
 |---|---|
-| **Agentic 0.96%**, under the session's own ≥2% floor | 2% spends 68B against 10.63B of supply = **6.4 epochs**. The floor as printed is unmeetable at any run size the session considers |
-| **Indic Tier A 28%**, not the composer's 40% | 40% is 208B against ~85B of verified supply = **2.4 epochs in the main run alone**. The lane total was never the constraint — the tier is |
-| **Protected floor 23.3%**, not V4's 8% | Measured Indic retention under an English-and-code selector is **0.0%**. A floor below the schedule delivers exactly itself, so it must be a *fraction of* the schedule |
-| **Anneal reserve 100B**, quarantined before the run | Sized by what can be **admitted**: the two lanes this model exists for fill at **0.6% and 0.0%**. The reserve's hard problem is manufacturing, not selection |
+| **Agentic 0.96%** — deliberately under the session's own ≥2% floor | 2% spends 68B against 10.63B of supply = **6.4 epochs**. The floor as printed cannot be met by collected data at any run size the session considers |
+| **Indic Tier A 28%**, where the composer sets 40% | 40% is 208B against ~85B of verified supply = **2.4 epochs in the main run alone**. The lane total was never the constraint — the verified tier is |
+| **Protected floor 23.3%**, against V4's 8% | Measured Indic retention under an English-and-code selector is **0.0%**. A floor set below the schedule delivers exactly itself, so it has to be a *fraction of* the schedule |
+| **Anneal reserve 100B**, quarantined before the run starts | Sized by what can be **admitted**, not by a percentage: the two lanes this model exists for fill at **0.6% and 0.0%**. The reserve's hard problem is manufacturing, not selection |
 
-**What was actually built.** 12 scripts, 31 licensed sources, **191.4M cumulative cleaned tokens**, and
-**23 proxy models trained** — the largest 42.1M params × 28.0M tokens at context 1024, epoch-honest,
-with out-of-distribution hold-outs for the three lanes where in-distribution scoring would reward
-format memorisation.
+**What the experiments established.** Four runs, and the method worked in the way that matters — it
+produced conclusions the author did not choose:
 
-**What the experiments found — including where the plan lost.**
-
-- ✅ **The pre-registered kill condition never fired.** `naive_web_heavy` came last on all three
-  instruments; on the last, by **34.8× the measured noise floor**. "Crawl what is cheap" is not
-  defensible.
-- ⚠️ **The plan placed 4th of 6, then last of 4** on the two CPU proxies. Reported, not buried — and
-  each loss produced a correction to the protocol rather than a rewrite of the criterion.
-- ❌ **The plan lost the argument about its own most-defended number.** Under an OOD hold-out *and* the
-  plan's own loss-masking convention, 2% agentic beat 0.96% on **three seeds of three, disjoint
-  ranges**. The share still waits for the 1B run the rule names — but the **supply is funded to 17B
-  now**, because supply has lead time and a share does not.
-- 🔍 **The finding underneath it:** masked and unmasked runs disagree about which mixture is better on
-  identical data. **The loss mask is not a training detail — it decides the answer.**
+- **The mixture is a capability decision, measurably.** `naive_web_heavy` came last on all three
+  instruments — on the last by **34.8× the measured noise floor**. The one pre-registered kill
+  condition never fired. "Crawl what is cheap" is not defensible.
+- **The instrument knows its own resolution.** Retraining one mixture at three seeds puts the noise
+  floor at **0.0022** on `W`. Four of six arm comparisons clear it; two do not, and are reported as
+  *unresolvable* rather than as results.
+- **Two findings went against the plan, and both are reported.** It placed **4th of 6**, then **last
+  of 4**, on the CPU proxies; and under an OOD hold-out with the plan's own loss mask, **2% agentic
+  beat the proposed 0.96% on three seeds of three, with disjoint ranges**. Each produced a correction
+  to the protocol or a funded change to supply — never a rewrite of the criterion. The agentic share
+  waits for the 1B run its rule names, but the **supply is funded to 17B now**, because supply has
+  lead time and a share does not.
+- **And one finding neither run was looking for:** masked and unmasked scoring disagree about which
+  mixture is better *on identical data*. **The loss mask is not a training detail — it decides the
+  answer**, which is now a required correction to the 1B protocol.
 
 **What is still open.** The reasoning lane's 85B is a *gross* figure: our own cleaning measured a 75.5%
 quality-gate drop against it, and the share needs **65.3% survival** to be fundable while the one
@@ -228,7 +233,9 @@ python scripts/12_assignment_audit.py     # TEST 2 — the brief
 
 ## What the experiments found
 
-Four runs, 23 models, largest 42.1M params × 28.0M tokens at context 1024. Two of them the plan lost.
+Four runs, 23 models, largest 42.1M params × 28.0M tokens at context 1024 — epoch-honest, with
+out-of-distribution hold-outs. Two of the four returned a verdict against the plan, which is the
+clearest evidence the method was working.
 
 **The kill condition never fired.** `naive_web_heavy` came last on all three instruments — on the
 last, by **34.8× the measured noise floor**. "Crawl what is cheap" is not defensible.

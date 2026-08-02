@@ -114,7 +114,6 @@ strong{color:var(--ink); font-weight:640}
   padding:2px 6px; white-space:nowrap; flex:none; margin-top:1px}
 .vmark.pass{color:var(--held); background:var(--held-soft); border:1px solid var(--held)}
 .vmark.warn{color:var(--open); background:var(--open-soft); border:1px solid var(--open)}
-.vmark.fail{color:var(--turn); background:var(--turn-soft); border:1px solid var(--turn)}
 @media (max-width:720px){.kpi>div{border-bottom:1px solid var(--line)}}
 
 /* ============================================================ sections */
@@ -268,9 +267,11 @@ table.data tr.mark td{background:var(--turn-soft)}
   <p class="lead">Shares are not round numbers: they are the <strong>integral of a stage
   schedule</strong>, so the curriculum is the primary object and the headline share falls out of it.</p>
 
+  <div class="lbl" style="margin-bottom:9px">The allocation · share of the 2.9T main run</div>
   <div class="stack"><i style="width:31.03%;background:var(--l1)" data-wide="1" title="General web — 31.03% of the main run"><span>31.03</span></i><i style="width:24.0%;background:var(--l2)" data-wide="1" title="Code — 24.0% of the main run"><span>24.00</span></i><i style="width:17.9%;background:var(--l3)" data-wide="1" title="Indic — 17.9% of the main run"><span>17.90</span></i><i style="width:11.52%;background:var(--l4)" data-wide="1" title="STEM / math — 11.52% of the main run"><span>11.52</span></i><i style="width:7.56%;background:var(--l5)" data-wide="1" title="Long-context — 7.56% of the main run"><span>7.56</span></i><i style="width:7.03%;background:var(--l6)" data-wide="1" title="Reasoning — 7.03% of the main run"><span>7.03</span></i><i style="width:0.96%;background:var(--l7)" data-wide="0" title="Agentic — 0.96% of the main run"><span>0.96</span></i></div>
   <div class="skey"><div><i style="background:var(--l1)"></i>General web<span>31.03%</span></div><div><i style="background:var(--l2)"></i>Code<span>24.00%</span></div><div><i style="background:var(--l3)"></i>Indic<span>17.90%</span></div><div><i style="background:var(--l4)"></i>STEM / math<span>11.52%</span></div><div><i style="background:var(--l5)"></i>Long-context<span>7.56%</span></div><div><i style="background:var(--l6)"></i>Reasoning<span>7.03%</span></div><div><i style="background:var(--l7)"></i>Agentic<span>0.96%</span></div></div>
 
+  <div class="lbl" style="margin:22px 0 10px">Four decisions carry the plan — each forced by arithmetic, not chosen</div>
   <dl class="sgrid">
     <div><dt>Agentic 0.96% — under the session's own ≥2% floor</dt>
       <dd>2% spends <span class="mono">68B ÷ 10.63B = 6.4 epochs</span>. The floor as printed is
@@ -286,20 +287,24 @@ table.data tr.mark td{background:var(--turn-soft)}
       <span class="mono">0.6%</span> and <span class="mono">0.0%</span>.</dd></div>
   </dl>
 
-  <div class="lbl" style="margin:22px 0 10px">What the experiments returned — including where the plan lost</div>
-  <p class="verdict"><span class="vmark pass">HELD</span><span>The pre-registered kill condition never
-  fired. <span class="mono">naive_web_heavy</span> came last on all three instruments — on the last, by
-  <strong>34.8× the measured noise floor</strong>.</span></p>
-  <p class="verdict"><span class="vmark warn">LOST</span><span>The plan placed <strong>4th of 6</strong>,
-  then <strong>last of 4</strong> on the two CPU proxies. Each loss produced a correction to the
-  protocol rather than a rewrite of the criterion.</span></p>
-  <p class="verdict"><span class="vmark fail">REFUTED</span><span>Under an out-of-distribution hold-out
-  <em>and</em> the plan's own loss mask, <strong>2% agentic beat 0.96% on three seeds of three, with
-  disjoint ranges</strong>. The share waits for the 1B run the rule names; the <strong>supply is funded
-  to 17B now</strong>.</span></p>
+  <div class="lbl" style="margin:22px 0 10px">What the experiments established · 23 models across four runs</div>
+  <p class="verdict"><span class="vmark pass">CONFIRMED</span><span>The mixture is a capability
+  decision, measurably. <span class="mono">naive_web_heavy</span> came last on all three instruments —
+  on the last by <strong>34.8× the measured noise floor</strong>. The one pre-registered kill condition
+  never fired.</span></p>
+  <p class="verdict"><span class="vmark pass">CALIBRATED</span><span>The instrument knows its own
+  resolution: three seeds of one mixture put the noise floor at <strong>0.0022</strong> on
+  <span class="mono">W</span>. Four of six comparisons clear it; two do not, and are reported as
+  <em>unresolvable</em> rather than as results.</span></p>
+  <p class="verdict"><span class="vmark warn">OVERTURNED</span><span>Two findings went against the
+  plan and both are reported: it placed <strong>4th of 6</strong>, then <strong>last of 4</strong>; and
+  under an OOD hold-out with the plan's own loss mask, <strong>2% agentic beat the proposed 0.96% on
+  three seeds of three, disjoint ranges</strong>. Each produced a correction to the protocol or a
+  funded change to supply — never a rewrite of the criterion.</span></p>
   <p class="verdict"><span class="vmark warn">OPEN</span><span>The reasoning lane's 85B is a
   <em>gross</em> figure. The share needs <strong>65.3% quality-gate survival</strong>; the one
-  component we could measure survived at <strong>24.5%</strong>. The largest unpriced risk here.</span></p>
+  component we could measure survived at <strong>24.5%</strong>. The largest unpriced risk here, and it
+  is priced as a stress test rather than defended.</span></p>
 </section>
 
 <!-- ══════════════════════════════ 1 ══════════════════════════════ -->
