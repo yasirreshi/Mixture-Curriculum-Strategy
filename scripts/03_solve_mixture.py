@@ -149,6 +149,83 @@ cd = (MIX["lanes"]["indic"]["tier_split_pct"]["C_translated_transliterated"]
       + MIX["lanes"]["indic"]["tier_split_pct"]["D_synthetic"])
 check(cd <= 42.0, f"Indic C+D is {cd}%, above the 42% translationese cap")
 
+# ---------------------------------------------------------- 5b reasoning length bands
+# The Indic lane is priced tier by tier because the constraint lives in the tiers, not the
+# headline. The same is true of reasoning: L3/L4 have ZERO collected supply, so the bands
+# have to clear the epoch cap against the distillation programme that funds them, not
+# against the lane total. Without this check the plan's own principle is applied to one
+# lane and not the other.
+lb_split = MIX["lanes"]["reasoning"]["length_band_split_pct"]
+lb_ann = MIX["anneal_reserve"]["reasoning_band_split_pct"]
+reasoning_main = main_tokens * integrated["reasoning"] / 100.0
+reasoning_ann = anneal_tokens * anneal_mix["reasoning"] / 100.0
+LONG_BANDS = ("L3_long", "L4_ultra")
+long_demand = (reasoning_main * sum(lb_split[b] for b in LONG_BANDS) / 100.0
+               + reasoning_ann * sum(lb_ann.get(b, 0) for b in LONG_BANDS) / 100.0)
+long_supply = synth["reasoning_long_traces_L3_L4"]["tokens_per_run_window"]
+long_ep = long_demand / long_supply
+check(long_ep <= cap,
+      f"reasoning L3+L4: {long_ep:.2f} epochs against the {T(long_supply)} distillation "
+      f"programme, over the {cap}-epoch cap")
+short_demand = (reasoning_main * sum(lb_split[b] for b in lb_split if b not in LONG_BANDS) / 100.0
+                + reasoning_ann * sum(v for k, v in lb_ann.items() if k not in LONG_BANDS) / 100.0)
+short_supply = INV["lanes"]["reasoning"]["lane_total_tokens"]
+short_ep = short_demand / short_supply
+check(short_ep <= cap, f"reasoning L0-L2: {short_ep:.2f} epochs, over the cap")
+
+# ------------------------------------- 5b2 the session's five-stage view is the same plan
+# The session names five stages (Seed -> General -> Reasoning -> Long-context -> Anneal); the
+# internal schedule is A/B/C/D. `session_stage_view` re-expresses one as the other. It is only
+# trustworthy if it is a re-expression rather than a second set of numbers, so integrate it and
+# require the identical lane shares.
+ssv = MIX["session_stage_view"]["stages"]
+pre_stages = [s for s in ssv if s["id"] != "anneal"]
+ssv_tokens = sum(s["tokens"] for s in pre_stages)
+check(abs(ssv_tokens - main_tokens) < 1e6,
+      f"session-stage view covers {T(ssv_tokens)} of pretraining, not {T(main_tokens)}")
+for s in ssv:
+    tot = sum(s["weights_pct"].values())
+    check(abs(tot - 100.0) < 0.02, f"session stage {s['id']} weights sum to {tot:.3f}, not 100")
+for ln in LANES:
+    integ_ssv = sum(s["tokens"] * s["weights_pct"][ln] for s in pre_stages) / ssv_tokens
+    check(abs(integ_ssv - integrated[ln]) <= 0.02,
+          f"session-stage view integrates {ln} to {integ_ssv:.3f}%, but the A/B/C/D schedule "
+          f"gives {integrated[ln]:.3f}% - the two views have diverged")
+# the anneal row of the five-stage view must be the declared reserve mixture, not a copy that drifts
+for ln in LANES:
+    a_ssv = next(s for s in ssv if s["id"] == "anneal")["weights_pct"][ln]
+    check(abs(a_ssv - anneal_mix[ln]) < 1e-6,
+          f"session-stage view's anneal {ln} is {a_ssv}, reserve declares {anneal_mix[ln]}")
+
+# ------------------------------------------------- 5b3 the whole-lifecycle budget
+lc = MIX["training_lifecycle"]["stages"]
+lc_total = sum(s["tokens"] for s in lc)
+lc_pre = next(s for s in lc if s["id"] == "pretraining")["tokens"]
+lc_mid = next(s for s in lc if s["id"] == "midtraining")["tokens"]
+check(abs(lc_pre - main_tokens) < 1e6,
+      "lifecycle pretraining row must equal the main-run budget")
+check(abs(lc_mid - anneal_tokens) < 1e6,
+      "lifecycle mid-training row must equal the declared anneal reserve")
+pre_share = 100.0 * lc_pre / lc_total
+check(93.0 <= pre_share <= 97.0,
+      f"pretraining is {pre_share:.1f}% of all training tokens; the session's lifecycle panel "
+      f"puts it at ~95%, so anything outside 93-97% needs saying out loud")
+
+# ------------------------------------------------- 5c reasoning quality-gate stress test
+# The lane's 85B is a GROSS figure. Cleaning measured that a verified-step gate drops 75%
+# of the only component carrying step-level human labels. That measurement is not carried
+# into the headline epoch count anywhere else, so it is carried here: what survival rate
+# does the share actually require, and how does that compare to the one rate we measured?
+qg = INV["lanes"]["reasoning"]["quality_gate"]
+reasoning_demand = reasoning_main + reasoning_ann
+break_even = reasoning_demand / (cap * short_supply)
+check(abs(break_even - qg["break_even_survival"]) < 0.005,
+      f"reasoning break-even survival recomputes to {break_even:.3f}, but the inventory "
+      f"declares {qg['break_even_survival']}")
+check("gate" in qg and qg["measured_survival_prm800k"] < break_even,
+      "the reasoning quality gate must state a delivery gate whenever measured survival "
+      "sits below the break-even the share requires")
+
 # ------------------------------------------------------------------ 6 anneal
 check(abs(sum(anneal_mix.values()) - 100.0) < 1e-6, "anneal mixture does not sum to 100")
 check(abs(sum(MIX["anneal_reserve"]["indic_tier_split_pct"].values()) - 100.0) < 1e-6,
@@ -201,11 +278,78 @@ for n in NOTES:
     A(f"> {n}\n")
 
 A("## 2. Indic provenance tiers\n")
-A("| tier | main-run share | anneal share | demand | collected supply | + elastic capacity | epochs |")
+A("| tier | main-run share | anneal share | demand | collected today | fundable supply | epochs |")
 A("|---|---:|---:|---:|---:|---:|---:|")
 for tier, pct, apct, d, base, un, ep in tier_rows:
     A(f"| {tier} | {pct:.0f}% | {apct:.0f}% | {T(d)} | {T(base)} | {T(un)} | {ep:.2f} |")
 A("")
+A(f"> **Two different supply bases, stated so they are not read as one.** The lane row in "
+  f"§1 prices Indic against **collected** supply only ({T(sum(r[4] for r in tier_rows))}, the "
+  f"course inventory's lane total) and reports {(indic_main + indic_ann) / sum(r[4] for r in tier_rows):.2f} "
+  f"epochs. The tier rows here price each tier against **fundable** supply - collected plus "
+  f"the collection programme for Tier A and the costed translation/generation capacity for "
+  f"C and D ({T(sum(r[5] for r in tier_rows))} in total) - which is why the per-tier epochs "
+  f"are lower. The lane-level figure is the conservative one and is the number quoted in the "
+  f"headline table; the tier figures are what each tier's own funding plan has to deliver.\n")
+
+A("## 2b. Reasoning: the constraint lives in the length bands, not the lane\n")
+A("| band group | demand | supply it is drawn from | epochs |")
+A("|---|---:|---|---:|")
+A(f"| L0-L2 (collected) | {T(short_demand)} | {T(short_supply)} collected open corpus | {short_ep:.2f} |")
+A(f"| **L3+L4 (zero collected)** | {T(long_demand)} | {T(long_supply)} distillation programme | "
+  f"**{long_ep:.2f}** |")
+A("")
+A(f"> Cleaning found **zero** collected traces at L3 or above, so the long half of this lane "
+  f"is drawn entirely against the {T(long_supply)} distillation line item and has to clear the "
+  f"cap on its own. It does, at {long_ep:.2f} epochs. Pricing the lane only at lane level "
+  f"would have hidden that the two halves are funded from completely different places.\n")
+
+A("### the quality-gate stress test this lane's own measurement forces\n")
+A(f"The {T(short_supply)} is a **gross** figure. Cleaning measured that a verified-step gate "
+  f"drops **{100*(1-qg['measured_survival_prm800k']):.1f}%** of PRM800K - the only component of "
+  f"the lane carrying step-level human labels. That measurement is priced here rather than "
+  f"noted and forgotten.\n")
+A("| survival of the nominal supply | gate-surviving supply | epochs | verdict |")
+A("|---|---:|---:|---|")
+for s in (qg["measured_survival_prm800k"], 0.50, break_even, 0.80, 1.00):
+    sup = short_supply * s
+    e = reasoning_demand / sup
+    tag = ("**measured on PRM800K**" if abs(s - qg["measured_survival_prm800k"]) < 1e-6 else
+           "**break-even**" if abs(s - break_even) < 5e-3 else
+           "as planned" if s == 1.0 else "")
+    A(f"| {100*s:.1f}% {tag} | {T(sup)} | {e:.2f} | {'inside cap' if e <= cap else '**OVER CAP**'} |")
+A("")
+A(f"> The reasoning share of {integrated['reasoning']:.2f}% is fundable **only if at least "
+  f"{100*break_even:.1f}%** of the nominal {T(short_supply)} survives quality gating. The one "
+  f"component where survival could be measured rather than assumed survived at "
+  f"**{100*qg['measured_survival_prm800k']:.1f}%**. The other 78B is answer-verified rather "
+  f"than step-verified, so PRM800K's rate is a worst case and is not assumed lane-wide - but "
+  f"the gap is wide enough that the share cannot be called settled. Gate: "
+  f"{qg['gate']}\n")
+
+A("## 2c. The session's five stages — the same schedule, in the session's own vocabulary\n")
+A("| session stage | tokens | seq | " + " | ".join(LANES) + " |")
+A("|---|---:|---:|" + "---:|" * len(LANES))
+for s in ssv:
+    A(f"| **{s['name']}** | {T(s['tokens'])} | {s['seq_len']} | "
+      + " | ".join(f"{s['weights_pct'][ln]:.1f}" for ln in LANES) + " |")
+A("| _integrated (pretraining only)_ | _" + T(ssv_tokens) + "_ | | "
+  + " | ".join(f"**{integrated[ln]:.2f}**" for ln in LANES) + " |\n")
+A(f"> {MIX['session_stage_view']['mapping']} This is a **re-expression, not a second set of "
+  f"numbers**: the four pretraining rows integrate to the identical lane shares, and this script "
+  f"fails if they ever diverge.\n")
+
+A("## 2d. Where this session sits in the whole training lifecycle\n")
+A("| stage | tokens | share of all training data | loss signal | owned by |")
+A("|---|---:|---:|---|---|")
+for s in lc:
+    A(f"| **{s['name']}** | {T(s['tokens']) if s['tokens'] else '—'} | "
+      f"{100*s['tokens']/lc_total:.2f}% | {s['loss']} | {s['owned_by']} |")
+A(f"| _total_ | _{T(lc_total)}_ | | | |\n")
+A(f"> Pretraining is **{pre_share:.1f}%** of all training tokens, against the session's ~95%. "
+  f"Every later stage is comparatively tiny — which is exactly why the mixture decided here is "
+  f"the consequential one. The reserve's 18B of L3/L4 reasoning is the feedstock for reasoning "
+  f"training in Sessions 17–18: a data decision made now determines what is possible then.\n")
 
 A("## 3. Curriculum: the stage schedule the headline shares integrate from\n")
 hdr = "| stage | tokens | seq | " + " | ".join(LANES) + " |"

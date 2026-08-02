@@ -442,5 +442,154 @@
       "trigger": "measured now: 0 of 20,753 cleaned open traces reach L3",
       "action": "distil L3/L4 from a teacher at increasing effort on answer-verifiable problems, keep only answer-checked traces, and gate the band split on delivery (28% -> 18% L3+L4 if short)"
     }
-  ]
+  ],
+  "session_stage_view": {
+    "_about": "The session names five stages: Seed -> General -> Reasoning -> Long-context -> Anneal. The internal schedule in `curriculum` is A/B/C/D + anneal. This block is the SAME schedule re-expressed in the session's own five stages, so a reviewer can read the lane split per session stage directly. It is a re-expression, not a second set of numbers: 03_solve_mixture.py checks that it integrates to the identical declared lane shares, and fails if it does not.",
+    "mapping": "Seed = stage A0 (the 60B warm-start inside A). General = the remaining 840B of stage A. Reasoning = stage B, where code/STEM/reasoning climb together. Long-context = stages C+D, which is one continuous context stretch 32K -> 128K. Anneal = the 100B reserve.",
+    "stages": [
+      {
+        "id": "seed",
+        "name": "Seed",
+        "tokens": 60000000000.0,
+        "seq_len": 2048,
+        "objective": "optimiser and embedding warm-up on the cleanest, simplest text",
+        "difficulty_bands_allowed": [
+          "B0",
+          "B1"
+        ],
+        "weights_pct": {
+          "general_web": 70.0,
+          "code": 6.0,
+          "indic": 20.0,
+          "stem_math": 3.0,
+          "reasoning": 1.0,
+          "long_context": 0.0,
+          "agentic": 0.0
+        },
+        "why": "No code beyond snippets, no long documents, no agentic, no research register. A warm start on hard data wastes the part of the run where the model can least use it. Indic is already at 20% - HIGHER than any later stage except D - because script and morphology must be learned while the embedding table is still plastic."
+      },
+      {
+        "id": "general",
+        "name": "General",
+        "tokens": 840000000000.0,
+        "seq_len": 4096,
+        "objective": "language, script and world model",
+        "weights_pct": {
+          "general_web": 55.0,
+          "code": 18.857,
+          "indic": 14.643,
+          "stem_math": 6.214,
+          "reasoning": 2.071,
+          "long_context": 2.679,
+          "agentic": 0.536
+        },
+        "why": "The broad base. Web at its peak (55%) and fading from here on; every lane present so nothing is introduced cold later."
+      },
+      {
+        "id": "reasoning",
+        "name": "Reasoning",
+        "tokens": 900000000000.0,
+        "seq_len": 8192,
+        "objective": "code and logic: the technical ramp",
+        "weights_pct": {
+          "general_web": 28.0,
+          "code": 30.0,
+          "indic": 18.0,
+          "stem_math": 14.0,
+          "reasoning": 6.0,
+          "long_context": 3.0,
+          "agentic": 1.0
+        },
+        "why": "Code overtakes web (30 vs 28). STEM more than doubles and reasoning triples. This is the session's 'code + logic' stage."
+      },
+      {
+        "id": "long_context",
+        "name": "Long-context",
+        "tokens": 1100000000000.0,
+        "seq_len": "32768 -> 131072",
+        "objective": "stretch context, consolidate Indic",
+        "weights_pct": {
+          "general_web": 13.091,
+          "code": 24.0,
+          "indic": 20.182,
+          "stem_math": 14.0,
+          "reasoning": 12.0,
+          "long_context": 15.418,
+          "agentic": 1.309
+        },
+        "why": "Long context arrives only once the model can already read and reason, stepping 8K->16K->32K->128K with length-homogeneous batches. Indic peaks here (20.2% average, 24% by the end) because cross-lingual transfer is most efficient from an already-strong technical model."
+      },
+      {
+        "id": "anneal",
+        "name": "Anneal",
+        "tokens": 100000000000.0,
+        "seq_len": 32768,
+        "objective": "low-LR cooldown on quarantined, highest-grade data",
+        "weights_pct": {
+          "indic": 22.0,
+          "code": 18.0,
+          "reasoning": 18.0,
+          "stem_math": 14.0,
+          "long_context": 12.0,
+          "agentic": 10.0,
+          "general_web": 6.0
+        },
+        "why": "The mixture inverts: agentic goes 1.3% -> 10%, reasoning 12% -> 18%, Indic 20% -> 22% at 70% Tier-A verified, and web collapses 13% -> 6%. The scarcest material is deliberately spent last, on a model able to use it."
+      }
+    ]
+  },
+  "training_lifecycle": {
+    "_about": "Where this session's work sits in the whole run. The session's lifecycle panel is pretraining -> mid-training/annealing -> SFT -> reasoning training -> preference alignment -> serving, and states that pretraining is ~95% of all training data with every later stage comparatively small. Sessions 5 designs the first two; the rest are sized here so the reserve's purpose is legible, and because the reasoning data reserved NOW is the raw material for stage 4.",
+    "session_reference": "'pre-training is 95% of all the data ... of a 4T design, 3.6 trillion tokens are just the pre-training. Then we have mid-stage ... this is where we have just 2%.' The loss signal changes stage by stage: pretraining trains every token; SFT masks to the response only; reasoning training adds a verifier reward; preference alignment is reward-only; serving has no loss at all.",
+    "stages": [
+      {
+        "id": "pretraining",
+        "name": "Pretraining",
+        "tokens": 2900000000000.0,
+        "loss": "next-token on every token",
+        "owned_by": "Session 5 (this document)",
+        "what": "The four-stage curriculum above. Installs language, world model, code, script and the FORMAT of reasoning and tool use - not the capability itself."
+      },
+      {
+        "id": "midtraining",
+        "name": "Mid-training / anneal",
+        "tokens": 100000000000.0,
+        "loss": "next-token on every token, low learning rate",
+        "owned_by": "Session 5 (this document)",
+        "what": "The 100B quarantined reserve. Highest-grade, verified material at decayed LR - the disproportionate-gain phase."
+      },
+      {
+        "id": "sft",
+        "name": "Supervised fine-tuning",
+        "tokens": 20000000000.0,
+        "loss": "masked to the assistant response only",
+        "owned_by": "later sessions",
+        "what": "Agent trajectories, chat and instruction, fix-the-code feedback, Indic instruction. Fed by the agentic lane's format training and the reserve's agentic 10B."
+      },
+      {
+        "id": "reasoning_training",
+        "name": "Reasoning training (RLVR)",
+        "tokens": 12000000000.0,
+        "loss": "masked response + verifier reward on the final answer",
+        "owned_by": "Sessions 17-18",
+        "what": "Where the effort dial is actually taught. THE RESERVE'S 18B OF L3/L4 REASONING IS THIS STAGE'S FEEDSTOCK - which is why §7.3 bands trace length now rather than later."
+      },
+      {
+        "id": "preference",
+        "name": "Preference alignment",
+        "tokens": 3000000000.0,
+        "loss": "preference/reward signal only, no token targets",
+        "owned_by": "later sessions",
+        "what": "Chosen/rejected pairs; what the model should and should not say. Indic cultural alignment lands here, not in pretraining."
+      },
+      {
+        "id": "serving",
+        "name": "Serving",
+        "tokens": 0,
+        "loss": "none",
+        "owned_by": "deployment",
+        "what": "No training signal at all. The effort dial selects among behaviours installed in stages 1-4; it cannot create them."
+      }
+    ]
+  }
 }

@@ -5,24 +5,24 @@
       "dropped_unusable_or_bad_step": 20056
     },
     "1_extract": {
-      "docs": 62217,
+      "docs": 83024,
       "lanes": {
         "indic": 2252,
-        "general_web": 289,
+        "general_web": 4915,
         "code": 4564,
-        "stem_math": 5685,
+        "stem_math": 21866,
         "long_context": 113,
         "reasoning": 21441,
         "agentic": 27873
       }
     },
     "2_normalize": {
-      "docs": 62217,
-      "indic_joiners_preserved": 8836,
-      "control_chars_stripped": 640
+      "docs": 83024,
+      "indic_joiners_preserved": 8977,
+      "control_chars_stripped": 1553
     },
     "3_language_id": {
-      "docs": 62217,
+      "docs": 83024,
       "script_mismatches": 165,
       "note": "documents whose declared language did not survive a runtime script check",
       "per_lang": {
@@ -39,48 +39,48 @@
         "ta": 253,
         "te": 219,
         "ur": 139,
-        "en": 55401,
+        "en": 76208,
         "code": 4564
       }
     },
     "4_quality_filter": {
-      "docs_in": 62217,
-      "docs_out": 61820,
-      "survival_pct": 99.36,
+      "docs_in": 83024,
+      "docs_out": 82616,
+      "survival_pct": 99.51,
       "rejected": {
         "too_short": 93,
+        "symbol_ratio": 236,
         "mean_word_length": 22,
-        "duplicate_lines": 57,
-        "symbol_ratio": 225
+        "duplicate_lines": 57
       }
     },
     "5_dedup": {
-      "docs_in": 61820,
+      "docs_in": 82616,
       "exact_removed": 1092,
       "near_removed": 777,
-      "docs_out": 59951,
+      "docs_out": 80747,
       "method": "sha256 + 5-word shingles / 64-perm MinHash LSH @0.8"
     },
     "6_pii_scrub": {
       "redactions": {
-        "EMAIL": 2019,
-        "PHONE_IN": 324,
-        "IPV4": 794,
-        "AADHAAR_LIKE": 11
+        "EMAIL": 2049,
+        "PHONE_IN": 792,
+        "IPV4": 1416,
+        "AADHAAR_LIKE": 55
       },
       "note": "code lane exempt from IPv4 rule; S4 found this regex layer has real false positives (a UDISE code read as a phone number)"
     },
     "7_decontaminate": {
-      "docs_in": 59951,
+      "docs_in": 80747,
       "benchmark_overlap_removed": 10,
       "industry_canary_hits": 0,
       "heldout_probes": 1319,
       "method": "10-word shingle overlap + BIG-bench canary GUID"
     },
     "8_band_and_manifest": {
-      "docs": 59941,
-      "total_tokens": 81042167,
-      "reserve_tokens": 44573598,
+      "docs": 80737,
+      "total_tokens": 127990489,
+      "reserve_tokens": 71635443,
       "shards": 12,
       "lanes": {
         "indic": {
@@ -91,12 +91,12 @@
           "reserve_docs": 892,
           "reserve_tokens": 8960540,
           "difficulty": {
-            "B1": 423,
-            "B3": 482,
+            "B1": 415,
+            "B3": 480,
             "B4": 345,
-            "B2": 484,
-            "B5": 228,
-            "B0": 289
+            "B2": 477,
+            "B5": 223,
+            "B0": 311
           },
           "length_band": {},
           "seq_bucket": {
@@ -109,27 +109,28 @@
           }
         },
         "general_web": {
-          "docs": 289,
-          "tokens": 3506900,
-          "sup_tokens": 3506900,
+          "docs": 4911,
+          "tokens": 46819926,
+          "sup_tokens": 46819926,
           "ctx_tokens": 0,
-          "reserve_docs": 147,
-          "reserve_tokens": 2646005,
+          "reserve_docs": 1848,
+          "reserve_tokens": 29707850,
           "difficulty": {
-            "B4": 61,
-            "B2": 74,
-            "B3": 79,
-            "B0": 10,
-            "B1": 33,
-            "B5": 32
+            "B4": 800,
+            "B3": 1099,
+            "B1": 872,
+            "B2": 1098,
+            "B0": 543,
+            "B5": 499
           },
           "length_band": {},
           "seq_bucket": {
-            "32k": 58,
-            "16k": 72,
-            "8k": 48,
-            "4k": 91,
-            "64k": 20
+            "32k": 724,
+            "16k": 1135,
+            "8k": 1075,
+            "4k": 1794,
+            "64k": 181,
+            "128k": 2
           }
         },
         "code": {
@@ -156,18 +157,18 @@
           }
         },
         "stem_math": {
-          "docs": 5087,
-          "tokens": 1097781,
-          "sup_tokens": 1097781,
+          "docs": 21261,
+          "tokens": 4733077,
+          "sup_tokens": 4733077,
           "ctx_tokens": 0,
           "reserve_docs": 0,
           "reserve_tokens": 0,
           "difficulty": {
-            "B5": 5087
+            "B5": 21261
           },
           "length_band": {},
           "seq_bucket": {
-            "4k": 5087
+            "4k": 21261
           }
         },
         "long_context": {
@@ -244,11 +245,11 @@
         "ta": 5.573,
         "te": 5.401,
         "ur": 1.976,
-        "en": 1.81
+        "en": 1.798
       }
     }
   },
-  "started_utc": "2026-08-01T01:34:48+00:00",
-  "finished_utc": "2026-08-01T01:53:00+00:00",
-  "wall_seconds": 1092.2
+  "started_utc": "2026-08-02T12:35:19+00:00",
+  "finished_utc": "2026-08-02T12:44:32+00:00",
+  "wall_seconds": 552.8
 }

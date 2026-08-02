@@ -55,12 +55,19 @@ def main():
 
     L.append("## Cumulative token target\n")
     L.append("_Session gate: each session cleans 10-100M tokens. S4 delivered 63.08M inside that "
-             "band; S5 delivers the figure below, so the gate is met for both._\n")
+             "band. S5's first pass delivered 81.0M, also inside it. The second pass below "
+             "**over-delivers past the top of the band**, and deliberately: running the proxy "
+             "epoch-honestly needs far more general-web and STEM than the plan itself does, "
+             "because those lanes' modelled supply is enormous and our local holding of them "
+             "was not (`scripts/11_fetch_more.py`). Over-delivery is reported as over-delivery "
+             "rather than quietly rescaled._\n")
+    n_sources = len({json.loads(l).get("source") for l in
+                     open(ROOT / "data" / "raw" / "provenance.jsonl", encoding="utf-8")})
     L.append("| session | corpus | raw tokens | clean tokens | aimed at |")
     L.append("|---|---|---:|---:|---|")
     L.append(f"| S4 | `sarvamai/samvaad-hi-v1` | {n(S4_RAW)} | {n(S4_TOKENS)} | "
              f"Indic conversational (Hindi/Hinglish) |")
-    L.append(f"| S5 | 7 lanes, 30 sources | - | {n(total)} | the four starved lanes below |")
+    L.append(f"| S5 | 7 lanes, {n_sources} sources | - | {n(total)} | the four starved lanes below |")
     if built_tok:
         L.append(f"| S5 (constructed) | PRM800K search reconstruction | - | {n(built_tok)} | "
                  f"the L3 reasoning band, which does not exist in collected data |")

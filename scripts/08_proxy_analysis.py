@@ -98,8 +98,21 @@ def main():
                 w = dict(base)
                 w[src] -= 3.0
                 w[dst] += 3.0
-                transfers.append((predW(w) - w0, src, dst))
-        transfers.sort()
+                # A 3-point transfer is NOT a symmetric perturbation in the space the
+                # curves were fitted in. Off an 11.5% lane it is 0.30 e-folds; onto a 1.0%
+                # lane it is 1.39. The fit is linear in ln(share), so the destination term
+                # dominates by construction whenever the destination lane is small, and the
+                # ranking will prefer transfers into the smallest lane whatever the data
+                # says. Record both e-fold moves so the asymmetry is visible, and record
+                # whether the destination is pushed outside its own fitted range.
+                dln_src = math.log(max(w[src], 1e-9) / base[src])
+                dln_dst = math.log(w[dst] / max(base.get(dst, 1e-9), 1e-9))
+                rng = fits.get(dst, {}).get("share_range", [0, 0])
+                transfers.append({"dW": predW(w) - w0, "src": src, "dst": dst,
+                                  "dln_src": dln_src, "dln_dst": dln_dst,
+                                  "extrapolated": w[dst] > rng[1] * 1.05,
+                                  "dst_share": w[dst], "dst_range": rng})
+        transfers.sort(key=lambda t: t["dW"])
 
     L = []
     prev = OUT.read_text(encoding="utf-8") if OUT.exists() else ""
@@ -128,18 +141,38 @@ def main():
         L.append("Moving **3 points of share** from one lane to another and predicting the change "
                  "in the capability-weighted objective `W` from the fitted curves. Negative = the "
                  "transfer would improve the plan.\n")
-        L.append("| transfer | ΔW |")
-        L.append("|---|---:|")
-        for d, s, t in transfers[:5]:
-            L.append(f"| {s} → {t} | **{d:+.4f}** |")
-        L.append("| … | |")
-        for d, s, t in transfers[-3:]:
-            L.append(f"| {s} → {t} | {d:+.4f} |")
+        L.append("| transfer | ΔW | e-folds off source | e-folds onto dest | dest outside fitted range? |")
+        L.append("|---|---:|---:|---:|---|")
+        for t in transfers[:5]:
+            note = (f"**yes** — {t['dst_share']:.1f}% vs {t['dst_range'][1]:.1f}% tested"
+                    if t["extrapolated"] else "no")
+            L.append(f"| {t['src']} → {t['dst']} | **{t['dW']:+.4f}** | {t['dln_src']:+.2f} | "
+                     f"{t['dln_dst']:+.2f} | {note} |")
+        L.append("| … | | | | |")
+        for t in transfers[-3:]:
+            L.append(f"| {t['src']} → {t['dst']} | {t['dW']:+.4f} | {t['dln_src']:+.2f} | "
+                     f"{t['dln_dst']:+.2f} | {'yes' if t['extrapolated'] else 'no'} |")
         L.append("")
-        d, s, t = transfers[0]
+        # the asymmetry, named rather than left for the reader to find
+        top_dsts = {t["dst"] for t in transfers[:5]}
+        if len(top_dsts) == 1:
+            only = top_dsts.pop()
+            L.append(f"> **Read the e-fold columns before the ΔW column.** All five best-scoring "
+                     f"moves end at the same destination, `{only}`, and that is partly "
+                     f"structural rather than empirical. The curves are linear in `ln(share)`, so "
+                     f"a fixed 3-point transfer is a much larger perturbation at the destination "
+                     f"than at the source whenever the destination lane is small: 3 points onto "
+                     f"`{only}` is {transfers[0]['dln_dst']:+.2f} e-folds, while 3 points off the "
+                     f"source is only {transfers[0]['dln_src']:+.2f}. Any ranking of equal-point "
+                     f"transfers will therefore favour the smallest lane in the mixture almost "
+                     f"regardless of the data, and it pushes `{only}` outside the share range the "
+                     f"fit was estimated over. This is a property of the test, and it is the "
+                     f"reason the recommendation below is written as a hypothesis for the 1B arms "
+                     f"rather than as a change to the plan.\n")
+        d, s, t2 = transfers[0]["dW"], transfers[0]["src"], transfers[0]["dst"]
         if d < -1e-4:
             L.append(f"> **The proxy does not endorse the mixture as written.** Its best single "
-                     f"move is 3 points from `{s}` to `{t}` (ΔW = {d:+.4f}). At this scale that is "
+                     f"move is 3 points from `{s}` to `{t2}` (ΔW = {d:+.4f}). At this scale that is "
                      f"a direction, not a decision — the fit has {len(RUNS)} points, the models are "
                      f"11.4M parameters, and the agentic slope is fitted over a 1–2% range in which "
                      f"repetition is free (§8.3 removes that) — but it is exactly the hypothesis "

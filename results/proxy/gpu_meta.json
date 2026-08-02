@@ -1,0 +1,58 @@
+{
+  "held_kind": {
+    "code": "OOD (BurntSushi/ripgrep, expressjs/express, redis/redis, sharkdp/fd, spf13/cobra)",
+    "general_web": "in-distribution (held-out documents)",
+    "indic": "in-distribution (held-out documents)",
+    "stem_math": "in-distribution (held-out documents)",
+    "reasoning": "OOD (prm800k-phase2)",
+    "long_context": "in-distribution (held-out documents)",
+    "agentic": "OOD (bfcl-v4-live-multiple, bfcl-v4-multi-turn, bfcl-v4-parallel)"
+  },
+  "caps": {
+    "code": 10620689,
+    "general_web": 43448275,
+    "indic": 2664827,
+    "stem_math": 2413793,
+    "reasoning": 820689,
+    "long_context": 965517,
+    "agentic": 102634
+  },
+  "cfg": {
+    "vocab": 32000,
+    "d": 512,
+    "layers": 8,
+    "heads": 8,
+    "ctx": 1024,
+    "bs": 24,
+    "lr": 0.0012,
+    "tokens": 28000000,
+    "seed": 4242,
+    "mask": true
+  },
+  "ood_sources": {
+    "agentic": [
+      "bfcl-v4-live-multiple",
+      "bfcl-v4-multi-turn",
+      "bfcl-v4-parallel"
+    ],
+    "reasoning": [
+      "prm800k-phase2"
+    ],
+    "code": [
+      "redis/redis",
+      "BurntSushi/ripgrep",
+      "spf13/cobra",
+      "sharkdp/fd",
+      "expressjs/express"
+    ]
+  },
+  "held_seqs": {
+    "code": 160,
+    "general_web": 160,
+    "indic": 160,
+    "stem_math": 160,
+    "reasoning": 160,
+    "long_context": 160,
+    "agentic": 160
+  }
+}

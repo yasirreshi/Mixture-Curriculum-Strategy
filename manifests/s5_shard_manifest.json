@@ -26,7 +26,7 @@
       "B4": 6
     },
     "content_sha256": "7685aefd2653d4f71d9ceceb49a823ec776511fe18795dc54daac2f6e5b5386d",
-    "written_utc": "2026-08-01T01:52:53+00:00"
+    "written_utc": "2026-08-02T12:44:29+00:00"
   },
   {
     "shard": "agentic_RESERVE.jsonl",
@@ -48,7 +48,7 @@
       "B5": 189
     },
     "content_sha256": "43802342e44440eb140dde407d9dfc226d3396549a0f0b6aab7ee65eaeea20b6",
-    "written_utc": "2026-08-01T01:52:53+00:00"
+    "written_utc": "2026-08-02T12:44:29+00:00"
   },
   {
     "shard": "code.jsonl",
@@ -87,7 +87,7 @@
       "B4": 882
     },
     "content_sha256": "69ce80b7aff235720ee12aa53e792af927ea5abeaac0ec3dbf469b93199a5661",
-    "written_utc": "2026-08-01T01:52:54+00:00"
+    "written_utc": "2026-08-02T12:44:29+00:00"
   },
   {
     "shard": "code_RESERVE.jsonl",
@@ -126,15 +126,15 @@
       "B1": 58
     },
     "content_sha256": "a4d1104015b11311f0b0902404d6b0bba5fd7dd25753a9b5de7cc92c2e96eaff",
-    "written_utc": "2026-08-01T01:52:54+00:00"
+    "written_utc": "2026-08-02T12:44:29+00:00"
   },
   {
     "shard": "general_web.jsonl",
     "lane": "general_web",
     "reserve": false,
-    "docs": 142,
-    "tokens": 860895,
-    "supervised_tokens": 860895,
+    "docs": 3063,
+    "tokens": 17112076,
+    "supervised_tokens": 17112076,
     "licenses": [
       "CC BY-SA 4.0"
     ],
@@ -145,23 +145,23 @@
       "en"
     ],
     "difficulty": {
-      "B2": 74,
-      "B0": 10,
-      "B1": 33,
-      "B5": 15,
-      "B3": 7,
-      "B4": 3
+      "B1": 872,
+      "B2": 1098,
+      "B0": 543,
+      "B5": 350,
+      "B3": 108,
+      "B4": 92
     },
-    "content_sha256": "9b1adbb2c0134686f3adc2f435a24d4e6a18209d484aab724b03290cab999fbb",
-    "written_utc": "2026-08-01T01:52:54+00:00"
+    "content_sha256": "b3025ee7dfc7271a1fe7b54ea12d12f028b9061e8aa1155dc4d7a76b17658603",
+    "written_utc": "2026-08-02T12:44:30+00:00"
   },
   {
     "shard": "general_web_RESERVE.jsonl",
     "lane": "general_web",
     "reserve": true,
-    "docs": 147,
-    "tokens": 2646005,
-    "supervised_tokens": 2646005,
+    "docs": 1848,
+    "tokens": 29707850,
+    "supervised_tokens": 29707850,
     "licenses": [
       "CC BY-SA 4.0"
     ],
@@ -172,12 +172,12 @@
       "en"
     ],
     "difficulty": {
-      "B4": 58,
-      "B3": 72,
-      "B5": 17
+      "B4": 708,
+      "B3": 991,
+      "B5": 149
     },
-    "content_sha256": "47d29740a394dcb000f0bfade486ae1c5a918a8713efbd1d535c56b8051f31ad",
-    "written_utc": "2026-08-01T01:52:55+00:00"
+    "content_sha256": "45fee3b883a0161c16f4d4464f800bc555955d8b21c3b07140da9e53ae9790dd",
+    "written_utc": "2026-08-02T12:44:31+00:00"
   },
   {
     "shard": "indic.jsonl",
@@ -219,15 +219,15 @@
       "ur"
     ],
     "difficulty": {
-      "B1": 423,
+      "B1": 415,
       "B4": 147,
-      "B2": 179,
-      "B3": 187,
-      "B5": 134,
-      "B0": 289
+      "B2": 172,
+      "B3": 185,
+      "B5": 129,
+      "B0": 311
     },
-    "content_sha256": "4fa35e99c65b9e2661fbad7de916881b05dbcd8c128da32582663556aebfe8c6",
-    "written_utc": "2026-08-01T01:52:55+00:00"
+    "content_sha256": "8ab8b99d93e1a869ecf46874650838aa49e79e013afdbfc064814475d798a66c",
+    "written_utc": "2026-08-02T12:44:31+00:00"
   },
   {
     "shard": "indic_RESERVE.jsonl",
@@ -274,7 +274,7 @@
       "B5": 94
     },
     "content_sha256": "dc5ad2ecf5c41df1ea13af3ba369eab81d35871db4f117ea1d9c1af64b44d22a",
-    "written_utc": "2026-08-01T01:52:56+00:00"
+    "written_utc": "2026-08-02T12:44:31+00:00"
   },
   {
     "shard": "long_context.jsonl",
@@ -297,7 +297,7 @@
       "B3": 6
     },
     "content_sha256": "81775382e2763d69587398fbb9c9de0705f97fa5f9b92d87494399f079db6da4",
-    "written_utc": "2026-08-01T01:52:56+00:00"
+    "written_utc": "2026-08-02T12:44:31+00:00"
   },
   {
     "shard": "long_context_RESERVE.jsonl",
@@ -319,7 +319,7 @@
       "B4": 93
     },
     "content_sha256": "1f66c697e8bffab583bb90c79e182ae61f230fd44ba921519259dbe4d2145af9",
-    "written_utc": "2026-08-01T01:52:59+00:00"
+    "written_utc": "2026-08-02T12:44:32+00:00"
   },
   {
     "shard": "reasoning.jsonl",
@@ -347,15 +347,15 @@
       "B1": 14903
     },
     "content_sha256": "60a639fb296e02989fd1a56f9cbbf0c4e2b180839745979a508872eb684b65d4",
-    "written_utc": "2026-08-01T01:53:00+00:00"
+    "written_utc": "2026-08-02T12:44:32+00:00"
   },
   {
     "shard": "stem_math.jsonl",
     "lane": "stem_math",
     "reserve": false,
-    "docs": 5087,
-    "tokens": 1097781,
-    "supervised_tokens": 1097781,
+    "docs": 21261,
+    "tokens": 4733077,
+    "supervised_tokens": 4733077,
     "licenses": [
       "arXiv terms"
     ],
@@ -366,10 +366,10 @@
       "en"
     ],
     "difficulty": {
-      "B5": 5087
+      "B5": 21261
     },
-    "content_sha256": "5135a8ee025011f0f4b718102709193a733ae7014220d1e56ba6ab9808842077",
-    "written_utc": "2026-08-01T01:53:00+00:00"
+    "content_sha256": "13d4e203a1a1543ac564ae85c297d11d80352ed8d82dce3bd9fe086926528b7d",
+    "written_utc": "2026-08-02T12:44:32+00:00"
   },
   {
     "shard": "reasoning_L3L4_constructed.jsonl",
@@ -388,10 +388,13 @@
       "en"
     ],
     "difficulty": {
-      "D4": 253
+      "B2": 28,
+      "B3": 44,
+      "B4": 50,
+      "B5": 131
     },
     "tier": "D_constructed",
     "note": "reconstructed from human-rated rejected branches; ordering constructed, all text and all verdicts original",
-    "content_sha256": "928374cbe71f81aa887212d0411d07de613a8c83e8bd36e541a67810d7f2587c"
+    "content_sha256": "ab8ae042def84965ccd3b939e89e505a9cf74a483f1d89ef4ed91a33964376b8"
   }
 ]

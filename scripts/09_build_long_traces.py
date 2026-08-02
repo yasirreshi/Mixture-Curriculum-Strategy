@@ -41,6 +41,11 @@ TOK = Tokenizer.from_file(str(ROOT / "data" / "tokenizer" / "s5_bpe.json"))
 BANDS = [("L0_direct", 32), ("L1_short", 256), ("L2_medium", 1024), ("L3_long", 4096)]
 
 
+def _counter(it):
+    from collections import Counter
+    return dict(sorted(Counter(it).items()))
+
+
 def band(n):
     for name, hi in BANDS:
         if n < hi:
@@ -86,6 +91,15 @@ def build(rec):
         "trace": trace, "problem": q["problem"], "answer": q["ground_truth_answer"],
         "n_reason": n_reason, "band": band(n_reason),
         "rejected_steps": n_rejected, "branch_steps": n_branch_steps,
+        # Difficulty is a SEPARATE axis from trace length and must sit on the declared
+        # B0-B5 ladder. Use the identical rule 02_clean_lanes.py applies to PRM800K
+        # (difficulty_band(), reasoning branch) so a constructed document is banded the
+        # same way a collected one would be. It previously carried "D4", which conflated
+        # the provenance tier (D_constructed) with the difficulty ladder and put 253
+        # documents on a rung that does not exist.
+        "n_steps": len(steps),
+        "difficulty": ("B5" if len(steps) >= 14 else "B4" if len(steps) >= 10
+                       else "B3" if len(steps) >= 7 else "B2"),
     }
 
 
@@ -130,7 +144,8 @@ def main():
                 "segments": segs, "lang": "en",
                 "n_tokens": n_tot, "sup_tokens": n_tot - len(TOK.encode(segs[0]["text"]).ids),
                 "ctx_tokens": len(TOK.encode(segs[0]["text"]).ids),
-                "length_band": b["band"], "difficulty": "D4",
+                "length_band": b["band"], "difficulty": b["difficulty"],
+                "n_steps": b["n_steps"],
                 "reasoning_tokens": b["n_reason"],
                 "rejected_steps": b["rejected_steps"], "branch_steps": b["branch_steps"],
                 "reserve": True,
@@ -146,7 +161,7 @@ def main():
     man.append({"shard": OUT.name, "lane": "reasoning", "reserve": True, "docs": len(kept),
                 "tokens": tot, "supervised_tokens": tot,
                 "licenses": ["MIT"], "sources": ["prm800k-phase2-search-reconstruction"],
-                "languages": ["en"], "difficulty": {"D4": len(kept)},
+                "languages": ["en"], "difficulty": _counter(b["difficulty"] for b in kept),
                 "tier": "D_constructed",
                 "note": "reconstructed from human-rated rejected branches; ordering constructed, "
                         "all text and all verdicts original",

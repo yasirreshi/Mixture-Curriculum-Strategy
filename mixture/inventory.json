@@ -51,7 +51,16 @@
     },
     "reasoning": {
       "lane_total_tokens": 8.5e10,
-      "lane_total_evidence": "[course] supply 85B - 'needs repetition'",
+      "lane_total_evidence": "[course] supply 85B - 'needs repetition'. This is a GROSS figure: it counts traces, not traces that survive a verified-quality gate. See quality_gate below - the discount is the largest unpriced risk left in the plan and it is priced here rather than described.",
+      "quality_gate": {
+        "_about": "The agentic lane was sized on collected supply (0.63B) rather than on its datasets' advertised size, and that difference drove the entire argument for 0.96%. The same discipline has to apply to this lane. Cleaning PRM800K measured what a verified-step gate actually costs, and that measurement is now carried into the epoch arithmetic instead of being noted in prose and then ignored.",
+        "measured_survival_prm800k": 0.2446,
+        "measured_basis": "[measured] 26,551 PRM800K phase-2 records scanned; 20,056 contain at least one step a human rated negatively and were dropped; 6,495 survive = 24.46%. This is the only component of the lane carrying step-level human labels, so it is the only one where survival could be measured rather than assumed.",
+        "unmeasured_components": "OpenThoughts-3 / Nemotron / NuminaMath (78B of the 85B) are answer-verified at source, not step-verified. Their survival under a step-verified gate is UNKNOWN and is deliberately not assumed here. Applying PRM800K's 24.5% lane-wide would be as wrong as ignoring it: PRM800K's gate - any single step rated wrong by a human - is the strictest in the lane.",
+        "break_even_survival": 0.653,
+        "break_even_basis": "[measured] The lane's 7.03% share plus its 18% anneal allocation is 221.9B of demand. Staying inside the 4-epoch cap needs 55.5B of gate-surviving supply, i.e. 65.3% of the nominal 85B. Below that the reasoning share is not fundable at 7.03%; at PRM800K's measured 24.5% the lane would run 10.65 epochs and the fundable share would be 2.25%.",
+        "gate": "Sample 2,000 traces from each of OpenThoughts-3 and Nemotron and measure survival under the same verified-answer-plus-explicit-check gate, before stage 1 of the proxy. If pooled survival lands below 65.3%, the reasoning share drops to whatever 4 epochs of measured supply funds and the shortfall is bought as distillation rather than assumed - the identical rule the agentic lane already runs under."
+      },
       "datasets": [
         {"name": "OpenThoughts-3 / OpenR1-Math / OpenMathReasoning", "samples": 6.0e6, "tokens": 4.0e10, "license": "permissive", "tier": "A", "evidence": "[estimate] long distilled chains at ~6-8k tokens/sample"},
         {"name": "Nemotron post-training reasoning splits", "samples": 3.0e7, "tokens": 3.0e10, "license": "permissive", "tier": "A", "evidence": "[estimate]"},

@@ -49,17 +49,19 @@ _6 arms x 11,417,088 params x 2,998,272 tokens, context 256, identical seed and 
 
 Moving **3 points of share** from one lane to another and predicting the change in the capability-weighted objective `W` from the fitted curves. Negative = the transfer would improve the plan.
 
-| transfer | ΔW |
-|---|---:|
-| stem_math → agentic | **-0.0256** |
-| general_web → agentic | **-0.0254** |
-| long_context → agentic | **-0.0251** |
-| indic → agentic | **-0.0217** |
-| code → agentic | **-0.0215** |
-| … | |
-| reasoning → long_context | +0.0107 |
-| reasoning → general_web | +0.0108 |
-| reasoning → stem_math | +0.0110 |
+| transfer | ΔW | e-folds off source | e-folds onto dest | dest outside fitted range? |
+|---|---:|---:|---:|---|
+| stem_math → agentic | **-0.0256** | -0.30 | +1.39 | **yes** — 4.0% vs 2.0% tested |
+| general_web → agentic | **-0.0254** | -0.10 | +1.39 | **yes** — 4.0% vs 2.0% tested |
+| long_context → agentic | **-0.0251** | -0.50 | +1.39 | **yes** — 4.0% vs 2.0% tested |
+| indic → agentic | **-0.0217** | -0.18 | +1.39 | **yes** — 4.0% vs 2.0% tested |
+| code → agentic | **-0.0215** | -0.13 | +1.39 | **yes** — 4.0% vs 2.0% tested |
+| … | | | | |
+| reasoning → long_context | +0.0107 | -0.56 | +0.33 | yes |
+| reasoning → general_web | +0.0108 | -0.56 | +0.09 | no |
+| reasoning → stem_math | +0.0110 | -0.56 | +0.23 | yes |
+
+> **Read the e-fold columns before the ΔW column.** All five best-scoring moves end at the same destination, `agentic`, and that is partly structural rather than empirical. The curves are linear in `ln(share)`, so a fixed 3-point transfer is a much larger perturbation at the destination than at the source whenever the destination lane is small: 3 points onto `agentic` is +1.39 e-folds, while 3 points off the source is only -0.30. Any ranking of equal-point transfers will therefore favour the smallest lane in the mixture almost regardless of the data, and it pushes `agentic` outside the share range the fit was estimated over. This is a property of the test, and it is the reason the recommendation below is written as a hypothesis for the 1B arms rather than as a change to the plan.
 
 > **The proxy does not endorse the mixture as written.** Its best single move is 3 points from `stem_math` to `agentic` (ΔW = -0.0256). At this scale that is a direction, not a decision — the fit has 6 points, the models are 11.4M parameters, and the agentic slope is fitted over a 1–2% range in which repetition is free (§8.3 removes that) — but it is exactly the hypothesis the 1B arm list in §8.1 has to settle, and it is written down here before the 1B runs rather than after.
 
